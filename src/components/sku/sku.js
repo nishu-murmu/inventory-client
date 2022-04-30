@@ -4,7 +4,7 @@ import { VStack, HStack } from '@chakra-ui/react';
 const DashBoard = () => {
   return (
     <VStack>
-      <HStack spacing="20">This is a dashboard.</HStack>
+      <HStack spacing="20"></HStack>
     </VStack>
   );
 };

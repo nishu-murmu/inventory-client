@@ -1,5 +1,5 @@
 //files
-import Sales from '../components/sales/sales';
+import Sales from '../components/sales';
 const SalesPage = () => {
   return <Sales />;
 };
