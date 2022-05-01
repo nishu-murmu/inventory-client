@@ -43,13 +43,13 @@ function App() {
         padding={'20px 0px'}
         fontSize={'xl'}
       >
-        <HStack className="app-header" spacing={20} width="auto">
+        <HStack className="app-header" py={10} spacing={20} width="auto">
           <Heading padding={'20px 0px'}>F3 Inventory Management</Heading>
           <Spacer />
           <HStack spacing={5}>
             <ColorModeSwitcher justifySelf="flex-end" />
             <Menu>
-              <MenuButton as={Button} className="user">
+              <MenuButton as={Button}>
                 <Icon as={FaUser} />
               </MenuButton>
               <MenuList>
@@ -61,7 +61,7 @@ function App() {
             </Menu>
           </HStack>
         </HStack>
-        <HStack spacing={40} className="app-nav">
+        <HStack spacing={10} pb={10} className="app-nav">
           <Menu>
             <MenuButton as={Button}>Display SKUs</MenuButton>
             <MenuList>
@@ -94,9 +94,9 @@ function App() {
         </Routes>
         <Box
           bottom={0}
+          px={16}
           position={'fixed'}
           borderTopWidth={1}
-          width={'100%'}
           borderStyle={'solid'}
           borderColor={useColorModeValue('gray.200', 'gray.700')}
         >
@@ -110,6 +110,7 @@ function App() {
             align={{ md: 'center' }}
           >
             <Text>© 2022 F3 E-Commerce Consultancy. All rights reserved</Text>
+            <Spacer />
             <Stack direction={'row'} spacing={6}>
               <Icon as={FaTwitter} />
               <Icon as={FaYoutube} />
