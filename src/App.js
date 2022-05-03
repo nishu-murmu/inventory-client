@@ -33,6 +33,8 @@ import UnMappedPage from './pages/sku/unMappedPage';
 //files
 
 function App() {
+  const bg = useColorModeValue('teal.100', 'teal.600')
+  const color = useColorModeValue('white', 'gray.800')
   return (
     <ChakraProvider theme={theme}>
       <VStack

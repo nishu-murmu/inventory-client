@@ -20,22 +20,23 @@ import "react-datepicker/dist/react-datepicker.css";
 const Purchase = () => {
   const [start, setStart] = useState(new Date()); 
   return (
-    <HStack p={10}>
-      <VStack p={10}>
-      <Heading className="purchase-heading" size={'md'} pb={5}>
+    <VStack>
+      <Heading as={'h1'} size={'lg'}>Purchase Section</Heading>
+      <HStack px={10} spacing={20}>
+      <VStack p={5}>
+      <Heading className="purchase-heading" size={'md'} pb={10}>
         Input Products Details
       </Heading>
       <VStack>
         <Input placeholder="Enter SKU" textAlign="center" />
-        <DatePicker placeholder='Select a Date' selected={start} onSelect={(date:Date) => setStart(date)}/>
+        <DatePicker dateFormat={'dd-MM-yy'} placeholderText='Select Date' selected={start} onSelect={(date:Date) => setStart(date)}/>
         <Input placeholder="Enter Quantity" textAlign="center" />
+        <Button w={'100%'}>Submit</Button>
+        <Button w={'100%'}>Filter</Button>
       </VStack>
-      <HStack>
-        <Button>Filter</Button>
-      </HStack>
       </VStack>
-      <VStack>
-      <Heading p={10} size={'md'}>
+      <VStack pb={5}>
+      <Heading pb={10} size={'md'}>
         Purchase Table
       </Heading>
       <TableContainer
@@ -63,6 +64,7 @@ const Purchase = () => {
       </TableContainer>
       </VStack>
     </HStack>
+    </VStack>
   );
 };
 

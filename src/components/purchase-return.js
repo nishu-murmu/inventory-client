@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
 import {
-  Box,
   Heading,
+  VStack,
+  Button,
   HStack,
   Input,
-  FormControl,
   Table,
   TableContainer,
   Thead,
@@ -13,39 +13,31 @@ import {
   Th,
   Td,
   useColorModeValue,
+  Stack,
 } from '@chakra-ui/react';
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
 const PurchaseReturn = () => {
+  const [start, setStart] = useState(new Date())
 
-  const [startDate, setStartDate] = useState(new Date())
-
-  const handleChange = (date) => {  
-      setStartDate(date)  
-  } 
-  const formSubmitHandler = () => {
-    console(startDate)
-  }
   return (
-    <Box p={4}>
-      <Heading className="purchaseReturn-heading" size={'lg'} pb={10}>
-        Purchase Return Section
+    <VStack>
+      <Heading as={'h1'} size={'lg'}>Purchase Return Section</Heading>
+      <HStack px={10} spacing={20}>
+      <VStack p={5}>
+      <Heading className="purchase-heading" size={'md'} pb={10}>
+        Input Products Details
       </Heading>
-      <HStack pb={8}>
+      <VStack>
         <Input placeholder="Enter SKU" textAlign="center" />
-        <FormControl onSubmit={ formSubmitHandler }>  
-        <Box className="form-group">  
-          <DatePicker  
-              selected={startDate} 
-              onChange={ handleChange }  
-              name="startDate"  
-              dateFormat="MM/dd/yyyy"  
-          />
-        </Box>  
-      </FormControl>
+        <DatePicker dateFormat={'dd-MM-yy'} placeholderText='Select Date' selected={start} onSelect={(date:Date) => setStart(date)}/>
         <Input placeholder="Enter Quantity" textAlign="center" />
-      </HStack>
-      <Heading size={'md'} pb={4}>
+        <Button w={'100%'}>Submit</Button>
+        <Button w={'100%'}>Filter</Button>
+      </VStack>
+      </VStack>
+      <VStack pb={5}>
+      <Heading pb={10} size={'md'}>
         Purchase Return Table
       </Heading>
       <TableContainer
@@ -71,7 +63,9 @@ const PurchaseReturn = () => {
           </Tbody>
         </Table>
       </TableContainer>
-    </Box>
+      </VStack>
+    </HStack>
+    </VStack>
   );
 };
 

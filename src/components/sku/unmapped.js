@@ -9,6 +9,8 @@ import {
     Th,
     Td,
     useColorModeValue,
+    HStack,
+    Input,
   } from '@chakra-ui/react';
   
   const UnMapped = () => {
@@ -17,6 +19,14 @@ import {
         <Heading className="purchase-heading" size={'lg'} pb={10}>
           UnMapped SKUs Section
         </Heading>
+        <Heading size={'md'} pb={4}>
+          Enter UnMapped SKUs
+        </Heading>
+        <HStack pb={8}>
+          <Input type={'text'} textAlign={'center'} placeholder={'grand-parent'} />
+          <Input type={'text'} textAlign={'center'} placeholder={'parent'} />
+          <Input type={'text'} textAlign={'center'} placeholder={'child'} />
+        </HStack>
         <Heading size={'md'} pb={4}>
           UnMapped SKUs Table
         </Heading>
