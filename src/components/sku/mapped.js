@@ -15,7 +15,10 @@ const Mapped = () => {
   return (
     <Box p={4}>
       <Heading className="purchase-heading" size={'lg'} pb={10}>
-        Mapped SKUs
+        Mapped SKUs Section
+      </Heading>
+      <Heading size={'md'} pb={4}>
+        Mapped SKUs Table
       </Heading>
       <TableContainer
         rounded={'lg'}

@@ -17,6 +17,9 @@ const SalesReturn = () => {
       <Heading size={'lg'} pb={10}>
         Sales Return Section
       </Heading>
+      <Heading size={'md'} pb={4}>
+        Sales Return Table
+      </Heading>
       <TableContainer
         rounded={'lg'}
         boxShadow={'lg'}

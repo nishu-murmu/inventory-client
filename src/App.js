@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   ChakraProvider,
   Container,
@@ -29,9 +28,9 @@ import SalesPage from './pages/salesPage';
 import SalesReturnPage from './pages/salesReturnPage';
 import LoginPage from './pages/Auth/loginPage';
 import SignUpPage from './pages/Auth/signUpPage';
-
+import MappedPage from './pages/sku/mappedPage';
+import UnMappedPage from './pages/sku/unMappedPage';
 //files
-import './App.css';
 
 function App() {
   return (
@@ -40,11 +39,10 @@ function App() {
         className="app-main-section"
         margin={0}
         textAlign={'center'}
-        padding={'20px 0px'}
         fontSize={'xl'}
       >
-        <HStack className="app-header" py={10} spacing={20} width="auto">
-          <Heading padding={'20px 0px'}>F3 Inventory Management</Heading>
+        <HStack className="app-header" py={5} spacing={20} width="auto">
+          <Heading padding={'5px 0px'}>F3 Inventory Management</Heading>
           <Spacer />
           <HStack spacing={5}>
             <ColorModeSwitcher justifySelf="flex-end" />
@@ -65,8 +63,8 @@ function App() {
           <Menu>
             <MenuButton as={Button}>Display SKUs</MenuButton>
             <MenuList>
-              <MenuItem>Mapped SKUs</MenuItem>
-              <MenuItem>Unmapped SKUs</MenuItem>
+              <MenuItem><Link to='/mapped'>Mapped SKUs</Link></MenuItem>
+              <MenuItem><Link to='/unmapped'>Unmapped SKUs</Link></MenuItem>
             </MenuList>
           </Menu>
           <HStack spacing={5}>
@@ -87,6 +85,8 @@ function App() {
         <Routes>
           <Route path="/signUp" element={<SignUpPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path='/mapped' element={<MappedPage />}/>
+          <Route path='/unmapped' element={<UnMappedPage />} />
           <Route path="/purchase" element={<PurchasePage />} />
           <Route path="/purchaseReturn" element={<PurchaseReturnPage />} />
           <Route path="/sales" element={<SalesPage />} />

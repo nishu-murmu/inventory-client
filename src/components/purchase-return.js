@@ -1,8 +1,10 @@
+import React, {useState} from 'react'
 import {
   Box,
   Heading,
   HStack,
   Input,
+  FormControl,
   Table,
   TableContainer,
   Thead,
@@ -12,8 +14,18 @@ import {
   Td,
   useColorModeValue,
 } from '@chakra-ui/react';
-
+import DatePicker from 'react-datepicker'
+import "react-datepicker/dist/react-datepicker.css";
 const PurchaseReturn = () => {
+
+  const [startDate, setStartDate] = useState(new Date())
+
+  const handleChange = (date) => {  
+      setStartDate(date)  
+  } 
+  const formSubmitHandler = () => {
+    console(startDate)
+  }
   return (
     <Box p={4}>
       <Heading className="purchaseReturn-heading" size={'lg'} pb={10}>
@@ -21,7 +33,16 @@ const PurchaseReturn = () => {
       </Heading>
       <HStack pb={8}>
         <Input placeholder="Enter SKU" textAlign="center" />
-        <Input placeholder="Enter Date" textAlign="center" />
+        <FormControl onSubmit={ formSubmitHandler }>  
+        <Box className="form-group">  
+          <DatePicker  
+              selected={startDate} 
+              onChange={ handleChange }  
+              name="startDate"  
+              dateFormat="MM/dd/yyyy"  
+          />
+        </Box>  
+      </FormControl>
         <Input placeholder="Enter Quantity" textAlign="center" />
       </HStack>
       <Heading size={'md'} pb={4}>

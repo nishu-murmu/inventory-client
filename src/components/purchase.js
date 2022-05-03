@@ -1,31 +1,42 @@
+import React,{useState} from 'react'
 import {
-  Box,
+  VStack,
+  HStack,
   Heading,
   Input,
   Table,
   TableContainer,
-  HStack,
   Thead,
   Tbody,
   Tr,
   Th,
   Td,
   useColorModeValue,
+  Button,
 } from '@chakra-ui/react';
+import DatePicker from 'react-datepicker'
+import "react-datepicker/dist/react-datepicker.css";
 
 const Purchase = () => {
+  const [start, setStart] = useState(new Date()); 
   return (
-    <Box p={4}>
-      <Heading className="purchase-heading" size={'lg'} pb={10}>
-        Purchase Section
+    <HStack p={10}>
+      <VStack p={10}>
+      <Heading className="purchase-heading" size={'md'} pb={5}>
+        Input Products Details
       </Heading>
-      <HStack pb={8}>
+      <VStack>
         <Input placeholder="Enter SKU" textAlign="center" />
-        <Input placeholder="Enter Date" textAlign="center" />
+        <DatePicker placeholder='Select a Date' selected={start} onSelect={(date:Date) => setStart(date)}/>
         <Input placeholder="Enter Quantity" textAlign="center" />
+      </VStack>
+      <HStack>
+        <Button>Filter</Button>
       </HStack>
-      <Heading size={'md'} pb={4}>
-        Purchase Return Table
+      </VStack>
+      <VStack>
+      <Heading p={10} size={'md'}>
+        Purchase Table
       </Heading>
       <TableContainer
         rounded={'lg'}
@@ -50,7 +61,8 @@ const Purchase = () => {
           </Tbody>
         </Table>
       </TableContainer>
-    </Box>
+      </VStack>
+    </HStack>
   );
 };
 
