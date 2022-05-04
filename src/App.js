@@ -1,37 +1,15 @@
-import React from 'react';
 import {
   ChakraProvider,
-  Container,
-  Stack,
   VStack,
-  Box,
-  Text,
-  Spacer,
-  HStack,
-  Heading,
-  Button,
-  Menu,
-  MenuItem,
-  MenuList,
-  MenuButton,
-  Icon,
   theme,
-  useColorModeValue,
 } from '@chakra-ui/react';
-import { FaUser } from 'react-icons/fa/index';
-import { FaLinkedin, FaFacebook, FaInstagram } from 'react-icons/fa';
-import {ExternalLinkIcon} from '@chakra-ui/icons'
-import { ColorModeSwitcher } from './ColorModeSwitcher';
-import { Routes, Route, Link } from 'react-router-dom';
-import PurchasePage from './pages/purchasePage';
-import PurchaseReturnPage from './pages/purchaseReturnPage';
-import SalesPage from './pages/salesPage';
-import SalesReturnPage from './pages/salesReturnPage';
-import LoginPage from './pages/Auth/loginPage';
-import SignUpPage from './pages/Auth/signUpPage';
-import MappedPage from './pages/sku/mappedPage';
-import UnMappedPage from './pages/sku/unMappedPage';
+
+
 //files
+import MainHeader from './sections/main-header-section';
+import Navigation from './sections/navigation-section';
+import Footer from './sections/footer-section';
+import AllRoutes from './sections/Routes';
 
 function App() {
   // const bg = useColorModeValue('teal.100', 'teal.600')
@@ -44,84 +22,10 @@ function App() {
         textAlign={'center'}
         fontSize={'xl'}
       >
-        <HStack className="app-header" py={5} spacing={80} width="auto">
-          <Heading padding={'5px 0px'}><Link to='/'>F3 Inventory Management</Link></Heading>
-          <Spacer />
-          <HStack spacing={5}>
-            <ColorModeSwitcher justifySelf="flex-end" />
-            <Menu>
-              <MenuButton as={Button}>
-                <Icon as={FaUser} />
-              </MenuButton>
-              <MenuList>
-                <MenuItem>Account</MenuItem>
-                <Link to="/signUp">
-                  <MenuItem>Log out</MenuItem>
-                </Link>
-              </MenuList>
-            </Menu>
-          </HStack>
-        </HStack>
-        <HStack spacing={10} pb={10} className="app-nav">
-          <Menu>
-            <MenuButton as={Button}>Display SKUs</MenuButton>
-            <MenuList>
-              <MenuItem><Link to='/mapped'>Mapped SKUs</Link></MenuItem>
-              <MenuItem><Link to='/unmapped'>Unmapped SKUs</Link></MenuItem>
-            </MenuList>
-          </Menu>
-          <HStack spacing={5}>
-            <Link to="/purchase">
-              <Button>Purchase</Button>
-            </Link>
-            <Link to="/purchaseReturn">
-              <Button>Purchase Return</Button>
-            </Link>
-            <Link to="/sales">
-              <Button>Sales</Button>
-            </Link>
-            <Link to="/salesReturn">
-              <Button>Sales Return</Button>
-            </Link>
-          </HStack>
-        </HStack>
-        <Routes>
-          <Route path="/signUp" element={<SignUpPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path='/mapped' element={<MappedPage />}/>
-          <Route path='/unmapped' element={<UnMappedPage />} />
-          <Route path="/purchase" element={<PurchasePage />} />
-          <Route path="/purchaseReturn" element={<PurchaseReturnPage />} />
-          <Route path="/sales" element={<SalesPage />} />
-          <Route path="/salesReturn" element={<SalesReturnPage />} />
-        </Routes>
-        <Box
-          bottom={0}
-          px={16}
-          position={'fixed'}
-          borderTopWidth={1}
-          borderStyle={'solid'}
-          className={'footer'}
-          borderColor={useColorModeValue('gray.200', 'gray.700')}
-        >
-          <Container
-            as={Stack}
-            maxW={'6xl'}
-            py={4}
-            direction={{ base: 'column', md: 'row' }}
-            spacing={4}
-            justify={{ md: 'space-between' }}
-            align={{ md: 'center' }}
-          >
-            <Text>© 2022 F3 E-Commerce Consultancy. All rights reserved</Text>
-            <Spacer />
-            <Stack direction={'row'} spacing={6}>
-              <Icon as={FaLinkedin} />
-              <Icon as={FaFacebook} />
-              <Icon as={FaInstagram} />
-            </Stack>
-          </Container>
-        </Box>
+        <MainHeader/>
+        <Navigation/>
+        <AllRoutes/>
+        <Footer/>
       </VStack>
     </ChakraProvider>
   );
