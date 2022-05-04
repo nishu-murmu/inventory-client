@@ -19,7 +19,8 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { FaUser } from 'react-icons/fa/index';
-import { FaTwitter, FaYoutube, FaInstagram } from 'react-icons/fa';
+import { FaLinkedin, FaFacebook, FaInstagram } from 'react-icons/fa';
+import {ExternalLinkIcon} from '@chakra-ui/icons'
 import { ColorModeSwitcher } from './ColorModeSwitcher';
 import { Routes, Route, Link } from 'react-router-dom';
 import PurchasePage from './pages/purchasePage';
@@ -100,6 +101,7 @@ function App() {
           position={'fixed'}
           borderTopWidth={1}
           borderStyle={'solid'}
+          className={'footer'}
           borderColor={useColorModeValue('gray.200', 'gray.700')}
         >
           <Container
@@ -114,8 +116,8 @@ function App() {
             <Text>© 2022 F3 E-Commerce Consultancy. All rights reserved</Text>
             <Spacer />
             <Stack direction={'row'} spacing={6}>
-              <Icon as={FaTwitter} />
-              <Icon as={FaYoutube} />
+              <Icon as={FaLinkedin} />
+              <Icon as={FaFacebook} />
               <Icon as={FaInstagram} />
             </Stack>
           </Container>
