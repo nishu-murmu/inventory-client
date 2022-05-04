@@ -19,7 +19,7 @@ const Login = () => {
         rounded={'lg'}
         boxShadow={'lg'}
         p={8}
-        bg={useColorModeValue('white', 'gray.700')}
+        bg={useColorModeValue('gray.100', 'gray.700')}
       >
         <Stack spacing={4}>
           <FormControl isRequired>

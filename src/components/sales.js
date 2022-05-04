@@ -24,11 +24,12 @@ const Sales = () => {
         rounded={'lg'}
         boxShadow={'lg'}
         p={8}
-        bg={useColorModeValue('white', 'gray.700')}
+        bg={useColorModeValue('gray.100', 'gray.700')}
       >
         <Table variant="simple">
           <Thead>
             <Tr>
+              <Th textAlign={'center'}>No.</Th>
               <Th textAlign="center">SKU</Th>
               <Th textAlign="center">Date</Th>
               <Th textAlign="center">Quantity</Th>
@@ -36,6 +37,7 @@ const Sales = () => {
           </Thead>
           <Tbody>
             <Tr>
+              <Td textAlign={'center'}>1.</Td>
               <Td textAlign="center">example sku</Td>
               <Td textAlign="center">example date</Td>
               <Td textAlign="center">example quantity</Td>

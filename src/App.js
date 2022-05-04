@@ -33,8 +33,8 @@ import UnMappedPage from './pages/sku/unMappedPage';
 //files
 
 function App() {
-  const bg = useColorModeValue('teal.100', 'teal.600')
-  const color = useColorModeValue('white', 'gray.800')
+  // const bg = useColorModeValue('teal.100', 'teal.600')
+  // const color = useColorModeValue('white', 'gray.800')
   return (
     <ChakraProvider theme={theme}>
       <VStack
@@ -43,8 +43,8 @@ function App() {
         textAlign={'center'}
         fontSize={'xl'}
       >
-        <HStack className="app-header" py={5} spacing={20} width="auto">
-          <Heading padding={'5px 0px'}>F3 Inventory Management</Heading>
+        <HStack className="app-header" py={5} spacing={80} width="auto">
+          <Heading padding={'5px 0px'}><Link to='/'>F3 Inventory Management</Link></Heading>
           <Spacer />
           <HStack spacing={5}>
             <ColorModeSwitcher justifySelf="flex-end" />
@@ -54,7 +54,7 @@ function App() {
               </MenuButton>
               <MenuList>
                 <MenuItem>Account</MenuItem>
-                <Link to="/login">
+                <Link to="/signUp">
                   <MenuItem>Log out</MenuItem>
                 </Link>
               </MenuList>
