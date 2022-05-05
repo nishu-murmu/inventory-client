@@ -4,6 +4,7 @@ import {
     Box,
     Text,
     Spacer,
+    Link,
     Icon,
     useColorModeValue,
   } from '@chakra-ui/react';
@@ -32,9 +33,9 @@ const Footer = () => {
       <Text>© 2022 F3 E-Commerce Consultancy. All rights reserved</Text>
       <Spacer />
       <Stack direction={'row'} spacing={6}>
-        <Icon as={FaLinkedin} />
-        <Icon as={FaFacebook} />
-        <Icon as={FaInstagram} />
+        <Link href='https://www.linkedin.com/company/f3-e-commerce-consultancy-llp/mycompany/'><Icon as={FaLinkedin} /></Link>
+        <Link href='https://www.facebook.com/f3ecommerceconsultancyllp/'><Icon as={FaFacebook} /></Link>
+        <Link href='https://instagram.com/f3ecommerceconsultancyllp?utm_medium=copy_link'><Icon as={FaInstagram} /></Link>
       </Stack>
     </Container>
   </Box>

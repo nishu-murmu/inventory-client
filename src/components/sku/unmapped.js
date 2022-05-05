@@ -1,3 +1,4 @@
+import {useRef} from 'react'
 import {
     Box,
     Heading,
@@ -14,6 +15,19 @@ import {
   } from '@chakra-ui/react';
   
   const UnMapped = () => {
+    const parent = useRef()
+    const grandParent = useRef()
+    const child = useRef()
+    const quantity = useRef()
+
+    const submitHandler = () => {
+      const enteredParent = parent.current.value;
+      const enteredChild = child.current.value;
+      const enteredGrandParent = grandParent.current.value;
+      const enteredQuantity = quantity.current.value;
+      console.log(enteredGrandParent+"_"+enteredParent+"_"+enteredChild)
+    }
+
     return (
       <Box p={4}>
         <Heading className="purchase-heading" size={'lg'} pb={10}>
@@ -23,9 +37,10 @@ import {
           Enter UnMapped SKUs
         </Heading>
         <HStack pb={8}>
-          <Input type={'text'} textAlign={'center'} placeholder={'grand-parent'} />
-          <Input type={'text'} textAlign={'center'} placeholder={'parent'} />
-          <Input type={'text'} textAlign={'center'} placeholder={'child'} />
+          <Input type={'text'} Ref={grandParent} textAlign={'center'} placeholder={'grand-parent'} />
+          <Input type={'text'} Ref={parent} textAlign={'center'} placeholder={'parent'} />
+          <Input type={'text'} Ref={child} textAlign={'center'} placeholder={'child'} />
+          <Input type={'text'} Ref={quantity} textAlign={'center'} placeholder={'quantity'} />
         </HStack>
         <Heading size={'md'} pb={4}>
           UnMapped SKUs Table

@@ -8,6 +8,7 @@ import {
 //files
 import MainHeader from './sections/main-header-section';
 import Navigation from './sections/navigation-section';
+// import LiveStock from './sections/livestock-section';
 import Footer from './sections/footer-section';
 import AllRoutes from './sections/Routes';
 
@@ -25,6 +26,7 @@ function App() {
         <MainHeader/>
         <Navigation/>
         <AllRoutes/>
+        {/* <LiveStock/> */}
         <Footer/>
       </VStack>
     </ChakraProvider>
