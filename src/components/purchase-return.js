@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useRef} from 'react'
 import {
   Heading,
   VStack,
@@ -6,6 +6,10 @@ import {
   HStack,
   Input,
   Table,
+  Menu,
+  MenuItem,
+  MenuList,
+  MenuButton,
   TableContainer,
   Thead,
   Tbody,
@@ -14,10 +18,18 @@ import {
   Td,
   useColorModeValue,
 } from '@chakra-ui/react';
+
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
 const PurchaseReturn = () => {
+  const sku = useRef()
   const [start, setStart] = useState(new Date())
+  const quantity = useRef()
+  const submitHandler = () => {
+    const enteredSku = sku.current.value;
+    const enteredQuantity = quantity.current.value;
+    console.log(enteredSku+","+start+","+enteredQuantity)
+  }
 
   return (
     <VStack>
@@ -28,11 +40,20 @@ const PurchaseReturn = () => {
         Input Products Details
       </Heading>
       <VStack>
-        <Input placeholder="Enter SKU" textAlign="center" />
+        <Input placeholder="Enter SKU" ref={sku} textAlign="center" />
         <DatePicker dateFormat={'dd-MM-yy'} placeholderText='Select Date' selected={start} showPopperArrow={true} onSelect={(date:Date) => setStart(date)}/>
-        <Input placeholder="Enter Quantity" textAlign="center" />
-        <Button w={'100%'}>Submit</Button>
-        <Button w={'100%'}>Filter</Button>
+        <Input placeholder="Enter Quantity" ref={quantity} textAlign="center" />
+        <Button w={'100%'} onClick={submitHandler}>Submit</Button>
+        <Menu>
+          <MenuButton w={'100%'} as={Button}>
+            Filter
+          </MenuButton>
+          <MenuList>
+            <MenuItem>SKU</MenuItem>
+            <MenuItem>Date</MenuItem>
+            <MenuItem>Quantity</MenuItem>
+          </MenuList>
+        </Menu>
       </VStack>
       </VStack>
       <VStack pb={5}>
