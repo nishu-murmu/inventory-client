@@ -10,6 +10,7 @@ import {
   Heading,
   useColorModeValue,
 } from '@chakra-ui/react';
+// files
 
 const Sales = () => {
   return (

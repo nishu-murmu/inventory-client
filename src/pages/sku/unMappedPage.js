@@ -1,7 +1,16 @@
-import UnMapped from '../../components/sku/unmapped'
+import { Box } from '@chakra-ui/react';
+
+// files
+import UnMapped from '../../components/sku/unmapped';
+import Navigation from '../../sections/navigation-section';
 
 const UnMappedPage = () => {
-    return <UnMapped />
-}
+  return (
+    <Box>
+      <Navigation />
+      <UnMapped />
+    </Box>
+  );
+};
 
-export default UnMappedPage
+export default UnMappedPage;
