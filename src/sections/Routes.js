@@ -8,6 +8,7 @@ import SignUpPage from '../pages/Auth/signUpPage';
 import AccountPage from '../pages/Auth/AccountPage';
 import MappedPage from '../pages/sku/mappedPage';
 import UnMappedPage from '../pages/sku/unMappedPage';
+import LiveStockPage from '../pages/livestockPage';
 
 const AllRoutes = () => {
   return (
@@ -21,6 +22,7 @@ const AllRoutes = () => {
       <Route path="/purchaseReturn" element={<PurchaseReturnPage />} />
       <Route path="/sales" element={<SalesPage />} />
       <Route path="/salesReturn" element={<SalesReturnPage />} />
+      <Route path="/livestock" element={<LiveStockPage />} />
     </Routes>
   );
 };
