@@ -1,6 +1,6 @@
 import {useRef} from 'react'
 import {
-    Box,
+    VStack,
     Heading,
     Table,
     TableContainer,
@@ -10,6 +10,11 @@ import {
     Th,
     Td,
     useColorModeValue,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    Button,
     HStack,
     Input,
   } from '@chakra-ui/react';
@@ -25,34 +30,48 @@ import {
       const enteredChild = child.current.value;
       const enteredGrandParent = grandParent.current.value;
       const enteredQuantity = quantity.current.value;
-      console.log(enteredGrandParent+"_"+enteredParent+"_"+enteredChild)
+      console.log(enteredGrandParent+"_"+enteredParent+"_"+enteredChild+','+ enteredQuantity+','+(new Date()))
     }
 
     return (
-      <Box p={4}>
+      <VStack pb={8}>
         <Heading className="purchase-heading" size={'lg'} pb={10}>
           UnMapped SKUs Section
         </Heading>
+        <HStack spacing={20}>
+        <VStack>
         <Heading size={'md'} pb={4}>
           Enter UnMapped SKUs
         </Heading>
-        <HStack pb={8}>
-          <Input type={'text'} Ref={grandParent} textAlign={'center'} placeholder={'grand-parent'} />
-          <Input type={'text'} Ref={parent} textAlign={'center'} placeholder={'parent'} />
-          <Input type={'text'} Ref={child} textAlign={'center'} placeholder={'child'} />
-          <Input type={'text'} Ref={quantity} textAlign={'center'} placeholder={'quantity'} />
-        </HStack>
+        <VStack>
+          <Input type={'text'} ref={grandParent} textAlign={'center'} placeholder={'grand-parent'} />
+          <Input type={'text'} ref={parent} textAlign={'center'} placeholder={'parent'} />
+          <Input type={'text'} ref={child} textAlign={'center'} placeholder={'child'} />
+          <Input type={'text'} ref={quantity} textAlign={'center'} placeholder={'quantity'} />
+          <Button w={'100%'} onClick={submitHandler}>Submit</Button>
+          <Menu>
+            <MenuButton w={'100%'} as={Button}>Filter</MenuButton>
+            <MenuList>
+              <MenuItem>Date</MenuItem>
+              <MenuItem>Quantity</MenuItem>
+            </MenuList>
+          </Menu>
+        </VStack>
+        </VStack>
+        <VStack>
         <Heading size={'md'} pb={4}>
           UnMapped SKUs Table
         </Heading>
         <TableContainer
           rounded={'lg'}
           boxShadow={'lg'}
-          p={8}
+          h={250}
+          overflowY={'auto'}
+          overflowX={'hidden'}
           bg={useColorModeValue('gray.100', 'gray.700')}
         >
           <Table variant="simple">
-            <Thead>
+            <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
               <Tr>
               <Th textAlign={'center'}>No.</Th>
                 <Th textAlign="center">SKU</Th>
@@ -70,7 +89,9 @@ import {
             </Tbody>
           </Table>
         </TableContainer>
-      </Box>
+        </VStack>
+      </HStack>
+      </VStack>
     );
   };
   

@@ -9,7 +9,7 @@ import {
   import { Link } from 'react-router-dom';
   
 const Navigation = () => {
-    return <HStack spacing={10} pb={10} className="app-nav">
+    return <HStack spacing={10} pt={40} pb={10} className="app-nav">
     <Menu>
       <MenuButton as={Button}>Display SKUs</MenuButton>
       <MenuList>

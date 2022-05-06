@@ -23,11 +23,13 @@ const SalesReturn = () => {
       <TableContainer
         rounded={'lg'}
         boxShadow={'lg'}
-        p={8}
+        h={250}
+        overflowY={'auto'}
+        overflowX={'hidden'}
         bg={useColorModeValue('gray.100', 'gray.700')}
       >
         <Table variant="simple">
-          <Thead>
+          <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
             <Tr>
               <Th textAlign={'center'}>No.</Th>
               <Th textAlign="center">SKU</Th>
