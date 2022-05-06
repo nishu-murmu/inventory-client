@@ -2,18 +2,19 @@ import {
   Stack,
   Box,
   Button,
-  Link,
   FormControl,
+  Text,
   FormLabel,
   Heading,
   Input,
   useColorModeValue,
   Checkbox,
 } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   return (
-    <Stack spacing={8} mx={'auto'} px={0} py={12}>
+    <Stack spacing={8} mx={'auto'} py={40}>
       <Heading>User Login</Heading>
       <Box
         rounded={'lg'}
@@ -37,16 +38,16 @@ const Login = () => {
               justify="space-between"
             >
               <Checkbox>Remember Me</Checkbox>
-              <Link color={'blue.400'} fontSize="16px">
+              <Text color={'blue.400'} fontSize="16px">
                 Forgot Password?
-              </Link>
+              </Text>
             </Stack>
             <Button
               bg={'blue.400'}
               color={'white'}
               _hover={{ color: 'blue.500' }}
             >
-              Sign in
+              <Link to={'/sales'}>Sign in</Link>
             </Button>
           </Stack>
         </Stack>

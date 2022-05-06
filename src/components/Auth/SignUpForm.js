@@ -1,4 +1,4 @@
-import {useRef} from 'react'
+import { useRef } from 'react';
 import {
   Stack,
   Text,
@@ -12,27 +12,28 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 const SignUp = () => {
+  const firstNameRef = useRef();
+  const lastNameRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
 
-  const firstNameRef = useRef()
-  const lastNameRef = useRef()
-  const emailRef = useRef()
-  const passwordRef = useRef()
-
-  const submitHandler = (event) => {
+  const submitHandler = event => {
     event.preventDefault();
 
     const enteredFirstName = firstNameRef.current.value;
     const enteredLastName = lastNameRef.current.value;
     const enteredEmail = emailRef.current.value;
     const enteredPassword = passwordRef.current.value;
-    console.log(`${enteredFirstName} ${enteredLastName}, email: ${enteredEmail}, password: ${enteredPassword}`)
-  }
+    console.log(
+      `${enteredFirstName} ${enteredLastName}, email: ${enteredEmail}, password: ${enteredPassword}`
+    );
+  };
 
   return (
-    <Stack spacing={8} mx={'auto'} px={0} py={12}>
+    <Stack spacing={8} mx={'auto'} py={20}>
       <Heading fontSize={'4xl'}>User Sign Up</Heading>
       <Box
         rounded={'lg'}
@@ -66,7 +67,7 @@ const SignUp = () => {
               justify="space-between"
             >
               <Text>Already a user?</Text>
-              <Link to='/login'>
+              <Link to="/login">
                 <Text color={'blue.200'}>Login</Text>
               </Link>
             </Stack>
@@ -76,7 +77,7 @@ const SignUp = () => {
               color={'white'}
               _hover={{ color: 'blue.500' }}
             >
-              Sign in
+              Sign Up
             </Button>
           </Stack>
         </Stack>
