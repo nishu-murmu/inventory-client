@@ -1,13 +1,7 @@
-import {
-  ChakraProvider,
-  VStack,
-  theme,
-} from '@chakra-ui/react';
-
+import { ChakraProvider, VStack, theme } from '@chakra-ui/react';
 
 //files
 import MainHeader from './sections/main-header-section';
-// import LiveStock from './sections/livestock-section';
 import Footer from './sections/footer-section';
 import AllRoutes from './sections/Routes';
 
@@ -22,9 +16,9 @@ function App() {
         textAlign={'center'}
         fontSize={'xl'}
       >
-        <MainHeader/>
-        <AllRoutes/>
-        <Footer/>
+        <MainHeader />
+        <AllRoutes />
+        <Footer />
       </VStack>
     </ChakraProvider>
   );

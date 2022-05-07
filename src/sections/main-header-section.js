@@ -1,13 +1,14 @@
 import {
   Spacer,
   HStack,
-  Heading,
   Menu,
   MenuItem,
   MenuList,
   MenuButton,
   Button,
+  Heading,
   Icon,
+  Image,
 } from '@chakra-ui/react';
 import { FaUser } from 'react-icons/fa/index';
 import { Link } from 'react-router-dom';
@@ -22,9 +23,16 @@ const MainHeader = () => {
       spacing={80}
       width="auto"
     >
-      <Heading padding={'5px 0px'}>
-        <Link to="/">F3 Inventory Management</Link>
-      </Heading>
+      <HStack padding={'5px 0px'}>
+        <Image
+          h={6}
+          w={6}
+          src="https://static.wixstatic.com/media/e8b152_208521582452447ba04576ebbef28ac2~mv2.png/v1/fill/w_48,h_51,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e8b152_208521582452447ba04576ebbef28ac2~mv2.png"
+        />
+        <Heading as={'h2'} size={'lg'}>
+          <Link to="/">Inventory Management</Link>
+        </Heading>
+      </HStack>
       <Spacer />
       <HStack spacing={5}>
         <ColorModeSwitcher justifySelf="flex-end" />
