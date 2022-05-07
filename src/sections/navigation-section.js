@@ -34,9 +34,6 @@ const Navigation = () => {
       <Link to="/salesReturn">
         <Button>Sales Return</Button>
       </Link>
-      <Link to="/livestock">
-        <Button>Live Stock</Button>
-      </Link>
     </HStack>
   );
 };

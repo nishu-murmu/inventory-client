@@ -77,7 +77,7 @@ const SignUp = () => {
               color={'white'}
               _hover={{ color: 'blue.500' }}
             >
-              Sign Up
+              <Link to="/login">Sign Up</Link>
             </Button>
           </Stack>
         </Stack>
