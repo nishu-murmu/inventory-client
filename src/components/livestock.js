@@ -16,10 +16,10 @@ const LiveStock = () => {
   return (
     <Box p={4}>
       <Heading size={'lg'} pb={10}>
-        Sales Section
+        Live Stock Section
       </Heading>
       <Heading size={'md'} pb={4}>
-        Sales Table
+        Live Stock Table
       </Heading>
       <TableContainer
         rounded={'lg'}

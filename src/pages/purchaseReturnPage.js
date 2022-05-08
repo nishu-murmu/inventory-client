@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { VStack } from '@chakra-ui/react';
 
 //files
 import PurchaseReturn from '../components/purchase-return';
@@ -6,10 +6,10 @@ import Navigation from '../sections/navigation-section';
 
 const PurchaseReturnPage = () => {
   return (
-    <Box>
+    <VStack>
       <Navigation />
       <PurchaseReturn />
-    </Box>
+    </VStack>
   );
 };
 

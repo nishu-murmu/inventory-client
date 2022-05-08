@@ -14,12 +14,12 @@ const Navigation = () => {
       <Menu>
         <MenuButton as={Button}>Display SKUs</MenuButton>
         <MenuList>
-          <MenuItem>
-            <Link to="/mapped">Mapped SKUs</Link>
-          </MenuItem>
-          <MenuItem>
-            <Link to="/unmapped">Unmapped SKUs</Link>
-          </MenuItem>
+          <Link to="/mapped">
+            <MenuItem>Mapped SKUs</MenuItem>
+          </Link>
+          <Link to="/unmapped">
+            <MenuItem>Unmapped SKUs</MenuItem>
+          </Link>
         </MenuList>
       </Menu>
       <Link to="/purchase">

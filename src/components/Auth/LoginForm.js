@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import {
   Stack,
   Box,
@@ -13,6 +14,16 @@ import {
 import { Link } from 'react-router-dom';
 
 const Login = () => {
+  const emailRef = useRef();
+  const passwordRef = useRef();
+
+  const submitHandler = e => {
+    e.preventDefault();
+
+    const enteredEmail = emailRef.current.value;
+    const enteredPassword = passwordRef.current.value;
+    console.log(`${enteredEmail} , ${enteredPassword}`);
+  };
   return (
     <Stack spacing={8} mx={'auto'} py={40}>
       <Heading>User Login</Heading>
@@ -25,11 +36,11 @@ const Login = () => {
         <Stack spacing={4}>
           <FormControl isRequired>
             <FormLabel htmlFor="email">Enter Email:</FormLabel>
-            <Input id="email" type="email" required />
+            <Input id="email" ref={emailRef} type="email" required />
           </FormControl>
           <FormControl isRequired>
             <FormLabel htmlFor="password">Enter Password:</FormLabel>
-            <Input id="password" type="password" required />
+            <Input id="password" ref={passwordRef} type="password" required />
           </FormControl>
           <Stack spacing={10}>
             <Stack
@@ -42,13 +53,17 @@ const Login = () => {
                 Forgot Password?
               </Text>
             </Stack>
-            <Button
-              bg={'blue.400'}
-              color={'white'}
-              _hover={{ color: 'blue.500' }}
-            >
-              <Link to={'/sales'}>Sign in</Link>
-            </Button>
+            <Link to={'/livestock'}>
+              <Button
+                w={'100%'}
+                bg={'blue.400'}
+                // onSubmit={submitHandler}
+                color={'white'}
+                _hover={{ color: 'blue.500' }}
+              >
+                Sign in
+              </Button>
+            </Link>
           </Stack>
         </Stack>
       </Box>

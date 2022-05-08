@@ -71,14 +71,17 @@ const SignUp = () => {
                 <Text color={'blue.200'}>Login</Text>
               </Link>
             </Stack>
-            <Button
-              onClick={submitHandler}
-              bg={'blue.400'}
-              color={'white'}
-              _hover={{ color: 'blue.500' }}
-            >
-              <Link to="/login">Sign Up</Link>
-            </Button>
+            <Link to="/login">
+              <Button
+                w={'100%'}
+                // onClick={submitHandler}
+                bg={'blue.400'}
+                color={'white'}
+                _hover={{ color: 'blue.500' }}
+              >
+                Sign Up
+              </Button>
+            </Link>
           </Stack>
         </Stack>
       </Box>

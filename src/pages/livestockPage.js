@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { VStack } from '@chakra-ui/react';
 
 //files
 import Navigation from '../sections/navigation-section';
@@ -6,10 +6,10 @@ import LiveStock from '../components/livestock';
 
 const LiveStockPage = () => {
   return (
-    <Box>
+    <VStack>
       <Navigation />
       <LiveStock />
-    </Box>
+    </VStack>
   );
 };
 
