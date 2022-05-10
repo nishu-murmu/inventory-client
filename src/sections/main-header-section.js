@@ -22,6 +22,9 @@ const MainHeader = () => {
       py={5}
       spacing={80}
       width="auto"
+      // bg={useColorModeValue('#011a1f', '#1cbab8')}
+      css={{ backdropFilter: 'blur(10px)' }}
+      zIndex={1}
     >
       <HStack padding={'5px 0px'}>
         <Image

@@ -81,13 +81,16 @@ const Sales = () => {
         overflowX={'scroll'}
         h={400}
         w={800}
+        mb={20}
         bg={useColorModeValue('gray.100', 'gray.700')}
       >
         <Table variant="simple">
           <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
             <Tr key={'header'}>
               {headerKeys.map(key => (
-                <Th textAlign={'center'}>{key}</Th>
+                <Th contentEditable={'true'} textAlign={'center'}>
+                  {key}
+                </Th>
               ))}
             </Tr>
           </Thead>
@@ -96,7 +99,9 @@ const Sales = () => {
             {array.map(item => (
               <Tr key={item.id}>
                 {Object.values(item).map(val => (
-                  <Td textAlign={'center'}>{val}</Td>
+                  <Td contentEditable={'true'} textAlign={'center'}>
+                    {val}
+                  </Td>
                 ))}
               </Tr>
             ))}

@@ -50,7 +50,7 @@ const UnMapped = () => {
       </Heading>
       <HStack spacing={20}>
         <VStack>
-          <VStack>
+          <VStack style={{ marginLeft: '60px' }}>
             <Heading size={'md'} pb={4}>
               UnMapped SKUs Table
             </Heading>
@@ -126,7 +126,7 @@ const UnMapped = () => {
             </Menu>*/}
           </HStack>
         </VStack>
-        <VStack>
+        <VStack style={{ marginRight: '60px' }}>
           <Heading size={'md'} pb={4}>
             Master SKUs Table
           </Heading>
