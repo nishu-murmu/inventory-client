@@ -9,6 +9,7 @@ import {
   Heading,
   Icon,
   Image,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { FaUser } from 'react-icons/fa/index';
 import { Link } from 'react-router-dom';
@@ -19,10 +20,11 @@ const MainHeader = () => {
       className="app-header"
       position={'fixed'}
       top={0}
+      width={'100%'}
+      px={20}
       py={5}
       spacing={80}
-      width="auto"
-      // bg={useColorModeValue('#011a1f', '#1cbab8')}
+      // bg={useColorModeValue('#cdf7f4', '#056159')}
       css={{ backdropFilter: 'blur(10px)' }}
       zIndex={1}
     >
@@ -45,7 +47,7 @@ const MainHeader = () => {
           </MenuButton>
           <MenuList>
             <Link to="/account">
-              <MenuItem>Account</MenuItem>
+              <MenuItem>Account Settings</MenuItem>
             </Link>
             <Link to="/">
               <MenuItem>Log out</MenuItem>

@@ -1,35 +1,49 @@
-import { useRef } from 'react';
+import { useState } from 'react';
 import {
   Stack,
   Text,
   HStack,
   Box,
-  Button,
   FormControl,
   FormLabel,
   Heading,
   Input,
   useColorModeValue,
+  Button,
 } from '@chakra-ui/react';
 
 import { Link } from 'react-router-dom';
 
 const SignUp = () => {
-  const firstNameRef = useRef();
-  const lastNameRef = useRef();
-  const emailRef = useRef();
-  const passwordRef = useRef();
+  const [firstname, setFirstName] = useState('');
+  const [lastname, setlastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const submitHandler = event => {
-    event.preventDefault();
-
-    const enteredFirstName = firstNameRef.current.value;
-    const enteredLastName = lastNameRef.current.value;
-    const enteredEmail = emailRef.current.value;
-    const enteredPassword = passwordRef.current.value;
-    console.log(
-      `${enteredFirstName} ${enteredLastName}, email: ${enteredEmail}, password: ${enteredPassword}`
-    );
+  const submitHandler = e => {
+    e.preventDefault();
+    fetch('http://localhost:3001/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        firstName: firstname,
+        lastName: lastname,
+        email: email,
+        password,
+      }),
+    });
+  };
+  const firstNameChange = e => {
+    setFirstName(e.target.value);
+  };
+  const lastNameChange = e => {
+    setlastName(e.target.value);
+  };
+  const emailChange = e => {
+    setEmail(e.target.value);
+  };
+  const passwordChange = e => {
+    setPassword(e.target.value);
   };
 
   return (
@@ -41,49 +55,64 @@ const SignUp = () => {
         p={8}
         bg={useColorModeValue('gray.100', 'gray.700')}
       >
-        <Stack spacing={4}>
-          <HStack>
+        <form onSubmit={submitHandler}>
+          <FormControl spacing={4}>
+            <HStack>
+              <FormControl isRequired>
+                <FormLabel htmlFor="first-name">First Name</FormLabel>
+                <Input
+                  id="first-name"
+                  onChange={firstNameChange}
+                  type="text"
+                  required
+                />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel htmlFor="last-name">Last Name</FormLabel>
+                <Input
+                  id="last-name"
+                  onChange={lastNameChange}
+                  type="text"
+                  required
+                />
+              </FormControl>
+            </HStack>
             <FormControl isRequired>
-              <FormLabel htmlFor="first-name">First Name</FormLabel>
-              <Input id="first-name" ref={firstNameRef} type="text" required />
+              <FormLabel htmlFor="email">Enter Email:</FormLabel>
+              <Input id="email" type="email" onChange={emailChange} required />
             </FormControl>
             <FormControl isRequired>
-              <FormLabel htmlFor="last-name">Last Name</FormLabel>
-              <Input id="last-name" ref={lastNameRef} type="text" required />
+              <FormLabel htmlFor="password">Enter Password:</FormLabel>
+              <Input
+                id="password"
+                type="password"
+                onChange={passwordChange}
+                required
+              />
             </FormControl>
-          </HStack>
-          <FormControl isRequired>
-            <FormLabel htmlFor="email">Enter Email:</FormLabel>
-            <Input id="email" ref={emailRef} type="email" required />
-          </FormControl>
-          <FormControl isRequired>
-            <FormLabel htmlFor="password">Enter Password:</FormLabel>
-            <Input id="password" ref={passwordRef} type="password" required />
-          </FormControl>
-          <Stack spacing={10}>
-            <Stack
-              direction={{ base: 'column', sm: 'row' }}
-              align={'start'}
-              justify="space-between"
-            >
-              <Text>Already a user?</Text>
-              <Link to="/login">
-                <Text color={'blue.200'}>Login</Text>
-              </Link>
-            </Stack>
-            <Link to="/login">
+            <Stack spacing={10}>
+              <Stack
+                direction={{ base: 'column', sm: 'row' }}
+                align={'start'}
+                justify="space-between"
+              >
+                <Text>Already a user?</Text>
+                <Link to="/login">
+                  <Text color={'blue.200'}>Login</Text>
+                </Link>
+              </Stack>
               <Button
-                w={'100%'}
-                // onClick={submitHandler}
                 bg={'blue.400'}
                 color={'white'}
                 _hover={{ color: 'blue.500' }}
+                type={'submit'}
+                value={'Sign Up'}
               >
                 Sign Up
               </Button>
-            </Link>
-          </Stack>
-        </Stack>
+            </Stack>
+          </FormControl>
+        </form>
       </Box>
     </Stack>
   );

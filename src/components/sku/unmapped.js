@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useState, useRef } from 'react';
 import {
   VStack,
   Heading,
@@ -10,10 +10,10 @@ import {
   Th,
   Td,
   useColorModeValue,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
+  // Menu,
+  // MenuButton,
+  // MenuList,
+  // MenuItem,
   Button,
   HStack,
   Input,
@@ -24,24 +24,62 @@ const UnMapped = () => {
   const grandParent = useRef();
   const child = useRef();
   const quantity = useRef();
+  const [file, setFile] = useState();
+  const [array, setArray] = useState([]);
+  const fileReader = new FileReader();
 
-  const submitHandler = () => {
-    const enteredParent = parent.current.value;
-    const enteredChild = child.current.value;
-    const enteredGrandParent = grandParent.current.value;
-    const enteredQuantity = quantity.current.value;
-    console.log(
-      enteredGrandParent +
-        '_' +
-        enteredParent +
-        '_' +
-        enteredChild +
-        ',' +
-        enteredQuantity +
-        ',' +
-        new Date()
-    );
+  const onChangeHandler = e => {
+    setFile(e.target.files[0]);
   };
+
+  const csvFileToArray = string => {
+    const csvHeader = string.slice(0, string.indexOf('\n')).split(',');
+    const csvRows = string.slice(string.indexOf('\n') + 1).split('\n');
+
+    const array = csvRows.map(i => {
+      const values = i.split(',');
+      const obj = csvHeader.reduce((object, header, index) => {
+        object[header] = values[index];
+        return object;
+      }, {});
+      return obj;
+    });
+
+    setArray(array);
+  };
+
+  const onSubmitHandler = e => {
+    e.preventDefault();
+
+    if (file) {
+      fileReader.onload = function (e) {
+        const csvOutput = e.target.result;
+        console.log(csvOutput);
+        csvFileToArray(csvOutput);
+      };
+      fileReader.readAsText(file);
+    }
+  };
+
+  const headerKeys = Object.keys(Object.assign({}, ...array));
+
+  // const submitHandler = () => {
+  //   const enteredParent = parent.current.value;
+  //   const enteredChild = child.current.value;
+  //   const enteredGrandParent = grandParent.current.value;
+  //   const enteredQuantity = quantity.current.value;
+  //   console.log(
+  //     enteredGrandParent +
+  //       '_' +
+  //       enteredParent +
+  //       '_' +
+  //       enteredChild +
+  //       ',' +
+  //       enteredQuantity +
+  //       ',' +
+  //       new Date()
+  //   );
+  // };
 
   return (
     <VStack pb={8}>
@@ -50,6 +88,16 @@ const UnMapped = () => {
       </Heading>
       <HStack spacing={20}>
         <VStack>
+          <HStack>
+            <Input
+              type={'file'}
+              id={'csvInput'}
+              placeholder={'Choose a file'}
+              accept={'.csv'}
+              onChange={onChangeHandler}
+            />
+            <Button onClick={e => onSubmitHandler(e)}>Import CSV file</Button>
+          </HStack>
           <VStack style={{ marginLeft: '60px' }}>
             <Heading size={'md'} pb={4}>
               UnMapped SKUs Table
@@ -68,16 +116,25 @@ const UnMapped = () => {
                   top={0}
                   backgroundColor={'lightblue'}
                 >
-                  <Tr>
-                    <Th textAlign={'center'}>No.</Th>
-                    <Th textAlign="center">SKU</Th>
+                  <Tr key={'header'}>
+                    {headerKeys.map(key => (
+                      <Th contentEditable={'true'} textAlign={'center'}>
+                        {key}
+                      </Th>
+                    ))}
                   </Tr>
                 </Thead>
+
                 <Tbody>
-                  <Tr>
-                    <Td textAlign={'center'}>1.</Td>
-                    <Td textAlign="center">example sku</Td>
-                  </Tr>
+                  {array.map(item => (
+                    <Tr key={item.id}>
+                      {Object.values(item).map(val => (
+                        <Td contentEditable={'true'} textAlign={'center'}>
+                          {val}
+                        </Td>
+                      ))}
+                    </Tr>
+                  ))}
                 </Tbody>
               </Table>
             </TableContainer>
@@ -110,7 +167,7 @@ const UnMapped = () => {
               type={'text'}
               ref={quantity}
               textAlign={'center'}
-              placeholder={'quantity'}
+              placeholder={'Opening Stock'}
             />
             {/*<Button w={'100%'} onClick={submitHandler}>
               Submit
@@ -141,13 +198,11 @@ const UnMapped = () => {
             <Table variant="simple">
               <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
                 <Tr>
-                  <Th textAlign={'center'}>No.</Th>
                   <Th textAlign="center">SKU</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 <Tr>
-                  <Td textAlign={'center'}>1.</Td>
                   <Td textAlign="center">example sku</Td>
                 </Tr>
               </Tbody>

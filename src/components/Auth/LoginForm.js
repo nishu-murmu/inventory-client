@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useState } from 'react';
 import {
   Stack,
   Box,
@@ -14,16 +14,28 @@ import {
 import { Link } from 'react-router-dom';
 
 const Login = () => {
-  const emailRef = useRef();
-  const passwordRef = useRef();
-
+  const [enteredEmail, setEnteredEmail] = useState('');
+  const [enteredPassword, setEnteredPassword] = useState('');
   const submitHandler = e => {
     e.preventDefault();
-
-    const enteredEmail = emailRef.current.value;
-    const enteredPassword = passwordRef.current.value;
-    console.log(`${enteredEmail} , ${enteredPassword}`);
+    fetch('http://localhost:3001/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: enteredEmail,
+        password: enteredPassword,
+      }),
+    });
   };
+
+  const emailChange = e => {
+    setEnteredEmail(e.target.value);
+  };
+
+  const passwordChange = e => {
+    setEnteredPassword(e.target.value);
+  };
+
   return (
     <Stack spacing={8} mx={'auto'} py={40}>
       <Heading>User Login</Heading>
@@ -33,39 +45,45 @@ const Login = () => {
         p={8}
         bg={useColorModeValue('gray.100', 'gray.700')}
       >
-        <Stack spacing={4}>
-          <FormControl isRequired>
-            <FormLabel htmlFor="email">Enter Email:</FormLabel>
-            <Input id="email" ref={emailRef} type="email" required />
-          </FormControl>
-          <FormControl isRequired>
-            <FormLabel htmlFor="password">Enter Password:</FormLabel>
-            <Input id="password" ref={passwordRef} type="password" required />
-          </FormControl>
-          <Stack spacing={10}>
-            <Stack
-              direction={{ base: 'column', sm: 'row' }}
-              align={'start'}
-              justify="space-between"
-            >
-              <Checkbox>Remember Me</Checkbox>
-              <Text color={'blue.400'} fontSize="16px">
-                Forgot Password?
-              </Text>
-            </Stack>
-            <Link to={'/livestock'}>
-              <Button
-                w={'100%'}
-                bg={'blue.400'}
-                // onSubmit={submitHandler}
-                color={'white'}
-                _hover={{ color: 'blue.500' }}
+        <form onSubmit={submitHandler}>
+          <Stack spacing={4}>
+            <FormControl isRequired>
+              <FormLabel htmlFor="email">Enter Email:</FormLabel>
+              <Input id="email" type="email" onChange={emailChange} required />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel htmlFor="password">Enter Password:</FormLabel>
+              <Input
+                id="password"
+                type="password"
+                onChange={passwordChange}
+                required
+              />
+            </FormControl>
+            <Stack spacing={10}>
+              <Stack
+                direction={{ base: 'column', sm: 'row' }}
+                align={'start'}
+                justify="space-between"
               >
-                Sign in
-              </Button>
-            </Link>
+                <Checkbox>Remember Me</Checkbox>
+                <Text color={'blue.400'} fontSize="16px">
+                  Forgot Password?
+                </Text>
+              </Stack>
+              <Link to={'/livestock'}>
+                <Button
+                  w={'100%'}
+                  bg={'blue.400'}
+                  color={'white'}
+                  _hover={{ color: 'blue.500' }}
+                >
+                  Sign in
+                </Button>
+              </Link>
+            </Stack>
           </Stack>
-        </Stack>
+        </form>
       </Box>
     </Stack>
   );

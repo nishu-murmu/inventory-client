@@ -25,14 +25,15 @@ const LiveStock = () => {
         rounded={'lg'}
         boxShadow={'lg'}
         h={250}
+        w={900}
         overflowY={'auto'}
-        overflowX={'hidden'}
+        overflowX={'scroll'}
         bg={useColorModeValue('gray.100', 'gray.700')}
       >
         <Table variant="simple">
           <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
             <Tr>
-              <Th textAlign={'center'}>No.</Th>
+              <Th textAlign={'center'}>SKU</Th>
               <Th textAlign="center">Opening Stock</Th>
               <Th textAlign="center">Purchase</Th>
               <Th textAlign="center">Sales</Th>
@@ -43,7 +44,7 @@ const LiveStock = () => {
           </Thead>
           <Tbody>
             <Tr>
-              <Td textAlign={'center'}>1.</Td>
+              <Td textAlign={'center'}>example SKUs</Td>
               <Td textAlign="center">example OP</Td>
               <Td textAlign="center">example purchase</Td>
               <Td textAlign="center">example Sales</Td>
