@@ -9,7 +9,7 @@ import {
   Heading,
   Icon,
   Image,
-  useColorModeValue,
+  // useColorModeValue,
 } from '@chakra-ui/react';
 import { FaUser } from 'react-icons/fa/index';
 import { Link } from 'react-router-dom';

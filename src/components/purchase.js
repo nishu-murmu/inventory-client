@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   VStack,
   HStack,
@@ -24,15 +24,37 @@ import 'react-datepicker/dist/react-datepicker.css';
 // files
 
 const Purchase = () => {
-  const sku = useRef();
+  const [sku, setSku] = useState('');
   const [start, setStart] = useState(new Date());
-  const quantity = useRef();
+  const [quantity, setQuantity] = useState('');
+  const [purchasedata, setPurchaseData] = useState([]);
 
-  const submitHandler = () => {
-    const enteredSku = sku.current.value;
-    const enteredQuantity = quantity.current.value;
-    console.log(enteredSku + ',' + start + ',' + enteredQuantity);
+  const skuChange = e => {
+    setSku(e.target.value);
   };
+  const quantityChange = e => {
+    setQuantity(e.target.value);
+  };
+
+  const submitHandler = e => {
+    e.preventDefault();
+    fetch('http://localhost:3001/api/purchase/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        SKU: sku,
+        Date: start.toString(),
+        quantity: quantity,
+      }),
+    });
+  };
+
+  const getListHandler = async () => {
+    const response = await fetch('http://localhost:3001/api/purchase/getAll');
+    const result = await response.json();
+    setPurchaseData(result);
+  };
+
   return (
     <VStack>
       <Heading as={'h1'} size={'lg'}>
@@ -43,33 +65,48 @@ const Purchase = () => {
           <Heading className="purchase-heading" size={'md'} pb={10}>
             Input Products Details
           </Heading>
-          <VStack>
-            <Input placeholder="Enter SKU" ref={sku} textAlign="center" />
-            <DatePicker
-              dateFormat={'dd-MM-yy'}
-              placeholderText="Date"
-              selected={start}
-              showPopperArrow={true}
-              onSelect={date => setStart(date)}
-            />
-            <Input
-              placeholder="Enter Quantity"
-              ref={quantity}
-              textAlign="center"
-            />
-            <Button onClick={submitHandler} w={'100%'}>
-              Submit
-            </Button>
-            <Menu>
-              <MenuButton w={'100%'} as={Button}>
-                Filter
-              </MenuButton>
-              <MenuList>
-                <MenuItem>SKU</MenuItem>
-                <MenuItem>Date</MenuItem>
-                <MenuItem>Quantity</MenuItem>
-              </MenuList>
-            </Menu>
+          <VStack width={60}>
+            <form
+              onSubmit={e => {
+                submitHandler(e);
+                getListHandler(e);
+              }}
+              style={{ margin: '20px' }}
+            >
+              <Input
+                placeholder="Enter SKU"
+                onChange={skuChange}
+                textAlign="center"
+                required
+              />
+              <DatePicker
+                dateFormat={'dd-MM-yy'}
+                placeholderText="Date"
+                selected={start}
+                showPopperArrow={true}
+                required
+                onSelect={date => setStart(date)}
+              />
+              <Input
+                placeholder="Enter Quantity"
+                onChange={quantityChange}
+                required
+                textAlign="center"
+              />
+              <Button type={'submit'} w={'100%'}>
+                Submit
+              </Button>
+              <Menu>
+                <MenuButton w={'100%'} as={Button}>
+                  Filter
+                </MenuButton>
+                <MenuList>
+                  <MenuItem>SKU</MenuItem>
+                  <MenuItem>Date</MenuItem>
+                  <MenuItem>Quantity</MenuItem>
+                </MenuList>
+              </Menu>
+            </form>
           </VStack>
         </VStack>
         <VStack>
@@ -87,19 +124,19 @@ const Purchase = () => {
             <Table variant="simple">
               <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
                 <Tr>
-                  <Th textAlign={'center'}>No.</Th>
                   <Th textAlign="center">SKU</Th>
                   <Th textAlign="center">Date</Th>
                   <Th textAlign="center">Quantity</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                <Tr>
-                  <Td textAlign={'center'}>1.</Td>
-                  <Td textAlign="center">example sku</Td>
-                  <Td textAlign="center">example date</Td>
-                  <Td textAlign="center">example quantity</Td>
-                </Tr>
+                {purchasedata.map(val => (
+                  <Tr key={val._id}>
+                    <Td textAlign={'center'}>{val.SKU}</Td>
+                    <Td textAlign={'center'}>{val.Date}</Td>
+                    <Td textAlign={'center'}>{val.quantity}</Td>
+                  </Tr>
+                ))}
               </Tbody>
             </Table>
           </TableContainer>

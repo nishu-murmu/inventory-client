@@ -54,6 +54,17 @@ const Sales = () => {
     }
   };
 
+  // const submitHandler = e => {
+  //   e.preventDefault();
+  //   fetch('http://localhost:3001/api/sales/create', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({
+  //       array,
+  //     }),
+  //   });
+  // };
+
   const headerKeys = Object.keys(Object.assign({}, ...array));
   return (
     <Box p={4}>
@@ -69,7 +80,14 @@ const Sales = () => {
           accept={'.csv'}
           onChange={onChangeHandler}
         />
-        <Button onClick={e => onSubmitHandler(e)}>Import CSV file</Button>
+        <Button
+          onClick={e => {
+            onSubmitHandler(e);
+            // submitHandler(e);
+          }}
+        >
+          Import CSV file
+        </Button>
       </HStack>
       <Heading size={'md'} pb={4}>
         Sales Table
@@ -88,9 +106,7 @@ const Sales = () => {
           <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
             <Tr key={'header'}>
               {headerKeys.map(key => (
-                <Th contentEditable={'true'} textAlign={'center'}>
-                  {key}
-                </Th>
+                <Th textAlign={'center'}>{key}</Th>
               ))}
             </Tr>
           </Thead>
@@ -99,9 +115,7 @@ const Sales = () => {
             {array.map(item => (
               <Tr key={item.id}>
                 {Object.values(item).map(val => (
-                  <Td contentEditable={'true'} textAlign={'center'}>
-                    {val}
-                  </Td>
+                  <Td textAlign={'center'}>{val}</Td>
                 ))}
               </Tr>
             ))}
