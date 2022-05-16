@@ -9,8 +9,8 @@
    - [x] MySQL comnmand Line client
    - [x] MySQL Workbench
    - [x] How to import csv files into GUI client and workbench.
-- [ ] MongoDB
-- [ ] Node.js
-- [ ] Express.js
+- [x] MongoDB
+- [x] Node.js
+- [x] Express.js
 ### Deadline #2 ()
 - [ ] Retrieving the data and performing the calculations and showing the results in Live Stock.
