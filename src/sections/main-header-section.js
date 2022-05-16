@@ -8,6 +8,7 @@ import {
   Button,
   Heading,
   Icon,
+  Flex,
   Image,
   // useColorModeValue,
 } from '@chakra-ui/react';
@@ -28,18 +29,20 @@ const MainHeader = () => {
       css={{ backdropFilter: 'blur(10px)' }}
       zIndex={1}
     >
-      <HStack padding={'5px 0px'}>
-        <Image
-          h={6}
-          w={6}
-          src="https://static.wixstatic.com/media/e8b152_208521582452447ba04576ebbef28ac2~mv2.png/v1/fill/w_48,h_51,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e8b152_208521582452447ba04576ebbef28ac2~mv2.png"
-        />
-        <Heading as={'h2'} size={'lg'}>
-          <Link to="/">Inventory Management</Link>
-        </Heading>
-      </HStack>
+      <Link to="/">
+        <HStack padding={'5px 0px'}>
+          <Image
+            h={6}
+            w={6}
+            src="https://static.wixstatic.com/media/e8b152_208521582452447ba04576ebbef28ac2~mv2.png/v1/fill/w_48,h_51,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e8b152_208521582452447ba04576ebbef28ac2~mv2.png"
+          />
+          <Heading as={'h2'} size={'lg'}>
+            Inventory Management
+          </Heading>
+        </HStack>
+      </Link>
       <Spacer />
-      <HStack spacing={5}>
+      <Flex spacing={5} gridColumnGap={4}>
         <ColorModeSwitcher justifySelf="flex-end" />
         <Menu>
           <MenuButton as={Button} cursor={'pointer'} variant={'outline'}>
@@ -54,7 +57,7 @@ const MainHeader = () => {
             </Link>
           </MenuList>
         </Menu>
-      </HStack>
+      </Flex>
     </HStack>
   );
 };

@@ -1,24 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Box,
+  Heading,
   Table,
+  Flex,
+  FormLabel,
+  Text,
+  Input,
   TableContainer,
   Thead,
   Tbody,
   Tr,
   Th,
-  Input,
-  Text,
-  FormLabel,
-  Flex,
   Td,
-  Heading,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
-// files
 
-const SalesReturn = () => {
+const Mapped = () => {
   const [file, setFile] = useState();
   const [array, setArray] = useState([]);
   const fileReader = new FileReader();
@@ -44,7 +43,7 @@ const SalesReturn = () => {
   };
 
   const onSubmitHandler = e => {
-    // e.preventDefault();
+    e.preventDefault();
 
     if (file) {
       fileReader.onload = function (e) {
@@ -56,16 +55,13 @@ const SalesReturn = () => {
     }
   };
 
-  useEffect(() => {
-    onSubmitHandler();
-  });
   const headerKeys = Object.keys(Object.assign({}, ...array));
+
   return (
     <Box p={4}>
       <Heading size={'lg'} pb={10}>
-        Sales Return Section
+        Master SKU Section
       </Heading>
-
       <Flex marginLeft={60}>
         <FormLabel
           w={80}
@@ -88,7 +84,7 @@ const SalesReturn = () => {
         />
       </Flex>
       <Heading size={'md'} pt={20} pb={4}>
-        Sales Return Table
+        Master SKU Table
       </Heading>
       <TableContainer
         rounded={'lg'}
@@ -102,25 +98,18 @@ const SalesReturn = () => {
       >
         <Table variant="simple">
           <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
-            <Tr key={'header'}>
-              {headerKeys.map(key => (
-                <Th contentEditable={'true'} textAlign={'center'}>
-                  {key}
-                </Th>
-              ))}
+            <Tr>
+              <Th textAlign={'center'}>GrandParent</Th>
+              <Th textAlign={'center'}>Parent</Th>
+              <Th textAlign={'center'}>Child</Th>
+              <Th textAlign={'center'}>Master SKU</Th>
             </Tr>
           </Thead>
 
           <Tbody>
-            {array.map(item => (
-              <Tr key={item}>
-                {Object.values(item).map(val => (
-                  <Td contentEditable={'true'} textAlign={'center'}>
-                    {val}
-                  </Td>
-                ))}
-              </Tr>
-            ))}
+            <Tr>
+              <Td textAlign={'center'}>test</Td>
+            </Tr>
           </Tbody>
         </Table>
       </TableContainer>
@@ -128,4 +117,4 @@ const SalesReturn = () => {
   );
 };
 
-export default SalesReturn;
+export default Mapped;

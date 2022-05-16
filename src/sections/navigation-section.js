@@ -1,5 +1,5 @@
 import {
-  HStack,
+  Flex,
   Button,
   Menu,
   MenuItem,
@@ -10,12 +10,12 @@ import { Link } from 'react-router-dom';
 
 const Navigation = () => {
   return (
-    <HStack spacing={10} pt={40} pb={10} className="app-nav">
+    <Flex spacing={10} pt={40} pb={10} gridColumnGap={4} className="app-nav">
       <Menu>
         <MenuButton as={Button}>Display SKUs</MenuButton>
         <MenuList>
-          <Link to="/mapped">
-            <MenuItem>Mapped SKUs</MenuItem>
+          <Link to="/master">
+            <MenuItem>Master SKUs</MenuItem>
           </Link>
           <Link to="/unmapped">
             <MenuItem>Unmapped SKUs</MenuItem>
@@ -34,7 +34,7 @@ const Navigation = () => {
       <Link to="/salesReturn">
         <Button>Sales Return</Button>
       </Link>
-    </HStack>
+    </Flex>
   );
 };
 export default Navigation;

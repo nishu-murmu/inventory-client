@@ -2,15 +2,15 @@ import { VStack } from '@chakra-ui/react';
 
 // files
 import Navigation from '../../sections/navigation-section';
-import Mapped from '../../components/sku/mapped';
+import MasterSKU from '../../components/sku/masterSKU';
 
-const MappedPage = () => {
+const MasterSKUPage = () => {
   return (
     <VStack>
       <Navigation />
-      <Mapped />
+      <MasterSKU />
     </VStack>
   );
 };
 
-export default MappedPage;
+export default MasterSKUPage;

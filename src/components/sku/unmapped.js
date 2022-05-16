@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import {
   VStack,
   Heading,
@@ -10,20 +10,15 @@ import {
   Th,
   Td,
   useColorModeValue,
-  // Menu,
-  // MenuButton,
-  // MenuList,
-  // MenuItem,
-  Button,
-  HStack,
+  Flex,
+  Box,
+  FormLabel,
+  Text,
   Input,
 } from '@chakra-ui/react';
+import { DownloadIcon } from '@chakra-ui/icons';
 
 const UnMapped = () => {
-  const parent = useRef();
-  const grandParent = useRef();
-  const child = useRef();
-  const quantity = useRef();
   const [file, setFile] = useState();
   const [array, setArray] = useState([]);
   const fileReader = new FileReader();
@@ -63,153 +58,93 @@ const UnMapped = () => {
 
   const headerKeys = Object.keys(Object.assign({}, ...array));
 
-  // const submitHandler = () => {
-  //   const enteredParent = parent.current.value;
-  //   const enteredChild = child.current.value;
-  //   const enteredGrandParent = grandParent.current.value;
-  //   const enteredQuantity = quantity.current.value;
-  //   console.log(
-  //     enteredGrandParent +
-  //       '_' +
-  //       enteredParent +
-  //       '_' +
-  //       enteredChild +
-  //       ',' +
-  //       enteredQuantity +
-  //       ',' +
-  //       new Date()
-  //   );
-  // };
-
   return (
-    <VStack pb={8}>
-      <Heading className="purchase-heading" size={'lg'} pb={10}>
-        UnMapped SKUs Section
+    <VStack p={4} pb={120}>
+      <Heading size={'lg'} pb={10}>
+        Unmapped SKU Section
       </Heading>
-      <HStack spacing={20}>
-        <VStack>
-          <HStack>
-            <Input
-              type={'file'}
-              id={'csvInput'}
-              placeholder={'Choose a file'}
-              accept={'.csv'}
-              onChange={onChangeHandler}
-            />
-            <Button onClick={e => onSubmitHandler(e)}>Import CSV file</Button>
-          </HStack>
-          <VStack style={{ marginLeft: '60px' }}>
-            <Heading size={'md'} pb={4}>
-              UnMapped SKUs Table
-            </Heading>
-            <TableContainer
-              rounded={'lg'}
-              boxShadow={'lg'}
-              h={250}
-              overflowY={'auto'}
-              overflowX={'hidden'}
-              bg={useColorModeValue('gray.100', 'gray.700')}
-            >
-              <Table variant="simple">
-                <Thead
-                  position={'sticky'}
-                  top={0}
-                  backgroundColor={'lightblue'}
-                >
-                  <Tr key={'header'}>
-                    {headerKeys.map(key => (
-                      <Th contentEditable={'true'} textAlign={'center'}>
-                        {key}
-                      </Th>
-                    ))}
-                  </Tr>
-                </Thead>
+      <Flex marginLeft={60}>
+        <FormLabel
+          w={80}
+          htmlFor={'csvInput'}
+          padding={'7px 0px'}
+          border={'1px solid grey'}
+          _hover={{ cursor: 'pointer' }}
+          borderRadius={'5px'}
+        >
+          <Text textAlign={'center'}>
+            Select csv <DownloadIcon />
+          </Text>
+        </FormLabel>
+        <Input
+          display={'none'}
+          type={'file'}
+          id={'csvInput'}
+          accept={'.csv'}
+          onChange={onChangeHandler}
+        />
+      </Flex>
 
-                <Tbody>
-                  {array.map(item => (
-                    <Tr key={item.id}>
-                      {Object.values(item).map(val => (
-                        <Td contentEditable={'true'} textAlign={'center'}>
-                          {val}
-                        </Td>
-                      ))}
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-            </TableContainer>
-          </VStack>
-        </VStack>
-        <VStack>
-          <Heading size={'md'} pb={4}>
-            Enter Master SKUs
-          </Heading>
-          <HStack>
-            <Input
-              type={'text'}
-              ref={grandParent}
-              textAlign={'center'}
-              placeholder={'grand-parent'}
-            />
-            <Input
-              type={'text'}
-              ref={parent}
-              textAlign={'center'}
-              placeholder={'parent'}
-            />
-            <Input
-              type={'text'}
-              ref={child}
-              textAlign={'center'}
-              placeholder={'child'}
-            />
-            <Input
-              type={'text'}
-              ref={quantity}
-              textAlign={'center'}
-              placeholder={'Opening Stock'}
-            />
-            {/*<Button w={'100%'} onClick={submitHandler}>
-              Submit
-            </Button>
-            <Menu>
-              <MenuButton w={'100%'} as={Button}>
-                Filter
-              </MenuButton>
-              <MenuList>
-                <MenuItem>Date</MenuItem>
-                <MenuItem>Quantity</MenuItem>
-              </MenuList>
-            </Menu>*/}
-          </HStack>
-        </VStack>
-        <VStack style={{ marginRight: '60px' }}>
-          <Heading size={'md'} pb={4}>
-            Master SKUs Table
+      <Flex gridColumnGap={20}>
+        <Box>
+          <Heading size={'md'} pt={20} pb={4}>
+            UnMapped SKU Table
           </Heading>
           <TableContainer
             rounded={'lg'}
             boxShadow={'lg'}
-            h={250}
             overflowY={'auto'}
-            overflowX={'hidden'}
+            overflowX={'scroll'}
+            h={400}
+            mb={20}
             bg={useColorModeValue('gray.100', 'gray.700')}
           >
-            <Table variant="simple">
+            <Table variant="simple" w={'50%'}>
               <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
                 <Tr>
-                  <Th textAlign="center">SKU</Th>
+                  <Th textAlign={'center'}>UnMapped SKUs</Th>
+                  <Th textAlign={'center'}>Master SKUs</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 <Tr>
-                  <Td textAlign="center">example sku</Td>
+                  <Td textAlign={'center'}>test</Td>
+                  <Td textAlign={'center'}>test</Td>
                 </Tr>
               </Tbody>
             </Table>
           </TableContainer>
-        </VStack>
-      </HStack>
+        </Box>
+        <Box>
+          <Heading size={'md'} pt={20} pb={4}>
+            Mapped SKU Table
+          </Heading>
+          <TableContainer
+            rounded={'lg'}
+            boxShadow={'lg'}
+            overflowY={'auto'}
+            overflowX={'scroll'}
+            h={400}
+            mb={20}
+            bg={useColorModeValue('gray.100', 'gray.700')}
+          >
+            <Table variant="simple" w={'50%'}>
+              <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
+                <Tr>
+                  <Th textAlign={'center'}>UnMapped SKUs</Th>
+                  <Th textAlign={'center'}>Master SKUs</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                <Tr>
+                  <Td textAlign={'center'}>test</Td>
+                  <Td textAlign={'center'}>test</Td>
+                </Tr>
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </Box>
+      </Flex>
     </VStack>
   );
 };

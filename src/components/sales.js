@@ -1,19 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Input,
   Table,
   TableContainer,
   Thead,
-  HStack,
-  Button,
   Tbody,
   Tr,
   Th,
   Td,
   Heading,
   useColorModeValue,
+  Flex,
+  FormLabel,
+  Text,
 } from '@chakra-ui/react';
+import { DownloadIcon } from '@chakra-ui/icons';
 // files
 
 const Sales = () => {
@@ -42,7 +44,7 @@ const Sales = () => {
   };
 
   const onSubmitHandler = e => {
-    e.preventDefault();
+    // e.preventDefault();
 
     if (file) {
       fileReader.onload = function (e) {
@@ -54,42 +56,38 @@ const Sales = () => {
     }
   };
 
-  // const submitHandler = e => {
-  //   e.preventDefault();
-  //   fetch('http://localhost:3001/api/sales/create', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({
-  //       array,
-  //     }),
-  //   });
-  // };
-
   const headerKeys = Object.keys(Object.assign({}, ...array));
+
+  useEffect(() => {
+    onSubmitHandler();
+  });
   return (
     <Box p={4}>
       <Heading size={'lg'} pb={10}>
         Sales Section
       </Heading>
-
-      <HStack>
+      <Flex marginLeft={60}>
+        <FormLabel
+          w={80}
+          htmlFor={'csvInput'}
+          padding={'7px 0px'}
+          border={'1px solid grey'}
+          _hover={{ cursor: 'pointer' }}
+          borderRadius={'5px'}
+        >
+          <Text textAlign={'center'}>
+            Select csv <DownloadIcon />
+          </Text>
+        </FormLabel>
         <Input
+          display={'none'}
           type={'file'}
           id={'csvInput'}
-          placeholder={'Choose a file'}
           accept={'.csv'}
           onChange={onChangeHandler}
         />
-        <Button
-          onClick={e => {
-            onSubmitHandler(e);
-            // submitHandler(e);
-          }}
-        >
-          Import CSV file
-        </Button>
-      </HStack>
-      <Heading size={'md'} pb={4}>
+      </Flex>
+      <Heading size={'md'} pt={20} pb={4}>
         Sales Table
       </Heading>
       <TableContainer

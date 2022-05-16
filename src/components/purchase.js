@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   VStack,
   HStack,
@@ -16,6 +16,7 @@ import {
   Th,
   Td,
   useColorModeValue,
+  Box,
   Button,
 } from '@chakra-ui/react';
 import DatePicker from 'react-datepicker';
@@ -28,6 +29,7 @@ const Purchase = () => {
   const [start, setStart] = useState(new Date());
   const [quantity, setQuantity] = useState('');
   const [purchasedata, setPurchaseData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const skuChange = e => {
     setSku(e.target.value);
@@ -50,11 +52,16 @@ const Purchase = () => {
   };
 
   const getListHandler = async () => {
+    setIsLoading(true);
     const response = await fetch('http://localhost:3001/api/purchase/getAll');
     const result = await response.json();
+    setIsLoading(false);
     setPurchaseData(result);
   };
 
+  useEffect(() => {
+    getListHandler();
+  }, []);
   return (
     <VStack>
       <Heading as={'h1'} size={'lg'}>
@@ -121,6 +128,7 @@ const Purchase = () => {
             overflowX={'hidden'}
             bg={useColorModeValue('gray.100', 'gray.700')}
           >
+            {isLoading && <Box>Is Loading</Box>}
             <Table variant="simple">
               <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
                 <Tr>

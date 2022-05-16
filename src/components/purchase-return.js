@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Heading,
   VStack,
@@ -16,6 +16,7 @@ import {
   Tr,
   Th,
   Td,
+  Box,
   useColorModeValue,
 } from '@chakra-ui/react';
 
@@ -27,7 +28,7 @@ const PurchaseReturn = () => {
   const [start, setStart] = useState(new Date());
   const [quantity, setQuantity] = useState('');
   const [purchaseReturndata, setPurchaseReturnData] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(false);
   const skuChange = e => {
     setSku(e.target.value);
   };
@@ -49,12 +50,18 @@ const PurchaseReturn = () => {
   };
 
   const getListHandler = async () => {
+    setIsLoading(true);
     const response = await fetch(
       'http://localhost:3001/api/purchaseReturn/getAll'
     );
     const result = await response.json();
+    setIsLoading(false);
     setPurchaseReturnData(result);
   };
+
+  useEffect(() => {
+    getListHandler();
+  }, []);
 
   return (
     <VStack>
@@ -122,6 +129,7 @@ const PurchaseReturn = () => {
             overflowX={'hidden'}
             bg={useColorModeValue('gray.100', 'gray.700')}
           >
+            {isLoading && <Box>Is Loading</Box>}
             <Table variant="simple">
               <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
                 <Tr>

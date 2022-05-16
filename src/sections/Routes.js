@@ -6,8 +6,8 @@ import SalesReturnPage from '../pages/salesReturnPage';
 import LoginPage from '../pages/Auth/loginPage';
 import SignUpPage from '../pages/Auth/signUpPage';
 import AccountPage from '../pages/Auth/AccountPage';
-import MappedPage from '../pages/sku/mappedPage';
-import UnMappedPage from '../pages/sku/unMappedPage';
+import MasterSKUPage from '../pages/sku/masterSKUPage';
+import UnMappedPage from '../pages/sku/unMapped';
 import LiveStockPage from '../pages/livestockPage';
 
 const AllRoutes = () => {
@@ -16,7 +16,7 @@ const AllRoutes = () => {
       <Route path="/" element={<SignUpPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/account" element={<AccountPage />} />
-      <Route path="/mapped" element={<MappedPage />} />
+      <Route path="/master" element={<MasterSKUPage />} />
       <Route path="/unmapped" element={<UnMappedPage />} />
       <Route path="/purchase" element={<PurchasePage />} />
       <Route path="/purchaseReturn" element={<PurchaseReturnPage />} />
