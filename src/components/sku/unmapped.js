@@ -44,8 +44,6 @@ const UnMapped = () => {
   };
 
   const onSubmitHandler = e => {
-    e.preventDefault();
-
     if (file) {
       fileReader.onload = function (e) {
         const csvOutput = e.target.result;
@@ -57,6 +55,10 @@ const UnMapped = () => {
   };
 
   const headerKeys = Object.keys(Object.assign({}, ...array));
+
+  useEffect(() => {
+    onSubmitHandler();
+  });
 
   return (
     <VStack p={4} pb={120}>
@@ -96,21 +98,25 @@ const UnMapped = () => {
             overflowY={'auto'}
             overflowX={'scroll'}
             h={400}
-            mb={20}
+            w={500}
             bg={useColorModeValue('gray.100', 'gray.700')}
           >
             <Table variant="simple" w={'50%'}>
               <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
-                <Tr>
-                  <Th textAlign={'center'}>UnMapped SKUs</Th>
-                  <Th textAlign={'center'}>Master SKUs</Th>
+                <Tr key={'header'}>
+                  {headerKeys.map(key => (
+                    <Th textAlign={'center'}>{key}</Th>
+                  ))}
                 </Tr>
               </Thead>
               <Tbody>
-                <Tr>
-                  <Td textAlign={'center'}>test</Td>
-                  <Td textAlign={'center'}>test</Td>
-                </Tr>
+                {array.map(item => (
+                  <Tr key={item.id}>
+                    {Object.values(item).map(val => (
+                      <Td textAlign={'center'}>{val}</Td>
+                    ))}
+                  </Tr>
+                ))}
               </Tbody>
             </Table>
           </TableContainer>
@@ -125,7 +131,6 @@ const UnMapped = () => {
             overflowY={'auto'}
             overflowX={'scroll'}
             h={400}
-            mb={20}
             bg={useColorModeValue('gray.100', 'gray.700')}
           >
             <Table variant="simple" w={'50%'}>

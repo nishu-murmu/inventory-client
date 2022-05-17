@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   Heading,
@@ -43,8 +43,6 @@ const Mapped = () => {
   };
 
   const onSubmitHandler = e => {
-    e.preventDefault();
-
     if (file) {
       fileReader.onload = function (e) {
         const csvOutput = e.target.result;
@@ -56,6 +54,10 @@ const Mapped = () => {
   };
 
   const headerKeys = Object.keys(Object.assign({}, ...array));
+
+  useEffect(() => {
+    onSubmitHandler();
+  });
 
   return (
     <Box p={4}>
@@ -98,18 +100,21 @@ const Mapped = () => {
       >
         <Table variant="simple">
           <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
-            <Tr>
-              <Th textAlign={'center'}>GrandParent</Th>
-              <Th textAlign={'center'}>Parent</Th>
-              <Th textAlign={'center'}>Child</Th>
-              <Th textAlign={'center'}>Master SKU</Th>
+            <Tr key={'header'}>
+              {headerKeys.map(key => (
+                <Th textAlign={'center'}>{key}</Th>
+              ))}
             </Tr>
           </Thead>
 
           <Tbody>
-            <Tr>
-              <Td textAlign={'center'}>test</Td>
-            </Tr>
+            {array.map(item => (
+              <Tr key={item.id}>
+                {Object.values(item).map(val => (
+                  <Td textAlign={'center'}>{val}</Td>
+                ))}
+              </Tr>
+            ))}
           </Tbody>
         </Table>
       </TableContainer>

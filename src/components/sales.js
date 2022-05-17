@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Input,
@@ -10,10 +10,11 @@ import {
   Th,
   Td,
   Heading,
-  useColorModeValue,
   Flex,
   FormLabel,
+  Button,
   Text,
+  Spinner,
 } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
 // files
@@ -21,6 +22,8 @@ import { DownloadIcon } from '@chakra-ui/icons';
 const Sales = () => {
   const [file, setFile] = useState();
   const [array, setArray] = useState([]);
+  // const [secondArray, setSecondArray] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const fileReader = new FileReader();
 
   const onChangeHandler = e => {
@@ -39,13 +42,13 @@ const Sales = () => {
       }, {});
       return obj;
     });
-
+    setIsLoading(false);
     setArray(array);
   };
 
   const onSubmitHandler = e => {
-    // e.preventDefault();
-
+    e.preventDefault();
+    setIsLoading(true);
     if (file) {
       fileReader.onload = function (e) {
         const csvOutput = e.target.result;
@@ -56,11 +59,19 @@ const Sales = () => {
     }
   };
 
+  // const submitArrayHandler = e => {
+  //   // e.preventDefault();
+  //   fetch('http://localhost:3001/api/sales/create', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({
+  //       array,
+  //     }),
+  //   });
+  // };
+
   const headerKeys = Object.keys(Object.assign({}, ...array));
 
-  useEffect(() => {
-    onSubmitHandler();
-  });
   return (
     <Box p={4}>
       <Heading size={'lg'} pb={10}>
@@ -86,40 +97,46 @@ const Sales = () => {
           accept={'.csv'}
           onChange={onChangeHandler}
         />
+        <Button type={'button'} onClick={onSubmitHandler} variant={'outline'}>
+          Import
+        </Button>
       </Flex>
       <Heading size={'md'} pt={20} pb={4}>
         Sales Table
       </Heading>
-      <TableContainer
-        rounded={'lg'}
-        boxShadow={'lg'}
-        overflowY={'auto'}
-        overflowX={'scroll'}
-        h={400}
-        w={800}
-        mb={20}
-        bg={useColorModeValue('gray.100', 'gray.700')}
-      >
-        <Table variant="simple">
-          <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
-            <Tr key={'header'}>
-              {headerKeys.map(key => (
-                <Th textAlign={'center'}>{key}</Th>
-              ))}
-            </Tr>
-          </Thead>
-
-          <Tbody>
-            {array.map(item => (
-              <Tr key={item.id}>
-                {Object.values(item).map(val => (
-                  <Td textAlign={'center'}>{val}</Td>
+      {isLoading && <Spinner />}
+      {!isLoading && (
+        <TableContainer
+          rounded={'lg'}
+          boxShadow={'lg'}
+          overflowY={'auto'}
+          overflowX={'auto'}
+          h={400}
+          w={800}
+          mb={20}
+          // bg={useColorModeValue('gray.100', 'gray.700')}
+        >
+          <Table variant="simple">
+            <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
+              <Tr key={'header'}>
+                {headerKeys.map(key => (
+                  <Th textAlign={'center'}>{key}</Th>
                 ))}
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+            </Thead>
+
+            <Tbody>
+              {array.map(item => (
+                <Tr key={item.id}>
+                  {Object.values(item).map(val => (
+                    <Td textAlign={'center'}>{val}</Td>
+                  ))}
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      )}
     </Box>
   );
 };
