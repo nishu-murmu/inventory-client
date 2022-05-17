@@ -15,9 +15,7 @@ const year = new Date().getFullYear();
 const Footer = () => {
   return (
     <Box
-      bottom={0}
       px={16}
-      position={'fixed'}
       borderTopWidth={1}
       borderStyle={'solid'}
       className={'footer'}

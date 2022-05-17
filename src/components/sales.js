@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {
-  Box,
   Input,
   Table,
   TableContainer,
@@ -10,11 +9,13 @@ import {
   Th,
   Td,
   Heading,
-  Flex,
   FormLabel,
   Button,
   Text,
   Spinner,
+  FormControl,
+  VStack,
+  Box,
 } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
 // files
@@ -73,38 +74,45 @@ const Sales = () => {
   const headerKeys = Object.keys(Object.assign({}, ...array));
 
   return (
-    <Box p={4}>
+    <VStack p={4} pb={20}>
       <Heading size={'lg'} pb={10}>
         Sales Section
       </Heading>
-      <Flex marginLeft={60}>
-        <FormLabel
-          w={80}
-          htmlFor={'csvInput'}
-          padding={'7px 0px'}
-          border={'1px solid grey'}
-          _hover={{ cursor: 'pointer' }}
-          borderRadius={'5px'}
-        >
-          <Text textAlign={'center'}>
-            Select csv <DownloadIcon />
-          </Text>
-        </FormLabel>
-        <Input
-          display={'none'}
-          type={'file'}
-          id={'csvInput'}
-          accept={'.csv'}
-          onChange={onChangeHandler}
-        />
-        <Button type={'button'} onClick={onSubmitHandler} variant={'outline'}>
-          Import
-        </Button>
-      </Flex>
+      <Box textAlign={'center'} w={80}>
+        <FormControl>
+          <FormLabel
+            w={'100%'}
+            htmlFor={'csvInput'}
+            padding={'7px 0px'}
+            border={'1px solid grey'}
+            _hover={{ cursor: 'pointer' }}
+            borderRadius={'5px'}
+          >
+            <Text textAlign={'center'}>
+              Select csv <DownloadIcon />
+            </Text>
+          </FormLabel>
+          <Input
+            display={'none'}
+            type={'file'}
+            id={'csvInput'}
+            accept={'.csv'}
+            onChange={onChangeHandler}
+          />
+          <Button
+            type={'button'}
+            w={'100%'}
+            onClick={onSubmitHandler}
+            variant={'outline'}
+          >
+            Import
+          </Button>
+        </FormControl>
+      </Box>
       <Heading size={'md'} pt={20} pb={4}>
         Sales Table
       </Heading>
-      {isLoading && <Spinner />}
+      {isLoading && <Spinner size={'xl'} />}
       {!isLoading && (
         <TableContainer
           rounded={'lg'}
@@ -137,7 +145,7 @@ const Sales = () => {
           </Table>
         </TableContainer>
       )}
-    </Box>
+    </VStack>
   );
 };
 

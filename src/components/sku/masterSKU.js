@@ -1,25 +1,27 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Heading,
   Table,
-  Flex,
   FormLabel,
   Text,
   Input,
+  Button,
   TableContainer,
   Thead,
   Tbody,
   Tr,
   Th,
   Td,
-  useColorModeValue,
+  Spinner,
+  VStack,
 } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
 
 const Mapped = () => {
   const [file, setFile] = useState();
   const [array, setArray] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const fileReader = new FileReader();
 
   const onChangeHandler = e => {
@@ -38,11 +40,12 @@ const Mapped = () => {
       }, {});
       return obj;
     });
-
+    setIsLoading(false);
     setArray(array);
   };
 
   const onSubmitHandler = e => {
+    setIsLoading(true);
     if (file) {
       fileReader.onload = function (e) {
         const csvOutput = e.target.result;
@@ -55,18 +58,14 @@ const Mapped = () => {
 
   const headerKeys = Object.keys(Object.assign({}, ...array));
 
-  useEffect(() => {
-    onSubmitHandler();
-  });
-
   return (
-    <Box p={4}>
+    <VStack p={4}>
       <Heading size={'lg'} pb={10}>
         Master SKU Section
       </Heading>
-      <Flex marginLeft={60}>
+      <Box textAlign={'center'} w={80}>
         <FormLabel
-          w={80}
+          width={'100%'}
           htmlFor={'csvInput'}
           padding={'7px 0px'}
           border={'1px solid grey'}
@@ -84,41 +83,51 @@ const Mapped = () => {
           accept={'.csv'}
           onChange={onChangeHandler}
         />
-      </Flex>
+        <Button
+          type={'button'}
+          width={'100%'}
+          onClick={onSubmitHandler}
+          variant={'outline'}
+        >
+          Import
+        </Button>
+      </Box>
       <Heading size={'md'} pt={20} pb={4}>
         Master SKU Table
       </Heading>
-      <TableContainer
-        rounded={'lg'}
-        boxShadow={'lg'}
-        overflowY={'auto'}
-        overflowX={'scroll'}
-        h={400}
-        w={800}
-        mb={20}
-        bg={useColorModeValue('gray.100', 'gray.700')}
-      >
-        <Table variant="simple">
-          <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
-            <Tr key={'header'}>
-              {headerKeys.map(key => (
-                <Th textAlign={'center'}>{key}</Th>
-              ))}
-            </Tr>
-          </Thead>
-
-          <Tbody>
-            {array.map(item => (
-              <Tr key={item.id}>
-                {Object.values(item).map(val => (
-                  <Td textAlign={'center'}>{val}</Td>
+      {isLoading && <Spinner size={'xl'} />}
+      {!isLoading && (
+        <TableContainer
+          rounded={'lg'}
+          boxShadow={'lg'}
+          overflowY={'auto'}
+          overflowX={'auto'}
+          h={400}
+          w={800}
+          mb={20}
+        >
+          <Table variant="simple">
+            <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
+              <Tr key={'header'}>
+                {headerKeys.map(key => (
+                  <Th textAlign={'center'}>{key}</Th>
                 ))}
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
-    </Box>
+            </Thead>
+
+            <Tbody>
+              {array.map(item => (
+                <Tr key={item.id}>
+                  {Object.values(item).map(val => (
+                    <Td textAlign={'center'}>{val}</Td>
+                  ))}
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      )}
+    </VStack>
   );
 };
 

@@ -10,11 +10,11 @@ import {
   Input,
   Text,
   FormLabel,
-  Flex,
   Td,
   Heading,
   Button,
   Spinner,
+  VStack,
 } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
 // files
@@ -60,14 +60,14 @@ const SalesReturn = () => {
 
   const headerKeys = Object.keys(Object.assign({}, ...array));
   return (
-    <Box p={4}>
+    <VStack p={4}>
       <Heading size={'lg'} pb={10}>
         Sales Return Section
       </Heading>
 
-      <Flex marginLeft={60}>
+      <Box textAlign={'center'} w={80}>
         <FormLabel
-          w={80}
+          w={'100%'}
           htmlFor={'csvInput'}
           padding={'7px 0px'}
           border={'1px solid grey'}
@@ -85,20 +85,25 @@ const SalesReturn = () => {
           accept={'.csv'}
           onChange={onChangeHandler}
         />
-        <Button type={'button'} onClick={onSubmitHandler} variant={'outline'}>
+        <Button
+          type={'button'}
+          w={'100%'}
+          onClick={onSubmitHandler}
+          variant={'outline'}
+        >
           Import
         </Button>
-      </Flex>
+      </Box>
       <Heading size={'md'} pt={20} pb={4}>
         Sales Return Table
       </Heading>
-      {isLoading && <Spinner />}
+      {isLoading && <Spinner size={'xl'} />}
       {!isLoading && (
         <TableContainer
           rounded={'lg'}
           boxShadow={'lg'}
-          overflowY={'hidden'}
-          overflowX={'scroll'}
+          overflowY={'auto'}
+          overflowX={'auto'}
           h={400}
           w={800}
           mb={20}
@@ -124,7 +129,7 @@ const SalesReturn = () => {
           </Table>
         </TableContainer>
       )}
-    </Box>
+    </VStack>
   );
 };
 

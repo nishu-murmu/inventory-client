@@ -8,12 +8,16 @@ import {
   FormLabel,
   Heading,
   Input,
+  InputRightElement,
+  InputGroup,
   useColorModeValue,
   Checkbox,
 } from '@chakra-ui/react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
+  const [show, setShow] = useState(false);
   const [enteredEmail, setEnteredEmail] = useState('');
   const [enteredPassword, setEnteredPassword] = useState('');
   const submitHandler = e => {
@@ -36,6 +40,7 @@ const Login = () => {
     setEnteredPassword(e.target.value);
   };
 
+  const handleClick = () => setShow(!show);
   return (
     <Stack spacing={8} mx={'auto'} py={40}>
       <Heading>User Login</Heading>
@@ -53,12 +58,17 @@ const Login = () => {
             </FormControl>
             <FormControl isRequired>
               <FormLabel htmlFor="password">Enter Password:</FormLabel>
-              <Input
-                id="password"
-                type="password"
-                onChange={passwordChange}
-                required
-              />
+              <InputGroup>
+                <Input
+                  id="password"
+                  type={show ? 'text' : 'password'}
+                  onChange={passwordChange}
+                  required
+                />
+                <InputRightElement onClick={handleClick}>
+                  {show ? <ViewOffIcon /> : <ViewIcon />}
+                </InputRightElement>
+              </InputGroup>
             </FormControl>
             <Stack spacing={10}>
               <Stack

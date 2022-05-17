@@ -15,9 +15,8 @@ import {
   Tr,
   Th,
   Td,
-  useColorModeValue,
-  Box,
   Button,
+  Spinner,
 } from '@chakra-ui/react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -45,7 +44,7 @@ const Purchase = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         SKU: sku,
-        Date: start.toString(),
+        Date: start,
         quantity: quantity,
       }),
     });
@@ -120,34 +119,40 @@ const Purchase = () => {
           <Heading pb={5} size={'md'}>
             Purchase Table
           </Heading>
-          <TableContainer
-            rounded={'lg'}
-            boxShadow={'lg'}
-            h={250}
-            overflowY={'auto'}
-            overflowX={'hidden'}
-            bg={useColorModeValue('gray.100', 'gray.700')}
-          >
-            {isLoading && <Box>Is Loading</Box>}
-            <Table variant="simple">
-              <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
-                <Tr>
-                  <Th textAlign="center">SKU</Th>
-                  <Th textAlign="center">Date</Th>
-                  <Th textAlign="center">Quantity</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {purchasedata.map(val => (
-                  <Tr key={val._id}>
-                    <Td textAlign={'center'}>{val.SKU}</Td>
-                    <Td textAlign={'center'}>{val.Date}</Td>
-                    <Td textAlign={'center'}>{val.quantity}</Td>
+          {isLoading && <Spinner size={'xl'} />}
+
+          {!isLoading && (
+            <TableContainer
+              rounded={'lg'}
+              boxShadow={'lg'}
+              h={250}
+              overflowY={'auto'}
+              overflowX={'hidden'}
+            >
+              <Table variant="simple">
+                <Thead
+                  position={'sticky'}
+                  top={0}
+                  backgroundColor={'lightblue'}
+                >
+                  <Tr>
+                    <Th textAlign="center">SKU</Th>
+                    <Th textAlign="center">Date</Th>
+                    <Th textAlign="center">Quantity</Th>
                   </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+                </Thead>
+                <Tbody>
+                  {purchasedata.map(val => (
+                    <Tr key={val._id}>
+                      <Td textAlign={'center'}>{val.SKU}</Td>
+                      <Td textAlign={'center'}>{val.Date}</Td>
+                      <Td textAlign={'center'}>{val.quantity}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          )}
         </VStack>
       </HStack>
     </VStack>

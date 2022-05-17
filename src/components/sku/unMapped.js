@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   VStack,
   Heading,
@@ -15,6 +15,7 @@ import {
   FormLabel,
   Text,
   Input,
+  Button,
 } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
 
@@ -56,16 +57,12 @@ const UnMapped = () => {
 
   const headerKeys = Object.keys(Object.assign({}, ...array));
 
-  useEffect(() => {
-    onSubmitHandler();
-  });
-
   return (
     <VStack p={4} pb={120}>
       <Heading size={'lg'} pb={10}>
         Unmapped SKU Section
       </Heading>
-      <Flex marginLeft={60}>
+      <Box marginLeft={60}>
         <FormLabel
           w={80}
           htmlFor={'csvInput'}
@@ -85,9 +82,17 @@ const UnMapped = () => {
           accept={'.csv'}
           onChange={onChangeHandler}
         />
-      </Flex>
+        <Button
+          type={'button'}
+          width={'100%'}
+          onClick={onSubmitHandler}
+          variant={'outline'}
+        ></Button>
+      </Box>
 
       <Flex gridColumnGap={20}>
+        {/* UnMapped SKU Table */}
+
         <Box>
           <Heading size={'md'} pt={20} pb={4}>
             UnMapped SKU Table
@@ -96,12 +101,12 @@ const UnMapped = () => {
             rounded={'lg'}
             boxShadow={'lg'}
             overflowY={'auto'}
-            overflowX={'scroll'}
+            overflowX={'auto'}
             h={400}
             w={500}
             bg={useColorModeValue('gray.100', 'gray.700')}
           >
-            <Table variant="simple" w={'50%'}>
+            <Table variant="simple">
               <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
                 <Tr key={'header'}>
                   {headerKeys.map(key => (
@@ -110,17 +115,34 @@ const UnMapped = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {array.map(item => (
+                {/* {array.map(item => (
                   <Tr key={item.id}>
                     {Object.values(item).map(val => (
                       <Td textAlign={'center'}>{val}</Td>
                     ))}
                   </Tr>
-                ))}
+                ))} */}
+                <Tr>
+                  <Td>Unmapped SKUS</Td>
+                  <Td>
+                    <Input
+                      list="mastersku"
+                      fontSize={'20px'}
+                      name="mastersku"
+                    />
+                    <datalist id={'mastersku'}>
+                      <option>red-saree</option>
+                      <option>green-top</option>
+                      <option>yellow-gown</option>
+                    </datalist>
+                  </Td>
+                </Tr>
               </Tbody>
             </Table>
           </TableContainer>
         </Box>
+
+        {/* Mapped SKU Table */}
         <Box>
           <Heading size={'md'} pt={20} pb={4}>
             Mapped SKU Table
@@ -129,7 +151,7 @@ const UnMapped = () => {
             rounded={'lg'}
             boxShadow={'lg'}
             overflowY={'auto'}
-            overflowX={'scroll'}
+            overflowX={'auto'}
             h={400}
             bg={useColorModeValue('gray.100', 'gray.700')}
           >
