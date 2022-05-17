@@ -1,14 +1,14 @@
 import { Routes, Route } from 'react-router-dom';
-import PurchasePage from '../pages/purchasePage';
-import PurchaseReturnPage from '../pages/purchaseReturnPage';
-import SalesPage from '../pages/salesPage';
-import SalesReturnPage from '../pages/salesReturnPage';
-import LoginPage from '../pages/Auth/loginPage';
-import SignUpPage from '../pages/Auth/signUpPage';
-import AccountPage from '../pages/Auth/AccountPage';
-import MasterSKUPage from '../pages/sku/masterSKUPage';
-import UnMappedPage from '../pages/sku/unMapped';
-import LiveStockPage from '../pages/livestockPage';
+import PurchasePage from '../pages/purchasePage.js';
+import PurchaseReturnPage from '../pages/purchaseReturnPage.js';
+import SalesPage from '../pages/salesPage.js';
+import SalesReturnPage from '../pages/salesReturnPage.js';
+import LoginPage from '../pages/Auth/loginPage.js';
+import SignUpPage from '../pages/Auth/signUpPage.js';
+import AccountPage from '../pages/Auth/AccountPage.js';
+import MasterSKUPage from '../pages/Sku/masterSKUPage.js';
+import UnMappedPage from '../pages/Sku/unMapped.js';
+import LiveStockPage from '../pages/livestockPage.js';
 
 const AllRoutes = () => {
   return (
