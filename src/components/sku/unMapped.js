@@ -55,16 +55,16 @@ const UnMapped = () => {
     }
   };
 
-  const headerKeys = Object.keys(Object.assign({}, ...array));
+  // const headerKeys = Object.keys(Object.assign({}, ...array));
 
   return (
     <VStack p={4} pb={120}>
       <Heading size={'lg'} pb={10}>
         Unmapped SKU Section
       </Heading>
-      <Box marginLeft={60}>
+      <Box textAlign={'center'} width={80}>
         <FormLabel
-          w={80}
+          width={'100%'}
           htmlFor={'csvInput'}
           padding={'7px 0px'}
           border={'1px solid grey'}
@@ -87,7 +87,9 @@ const UnMapped = () => {
           width={'100%'}
           onClick={onSubmitHandler}
           variant={'outline'}
-        ></Button>
+        >
+          Import
+        </Button>
       </Box>
 
       <Flex gridColumnGap={20}>
@@ -108,29 +110,32 @@ const UnMapped = () => {
           >
             <Table variant="simple">
               <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
-                <Tr key={'header'}>
-                  {headerKeys.map(key => (
-                    <Th textAlign={'center'}>{key}</Th>
-                  ))}
+                <Tr>
+                  <Th textAlign={'center'}>UnMapped SKUs</Th>
+                  <Th textAlign={'center'}>Master SKU</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {/* {array.map(item => (
-                  <Tr key={item.id}>
-                    {Object.values(item).map(val => (
-                      <Td textAlign={'center'}>{val}</Td>
-                    ))}
-                  </Tr>
-                ))} */}
                 <Tr>
-                  <Td>Unmapped SKUS</Td>
+                  <Td>example test</Td>
                   <Td>
                     <Input
-                      list="mastersku"
+                      list="unmapped_mastersku"
+                      placeholder="Select master SKU"
                       fontSize={'20px'}
+                      autoComplete={'off'}
                       name="mastersku"
                     />
-                    <datalist id={'mastersku'}>
+                    <datalist
+                      style={{
+                        position: 'absolute',
+                        maxHeight: '20em',
+                        border: '0 none',
+                        overflowX: 'hidden',
+                        overflowY: 'auto',
+                      }}
+                      id={'unmapped_mastersku'}
+                    >
                       <option>red-saree</option>
                       <option>green-top</option>
                       <option>yellow-gown</option>
@@ -140,6 +145,9 @@ const UnMapped = () => {
               </Tbody>
             </Table>
           </TableContainer>
+          <Button my={10} width={'100%'}>
+            Submit
+          </Button>
         </Box>
 
         {/* Mapped SKU Table */}

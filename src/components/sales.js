@@ -23,7 +23,6 @@ import { DownloadIcon } from '@chakra-ui/icons';
 const Sales = () => {
   const [file, setFile] = useState();
   const [array, setArray] = useState([]);
-  // const [secondArray, setSecondArray] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const fileReader = new FileReader();
 
@@ -45,31 +44,25 @@ const Sales = () => {
     });
     setIsLoading(false);
     setArray(array);
+    fetch('http://localhost:3001/api/sales/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        array,
+      }),
+    });
   };
 
   const onSubmitHandler = e => {
-    e.preventDefault();
     setIsLoading(true);
     if (file) {
       fileReader.onload = function (e) {
         const csvOutput = e.target.result;
-        console.log(csvOutput);
         csvFileToArray(csvOutput);
       };
       fileReader.readAsText(file);
     }
   };
-
-  // const submitArrayHandler = e => {
-  //   // e.preventDefault();
-  //   fetch('http://localhost:3001/api/sales/create', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({
-  //       array,
-  //     }),
-  //   });
-  // };
 
   const headerKeys = Object.keys(Object.assign({}, ...array));
 
@@ -122,7 +115,6 @@ const Sales = () => {
           h={400}
           w={800}
           mb={20}
-          // bg={useColorModeValue('gray.100', 'gray.700')}
         >
           <Table variant="simple">
             <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>

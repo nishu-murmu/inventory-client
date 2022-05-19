@@ -19,18 +19,12 @@ import {
   Spinner,
 } from '@chakra-ui/react';
 
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-
 const PurchaseReturn = () => {
-  const [sku, setSku] = useState('');
   const [start, setStart] = useState(new Date());
   const [quantity, setQuantity] = useState('');
   const [purchaseReturndata, setPurchaseReturnData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const skuChange = e => {
-    setSku(e.target.value);
-  };
+
   const quantityChange = e => {
     setQuantity(e.target.value);
   };
@@ -41,7 +35,6 @@ const PurchaseReturn = () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        SKU: sku,
         Date: start,
         quantity: quantity,
       }),
@@ -82,18 +75,18 @@ const PurchaseReturn = () => {
             >
               <Input
                 placeholder="Enter SKU"
-                onChange={skuChange}
+                list={'purchasemastersku'}
+                name={'mastersku'}
                 textAlign="center"
                 required
               />
-              <DatePicker
-                dateFormat={'dd-MM-yy'}
-                placeholderText="Date"
-                selected={start}
-                showPopperArrow={true}
-                required
-                onSelect={date => setStart(date)}
-              />
+              <datalist id="purchasemastersku">
+                <option value={'bar'} />
+                <option value={'car'} />
+                <option value={'far cry 3'} />
+              </datalist>
+
+              <Input type={'date'} onSelect={date => setStart(date)} />
               <Input
                 placeholder="Enter Quantity"
                 onChange={quantityChange}

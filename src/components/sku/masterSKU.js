@@ -32,7 +32,7 @@ const Mapped = () => {
     const csvHeader = string.slice(0, string.indexOf('\n')).split(',');
     const csvRows = string.slice(string.indexOf('\n') + 1).split('\n');
 
-    const array = csvRows.map(i => {
+    const array1 = csvRows.map(i => {
       const values = i.split(',');
       const obj = csvHeader.reduce((object, header, index) => {
         object[header] = values[index];
@@ -40,22 +40,36 @@ const Mapped = () => {
       }, {});
       return obj;
     });
-    setIsLoading(false);
-    setArray(array);
+    setArray(array1);
   };
 
   const onSubmitHandler = e => {
-    setIsLoading(true);
     if (file) {
       fileReader.onload = function (e) {
         const csvOutput = e.target.result;
-        console.log(csvOutput);
         csvFileToArray(csvOutput);
       };
       fileReader.readAsText(file);
     }
   };
 
+  const submitArrayHandler = () => {
+    fetch('http://localhost:3001/api/master/store', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        masterSKUtable: array,
+      }),
+    });
+  };
+
+  const getListHandler = async () => {
+    setIsLoading(true);
+    const response = await fetch('http://localhost:3001/api/master/getall');
+    const result = await response.json();
+    setIsLoading(false);
+    setArray(result);
+  };
   const headerKeys = Object.keys(Object.assign({}, ...array));
 
   return (
@@ -86,7 +100,11 @@ const Mapped = () => {
         <Button
           type={'button'}
           width={'100%'}
-          onClick={onSubmitHandler}
+          onClick={e => {
+            onSubmitHandler(e);
+            submitArrayHandler();
+            getListHandler();
+          }}
           variant={'outline'}
         >
           Import
