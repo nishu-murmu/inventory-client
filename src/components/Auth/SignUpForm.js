@@ -25,7 +25,7 @@ const SignUp = () => {
 
   const submitHandler = e => {
     e.preventDefault();
-    fetch('http://localhost:3001/api/auth/register', {
+    fetch('http://localhost:3001/api/users/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

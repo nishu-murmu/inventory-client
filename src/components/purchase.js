@@ -19,30 +19,41 @@ import {
   Spinner,
 } from '@chakra-ui/react';
 
+import DatePicker from 'react-datepicker';
+
+import 'react-datepicker/dist/react-datepicker.css';
+import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 // files
+import EditModal from './modals/purchaseEdit';
 
 const Purchase = () => {
+  const [sku, setSku] = useState('');
   const [start, setStart] = useState(new Date());
   const [quantity, setQuantity] = useState('');
   const [purchasedata, setPurchaseData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedsku, setSelectedsku] = useState('');
 
   const quantityChange = e => {
     setQuantity(e.target.value);
   };
 
-  const submitHandler = e => {
+  // create product
+  const submitHandler = async e => {
     e.preventDefault();
-    fetch('http://localhost:3001/api/purchase/create', {
+    // e.preventDefault();
+    await fetch('http://localhost:3001/api/purchase/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        mastersku: sku,
         Date: start,
         quantity: quantity,
       }),
     });
+    getListHandler();
   };
-
+  // get list of products
   const getListHandler = async () => {
     setIsLoading(true);
     const response = await fetch('http://localhost:3001/api/purchase/getAll');
@@ -50,10 +61,23 @@ const Purchase = () => {
     setIsLoading(false);
     setPurchaseData(result);
   };
+  // delete product
+  const deleteHandler = async () => {
+    await fetch('http://localhost:3001/api/purchase/delete', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mastersku: selectedsku,
+      }),
+    });
+    getListHandler();
+  };
+  // sorting product
 
   useEffect(() => {
     getListHandler();
   }, []);
+
   return (
     <VStack>
       <Heading as={'h1'} size={'lg'}>
@@ -68,7 +92,6 @@ const Purchase = () => {
             <form
               onSubmit={e => {
                 submitHandler(e);
-                getListHandler(e);
               }}
               style={{ margin: '20px' }}
             >
@@ -77,15 +100,15 @@ const Purchase = () => {
                 list={'mastersku'}
                 textAlign="center"
                 name={'mastersku'}
+                onChange={e => {
+                  setSku(e.target.value);
+                }}
                 required
               />
-              <datalist id={'mastersku'}>
-                <option>sku1</option>
-                <option>sku2</option>
-                <option>sku3</option>
-                <option>sku4</option>
-              </datalist>
-              <Input type={'date'} onSelect={date => setStart(date)} />
+              <DatePicker
+                selected={start}
+                onChange={date => setStart(date)}
+              ></DatePicker>
               <Input
                 placeholder="Enter Quantity"
                 onChange={quantityChange}
@@ -132,14 +155,24 @@ const Purchase = () => {
                     <Th textAlign="center">SKU</Th>
                     <Th textAlign="center">Date</Th>
                     <Th textAlign="center">Quantity</Th>
+                    <Th>Delete</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
                   {purchasedata.map(val => (
-                    <Tr key={val._id}>
-                      <Td textAlign={'center'}>{val.SKU}</Td>
-                      <Td textAlign={'center'}>{val.Date}</Td>
+                    <Tr key={val.mastersku}>
+                      <Td textAlign={'center'}>{val.mastersku}</Td>
+                      <Td textAlign={'center'}>{val.date}</Td>
                       <Td textAlign={'center'}>{val.quantity}</Td>
+                      <Td
+                        textAlign={'center'}
+                        onClick={() => {
+                          setSelectedsku(val.mastersku);
+                          deleteHandler();
+                        }}
+                      >
+                        delete
+                      </Td>
                     </Tr>
                   ))}
                 </Tbody>
@@ -148,6 +181,7 @@ const Purchase = () => {
           )}
         </VStack>
       </HStack>
+      <EditModal />
     </VStack>
   );
 };

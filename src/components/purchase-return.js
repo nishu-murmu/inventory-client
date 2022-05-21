@@ -18,12 +18,22 @@ import {
   Td,
   Spinner,
 } from '@chakra-ui/react';
+import DatePicker from 'react-datepicker';
+import EditModal from './modals/purchaseReturnEdit';
+// import { useDisclosure } from '@chakra-ui/react';
+
+import 'react-datepicker/dist/react-datepicker.css';
+import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
 const PurchaseReturn = () => {
+  const [sku, setSku] = useState('');
   const [start, setStart] = useState(new Date());
   const [quantity, setQuantity] = useState('');
   const [purchaseReturndata, setPurchaseReturnData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedsku, setSelectedsku] = useState('');
+
+  // const { onOpen, isOpen, onClose } = useDisclosure();
 
   const quantityChange = e => {
     setQuantity(e.target.value);
@@ -35,6 +45,7 @@ const PurchaseReturn = () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        mastersku: sku,
         Date: start,
         quantity: quantity,
       }),
@@ -49,6 +60,28 @@ const PurchaseReturn = () => {
     const result = await response.json();
     setIsLoading(false);
     setPurchaseReturnData(result);
+  };
+
+  // const updateHandler = () => {
+  //   fetch('http://localhost:3001/api/purchase/update', {
+  //     method: 'PUT',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({
+  //       mastersku: sku,
+  //       date: start,
+  //       quantity: quantity,
+  //     }),
+  //   });
+  // };
+
+  const deleteHandler = async () => {
+    await fetch('http://localhost:3001/api/purchaseReturn/delete', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mastersku: selectedsku,
+      }),
+    });
   };
 
   useEffect(() => {
@@ -79,14 +112,15 @@ const PurchaseReturn = () => {
                 name={'mastersku'}
                 textAlign="center"
                 required
+                onChange={e => {
+                  setSku(e.target.value);
+                }}
               />
-              <datalist id="purchasemastersku">
-                <option value={'bar'} />
-                <option value={'car'} />
-                <option value={'far cry 3'} />
-              </datalist>
 
-              <Input type={'date'} onSelect={date => setStart(date)} />
+              <DatePicker
+                selected={start}
+                onChange={date => setStart(date)}
+              ></DatePicker>
               <Input
                 placeholder="Enter Quantity"
                 onChange={quantityChange}
@@ -134,14 +168,25 @@ const PurchaseReturn = () => {
                     <Th textAlign="center">SKU</Th>
                     <Th textAlign="center">Date</Th>
                     <Th textAlign="center">Quantity</Th>
+                    <Th>Delete</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
                   {purchaseReturndata.map(val => (
-                    <Tr key={val._id}>
-                      <Td textAlign={'center'}>{val.SKU}</Td>
-                      <Td textAlign={'center'}>{val.Date}</Td>
+                    <Tr key={val.mastersku}>
+                      <Td textAlign={'center'}>{val.mastersku}</Td>
+                      <Td textAlign={'center'}>{val.date}</Td>
                       <Td textAlign={'center'}>{val.quantity}</Td>
+                      <Td
+                        textAlign={'center'}
+                        onClick={() => {
+                          setSelectedsku(val.mastersku);
+                          deleteHandler();
+                          getListHandler();
+                        }}
+                      >
+                        delete
+                      </Td>
                     </Tr>
                   ))}
                 </Tbody>
@@ -150,6 +195,7 @@ const PurchaseReturn = () => {
           )}
         </VStack>
       </HStack>
+      <EditModal />
     </VStack>
   );
 };

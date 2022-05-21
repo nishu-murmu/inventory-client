@@ -21,6 +21,7 @@ import { DownloadIcon } from '@chakra-ui/icons';
 // files
 
 const Sales = () => {
+  const [url, setUrl] = useState('');
   const [file, setFile] = useState();
   const [array, setArray] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,11 +45,11 @@ const Sales = () => {
     });
     setIsLoading(false);
     setArray(array);
-    fetch('http://localhost:3001/api/sales/create', {
+    fetch('http://localhost:3001/api/sales/store', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        array,
+        url,
       }),
     });
   };
@@ -85,6 +86,12 @@ const Sales = () => {
               Select csv <DownloadIcon />
             </Text>
           </FormLabel>
+          <Input
+            type={'text'}
+            textAlign={'center'}
+            placeholder={'enter url'}
+            onChange={e => setUrl(e.target.value)}
+          />
           <Input
             display={'none'}
             type={'file'}

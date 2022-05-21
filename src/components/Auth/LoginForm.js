@@ -20,15 +20,19 @@ const Login = () => {
   const [show, setShow] = useState(false);
   const [enteredEmail, setEnteredEmail] = useState('');
   const [enteredPassword, setEnteredPassword] = useState('');
-  const submitHandler = e => {
-    e.preventDefault();
-    fetch('http://localhost:3001/api/auth/login', {
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const submitHandler = async () => {
+    await fetch('http://localhost:3001/api/users/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: enteredEmail,
         password: enteredPassword,
       }),
+    }).then(res => {
+      res.json();
+      console.log(res.json());
     });
   };
 
@@ -50,7 +54,7 @@ const Login = () => {
         p={8}
         bg={useColorModeValue('gray.100', 'gray.700')}
       >
-        <form onSubmit={submitHandler}>
+        <form>
           <Stack spacing={4}>
             <FormControl isRequired>
               <FormLabel htmlFor="email">Enter Email:</FormLabel>
@@ -81,7 +85,7 @@ const Login = () => {
                   Forgot Password?
                 </Text>
               </Stack>
-              <Link to={'/livestock'}>
+              <Link to={'/livestock'} onClick={submitHandler}>
                 <Button
                   w={'100%'}
                   bg={'blue.400'}
