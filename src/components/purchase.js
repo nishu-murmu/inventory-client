@@ -17,22 +17,42 @@ import {
   Td,
   Button,
   Spinner,
+  Box,
+  Stack,
+  FormLabel,
+} from '@chakra-ui/react';
+import {
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
 } from '@chakra-ui/react';
 
 import DatePicker from 'react-datepicker';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
-// files
-import EditModal from './modals/purchaseEdit';
 
 const Purchase = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const [sku, setSku] = useState('');
   const [start, setStart] = useState(new Date());
   const [quantity, setQuantity] = useState('');
   const [purchasedata, setPurchaseData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedsku, setSelectedsku] = useState('');
+
+  const [enteredsku, setEnteredSku] = useState('');
+  const [update, setUpdate] = useState(new Date());
+  const [newQuantity, setNewQuantity] = useState('');
+  const newQuantityChange = e => {
+    setNewQuantity(e.target.value);
+  };
 
   const quantityChange = e => {
     setQuantity(e.target.value);
@@ -51,7 +71,6 @@ const Purchase = () => {
         quantity: quantity,
       }),
     });
-    getListHandler();
   };
   // get list of products
   const getListHandler = async () => {
@@ -60,6 +79,18 @@ const Purchase = () => {
     const result = await response.json();
     setIsLoading(false);
     setPurchaseData(result);
+  };
+  // update product
+  const updateHandler = () => {
+    fetch('http://localhost:3001/api/purchase/update', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mastersku: enteredsku,
+        date: update,
+        quantity: newQuantity,
+      }),
+    });
   };
   // delete product
   const deleteHandler = async () => {
@@ -70,7 +101,6 @@ const Purchase = () => {
         mastersku: selectedsku,
       }),
     });
-    getListHandler();
   };
   // sorting product
 
@@ -155,7 +185,8 @@ const Purchase = () => {
                     <Th textAlign="center">SKU</Th>
                     <Th textAlign="center">Date</Th>
                     <Th textAlign="center">Quantity</Th>
-                    <Th>Delete</Th>
+                    <Th textAlign="center">Edit</Th>
+                    <Th textAlign="center">Delete</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -164,14 +195,79 @@ const Purchase = () => {
                       <Td textAlign={'center'}>{val.mastersku}</Td>
                       <Td textAlign={'center'}>{val.date}</Td>
                       <Td textAlign={'center'}>{val.quantity}</Td>
-                      <Td
-                        textAlign={'center'}
-                        onClick={() => {
-                          setSelectedsku(val.mastersku);
-                          deleteHandler();
-                        }}
-                      >
-                        delete
+                      <Td>
+                        <Button colorScheme="teal" onClick={onOpen}>
+                          Edit
+                        </Button>
+                        <Drawer
+                          isOpen={isOpen}
+                          placement="right"
+                          onClose={onClose}
+                        >
+                          <DrawerOverlay />
+                          <DrawerContent>
+                            <DrawerCloseButton />
+                            <DrawerHeader borderBottomWidth="1px">
+                              Edit Product Details
+                            </DrawerHeader>
+
+                            <DrawerBody>
+                              <Stack spacing="24px">
+                                <Box>
+                                  <FormLabel htmlFor="master">
+                                    Master SKU
+                                  </FormLabel>
+                                  <Input
+                                    id="master"
+                                    onChange={e => {
+                                      setEnteredSku(e.target.value);
+                                    }}
+                                    placeholder="Please enter Master SKU"
+                                  />
+                                  <DatePicker
+                                    selected={update}
+                                    onChange={date => setUpdate(date)}
+                                  ></DatePicker>
+                                  <FormLabel htmlFor="quantity">
+                                    Quantity
+                                  </FormLabel>
+                                  <Input
+                                    id="quantity"
+                                    onChange={newQuantityChange}
+                                    placeholder="Please enter Quantity"
+                                  />
+                                </Box>
+                              </Stack>
+                            </DrawerBody>
+
+                            <DrawerFooter borderTopWidth="1px">
+                              <Button
+                                variant="outline"
+                                mr={3}
+                                onClick={onClose}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                colorScheme="blue"
+                                onClick={updateHandler}
+                              >
+                                Submit
+                              </Button>
+                            </DrawerFooter>
+                          </DrawerContent>
+                        </Drawer>
+                      </Td>
+                      <Td textAlign={'center'}>
+                        <Button
+                          onClick={() => {
+                            setSelectedsku(val.mastersku);
+                            deleteHandler();
+                          }}
+                          colorScheme={'red'}
+                        >
+                          Delete
+                        </Button>
                       </Td>
                     </Tr>
                   ))}
@@ -181,7 +277,6 @@ const Purchase = () => {
           )}
         </VStack>
       </HStack>
-      <EditModal />
     </VStack>
   );
 };

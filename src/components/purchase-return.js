@@ -1,31 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Heading,
   VStack,
-  Button,
   HStack,
+  Heading,
   Input,
   Table,
+  TableContainer,
+  Thead,
   Menu,
   MenuItem,
   MenuList,
   MenuButton,
-  TableContainer,
-  Thead,
   Tbody,
   Tr,
   Th,
   Td,
+  Button,
   Spinner,
+  Box,
+  Stack,
+  FormLabel,
 } from '@chakra-ui/react';
+import {
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
+} from '@chakra-ui/react';
+
 import DatePicker from 'react-datepicker';
-import EditModal from './modals/purchaseReturnEdit';
-// import { useDisclosure } from '@chakra-ui/react';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
 const PurchaseReturn = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const [sku, setSku] = useState('');
   const [start, setStart] = useState(new Date());
   const [quantity, setQuantity] = useState('');
@@ -33,15 +47,22 @@ const PurchaseReturn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedsku, setSelectedsku] = useState('');
 
-  // const { onOpen, isOpen, onClose } = useDisclosure();
+  const [enteredsku, setEnteredSku] = useState('');
+  const [update, setUpdate] = useState(new Date());
+  const [newQuantity, setNewQuantity] = useState('');
+  const newQuantityChange = e => {
+    setNewQuantity(e.target.value);
+  };
 
   const quantityChange = e => {
     setQuantity(e.target.value);
   };
 
-  const submitHandler = e => {
+  // create product
+  const submitHandler = async e => {
     e.preventDefault();
-    fetch('http://localhost:3001/api/purchaseReturn/create', {
+    // e.preventDefault();
+    await fetch('http://localhost:3001/api/purchaseReturn/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -51,7 +72,7 @@ const PurchaseReturn = () => {
       }),
     });
   };
-
+  // get list of products
   const getListHandler = async () => {
     setIsLoading(true);
     const response = await fetch(
@@ -61,19 +82,19 @@ const PurchaseReturn = () => {
     setIsLoading(false);
     setPurchaseReturnData(result);
   };
-
-  // const updateHandler = () => {
-  //   fetch('http://localhost:3001/api/purchase/update', {
-  //     method: 'PUT',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({
-  //       mastersku: sku,
-  //       date: start,
-  //       quantity: quantity,
-  //     }),
-  //   });
-  // };
-
+  // update product
+  const updateHandler = () => {
+    fetch('http://localhost:3001/api/purchaseReturn/update', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mastersku: enteredsku,
+        date: update,
+        quantity: newQuantity,
+      }),
+    });
+  };
+  // delete product
   const deleteHandler = async () => {
     await fetch('http://localhost:3001/api/purchaseReturn/delete', {
       method: 'DELETE',
@@ -83,6 +104,7 @@ const PurchaseReturn = () => {
       }),
     });
   };
+  // sorting product
 
   useEffect(() => {
     getListHandler();
@@ -95,28 +117,26 @@ const PurchaseReturn = () => {
       </Heading>
       <HStack px={10} spacing={20}>
         <VStack p={5}>
-          <Heading className="purchase-heading" size={'md'} pb={10}>
+          <Heading className="purchase-return-heading" size={'md'} pb={10}>
             Input Products Details
           </Heading>
           <VStack width={60}>
             <form
               onSubmit={e => {
                 submitHandler(e);
-                getListHandler(e);
               }}
               style={{ margin: '20px' }}
             >
               <Input
                 placeholder="Enter SKU"
-                list={'purchasemastersku'}
-                name={'mastersku'}
+                list={'mastersku'}
                 textAlign="center"
-                required
+                name={'mastersku'}
                 onChange={e => {
                   setSku(e.target.value);
                 }}
+                required
               />
-
               <DatePicker
                 selected={start}
                 onChange={date => setStart(date)}
@@ -156,7 +176,6 @@ const PurchaseReturn = () => {
               h={250}
               overflowY={'auto'}
               overflowX={'hidden'}
-              // bg={useColorModeValue('gray.100', 'gray.700')}
             >
               <Table variant="simple">
                 <Thead
@@ -168,7 +187,8 @@ const PurchaseReturn = () => {
                     <Th textAlign="center">SKU</Th>
                     <Th textAlign="center">Date</Th>
                     <Th textAlign="center">Quantity</Th>
-                    <Th>Delete</Th>
+                    <Th textAlign="center">Edit</Th>
+                    <Th textAlign="center">Delete</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -177,15 +197,79 @@ const PurchaseReturn = () => {
                       <Td textAlign={'center'}>{val.mastersku}</Td>
                       <Td textAlign={'center'}>{val.date}</Td>
                       <Td textAlign={'center'}>{val.quantity}</Td>
-                      <Td
-                        textAlign={'center'}
-                        onClick={() => {
-                          setSelectedsku(val.mastersku);
-                          deleteHandler();
-                          getListHandler();
-                        }}
-                      >
-                        delete
+                      <Td>
+                        <Button colorScheme="teal" onClick={onOpen}>
+                          Edit
+                        </Button>
+                        <Drawer
+                          isOpen={isOpen}
+                          placement="right"
+                          onClose={onClose}
+                        >
+                          <DrawerOverlay />
+                          <DrawerContent>
+                            <DrawerCloseButton />
+                            <DrawerHeader borderBottomWidth="1px">
+                              Edit Product Details
+                            </DrawerHeader>
+
+                            <DrawerBody>
+                              <Stack spacing="24px">
+                                <Box>
+                                  <FormLabel htmlFor="master">
+                                    Master SKU
+                                  </FormLabel>
+                                  <Input
+                                    id="master"
+                                    onChange={e => {
+                                      setEnteredSku(e.target.value);
+                                    }}
+                                    placeholder="Please enter Master SKU"
+                                  />
+                                  <DatePicker
+                                    selected={update}
+                                    onChange={date => setUpdate(date)}
+                                  ></DatePicker>
+                                  <FormLabel htmlFor="quantity">
+                                    Quantity
+                                  </FormLabel>
+                                  <Input
+                                    id="quantity"
+                                    onChange={newQuantityChange}
+                                    placeholder="Please enter Quantity"
+                                  />
+                                </Box>
+                              </Stack>
+                            </DrawerBody>
+
+                            <DrawerFooter borderTopWidth="1px">
+                              <Button
+                                variant="outline"
+                                mr={3}
+                                onClick={onClose}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                colorScheme="blue"
+                                onClick={updateHandler}
+                              >
+                                Submit
+                              </Button>
+                            </DrawerFooter>
+                          </DrawerContent>
+                        </Drawer>
+                      </Td>
+                      <Td textAlign={'center'}>
+                        <Button
+                          onClick={() => {
+                            setSelectedsku(val.mastersku);
+                            deleteHandler();
+                          }}
+                          colorScheme={'red'}
+                        >
+                          Delete
+                        </Button>
                       </Td>
                     </Tr>
                   ))}
@@ -195,7 +279,6 @@ const PurchaseReturn = () => {
           )}
         </VStack>
       </HStack>
-      <EditModal />
     </VStack>
   );
 };
