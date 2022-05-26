@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  Box,
+  Stack,
   Heading,
   Table,
   FormLabel,
@@ -14,6 +14,8 @@ import {
   Th,
   Td,
   Spinner,
+  Flex,
+  Select,
   VStack,
 } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
@@ -77,11 +79,21 @@ const Mapped = () => {
       <Heading size={'lg'} pb={10}>
         Master SKU Section
       </Heading>
-      <Box textAlign={'center'} w={80}>
+      <Stack textAlign={'center'} w={80}>
+        <Stack py={5}>
+          <Flex>
+            <Input placeholder="enter single sku" textAlign={'center'}></Input>
+            <Select>
+              <option>test1</option>
+              <option>test2</option>
+              <option>test3</option>
+            </Select>
+          </Flex>
+          <Button width={'100%'}>Submit</Button>
+        </Stack>
         <FormLabel
-          width={'100%'}
           htmlFor={'csvInput'}
-          padding={'7px 0px'}
+          p={'5px '}
           border={'1px solid grey'}
           _hover={{ cursor: 'pointer' }}
           borderRadius={'5px'}
@@ -105,11 +117,10 @@ const Mapped = () => {
             submitArrayHandler();
             getListHandler();
           }}
-          variant={'outline'}
         >
-          Import
+          Submit
         </Button>
-      </Box>
+      </Stack>
       <Heading size={'md'} pt={20} pb={4}>
         Master SKU Table
       </Heading>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Input,
   Table,
@@ -42,9 +42,7 @@ const Sales = () => {
       }, {});
       return obj;
     });
-    setIsLoading(false);
-    setArray(array);
-    console.log(array);
+
     fetch('http://localhost:3001/api/sales/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -54,6 +52,12 @@ const Sales = () => {
     });
   };
 
+  const getDataHandler = async () => {
+    const recievedData = await fetch('http://localhost:3001/api/sales/getAll');
+    const result = await recievedData.json();
+    setIsLoading(false);
+    setArray(result);
+  };
   const onSubmitHandler = e => {
     setIsLoading(true);
     if (file) {
@@ -64,6 +68,10 @@ const Sales = () => {
       fileReader.readAsText(file);
     }
   };
+
+  useEffect(() => {
+    getDataHandler();
+  }, []);
 
   const headerKeys = Object.keys(Object.assign({}, ...array));
 
@@ -101,6 +109,9 @@ const Sales = () => {
           >
             Import
           </Button>
+          <Button width={'100%'} onClick={getDataHandler}>
+            Get
+          </Button>
         </FormControl>
       </Box>
       <Heading size={'md'} pt={20} pb={4}>
@@ -128,7 +139,7 @@ const Sales = () => {
 
             <Tbody>
               {array.map(item => (
-                <Tr key={item.ID}>
+                <Tr key={item._id}>
                   {Object.values(item).map(val => (
                     <Td textAlign={'center'}>{val}</Td>
                   ))}

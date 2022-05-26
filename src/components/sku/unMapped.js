@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   VStack,
+  Select,
   Heading,
   Table,
   TableContainer,
@@ -119,27 +120,11 @@ const UnMapped = () => {
                 <Tr>
                   <Td>example test</Td>
                   <Td>
-                    <Input
-                      list="unmapped_mastersku"
-                      placeholder="Select master SKU"
-                      fontSize={'20px'}
-                      autoComplete={'off'}
-                      name="mastersku"
-                    />
-                    <datalist
-                      style={{
-                        position: 'absolute',
-                        maxHeight: '20em',
-                        border: '0 none',
-                        overflowX: 'hidden',
-                        overflowY: 'auto',
-                      }}
-                      id={'unmapped_mastersku'}
-                    >
+                    <Select>
                       <option>red-saree</option>
                       <option>green-top</option>
                       <option>yellow-gown</option>
-                    </datalist>
+                    </Select>
                   </Td>
                 </Tr>
               </Tbody>

@@ -191,7 +191,7 @@ const Purchase = () => {
                 </Thead>
                 <Tbody>
                   {purchasedata.map(val => (
-                    <Tr key={val.mastersku}>
+                    <Tr key={val._id}>
                       <Td textAlign={'center'}>{val.mastersku}</Td>
                       <Td textAlign={'center'}>{val.date}</Td>
                       <Td textAlign={'center'}>{val.quantity}</Td>
