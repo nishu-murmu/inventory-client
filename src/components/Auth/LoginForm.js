@@ -23,7 +23,7 @@ const Login = () => {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const submitHandler = async () => {
-    await fetch('http://localhost:3001/api/users/login', {
+    await fetch('http://localhost:3001/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -32,7 +32,6 @@ const Login = () => {
       }),
     }).then(res => {
       res.json();
-      console.log(res.json());
     });
   };
 

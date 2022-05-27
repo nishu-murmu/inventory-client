@@ -139,17 +139,11 @@ const PurchaseReturn = () => {
               }}
               style={{ margin: '20px' }}
             >
-              {/* <Input
-                placeholder="Enter SKU"
-                list={'mastersku'}
-                textAlign="center"
-                name={'mastersku'}
+              <Select
                 onChange={e => {
                   setSku(e.target.value);
                 }}
-                required
-              /> */}
-              <Select>
+              >
                 {mappedArray.map(item => (
                   <option key={item._id}>{item.mastersku}</option>
                 ))}
@@ -212,7 +206,9 @@ const PurchaseReturn = () => {
                   {purchaseReturndata.map(val => (
                     <Tr key={val._id}>
                       <Td textAlign={'center'}>{val.mastersku}</Td>
-                      <Td textAlign={'center'}>{val.date}</Td>
+                      <Td textAlign={'center'}>
+                        {val.Date.toString().substring(0, 10)}
+                      </Td>
                       <Td textAlign={'center'}>{val.quantity}</Td>
                       <Td>
                         <Button colorScheme="teal" onClick={onOpen}>

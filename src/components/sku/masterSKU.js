@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import {
-  Stack,
   Heading,
   Table,
   Input,
@@ -53,40 +52,37 @@ const Mapped = () => {
       <Heading size={'lg'} pb={10}>
         Master SKU Section
       </Heading>
-      <Flex>
-        <Input
-          textAlign={'center'}
-          onChange={e => {
-            setGrandParent(e.target.value);
-          }}
-          placeholder="grand-parent"
-        />
-        <Input
-          textAlign={'center'}
-          onChange={e => {
-            setParent(e.target.value);
-          }}
-          placeholder="parent"
-        />
-        <Input
-          textAlign={'center'}
-          onChange={e => {
-            setChild(e.target.value);
-          }}
-          placeholder="child"
-        />
-      </Flex>
-      <Stack textAlign={'center'} w={80}>
-        <Button
-          type={'button'}
-          width={'100%'}
-          onClick={() => {
-            submitArrayHandler();
-          }}
-        >
+      <form onSubmit={submitArrayHandler}>
+        <Flex>
+          <Input
+            textAlign={'center'}
+            onChange={e => {
+              setGrandParent(e.target.value);
+            }}
+            placeholder="grand-parent"
+            required
+          />
+          <Input
+            textAlign={'center'}
+            onChange={e => {
+              setParent(e.target.value);
+            }}
+            placeholder="parent"
+            required
+          />
+          <Input
+            textAlign={'center'}
+            onChange={e => {
+              setChild(e.target.value);
+            }}
+            placeholder="child"
+            required
+          />
+        </Flex>
+        <Button type={'submit'} px={10} my={5}>
           Submit
         </Button>
-      </Stack>
+      </form>
       <Heading size={'md'} pt={20} pb={4}>
         Master SKU Table
       </Heading>

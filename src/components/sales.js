@@ -16,6 +16,7 @@ import {
   FormControl,
   VStack,
   Box,
+  Flex,
 } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
 // files
@@ -80,7 +81,7 @@ const Sales = () => {
       <Heading size={'lg'} pb={10}>
         Sales Section
       </Heading>
-      <Box textAlign={'center'} w={80}>
+      <Box textAlign={'center'}>
         <FormControl>
           <FormLabel
             w={'100%'}
@@ -109,10 +110,11 @@ const Sales = () => {
           >
             Import
           </Button>
-          <Button width={'100%'} onClick={getDataHandler}>
-            Get
-          </Button>
         </FormControl>
+        <Flex py={2}>
+          <Button>Scan Products</Button>
+          <Button>List Products</Button>
+        </Flex>
       </Box>
       <Heading size={'md'} pt={20} pb={4}>
         Sales Table
