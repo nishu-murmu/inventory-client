@@ -1,10 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Stack,
   Heading,
   Table,
-  FormLabel,
-  Text,
   Input,
   Button,
   TableContainer,
@@ -14,108 +12,76 @@ import {
   Th,
   Td,
   Spinner,
-  Flex,
-  Select,
   VStack,
+  Flex,
 } from '@chakra-ui/react';
-import { DownloadIcon } from '@chakra-ui/icons';
 
 const Mapped = () => {
-  const [file, setFile] = useState();
-  const [array, setArray] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const fileReader = new FileReader();
+  const [array, setArray] = useState([]);
 
-  const onChangeHandler = e => {
-    setFile(e.target.files[0]);
-  };
-
-  const csvFileToArray = string => {
-    const csvHeader = string.slice(0, string.indexOf('\n')).split(',');
-    const csvRows = string.slice(string.indexOf('\n') + 1).split('\n');
-
-    const array1 = csvRows.map(i => {
-      const values = i.split(',');
-      const obj = csvHeader.reduce((object, header, index) => {
-        object[header] = values[index];
-        return object;
-      }, {});
-      return obj;
-    });
-    setArray(array1);
-  };
-
-  const onSubmitHandler = e => {
-    if (file) {
-      fileReader.onload = function (e) {
-        const csvOutput = e.target.result;
-        csvFileToArray(csvOutput);
-      };
-      fileReader.readAsText(file);
-    }
-  };
+  const [grandParent, setGrandParent] = useState('');
+  const [parent, setParent] = useState('');
+  const [child, setChild] = useState('');
 
   const submitArrayHandler = () => {
     fetch('http://localhost:3001/api/master/store', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        masterSKUtable: array,
+        grand_parent: grandParent,
+        parent,
+        child,
+        mastersku: [grandParent, parent, child].join('_'),
       }),
     });
   };
 
   const getListHandler = async () => {
     setIsLoading(true);
-    const response = await fetch('http://localhost:3001/api/master/getall');
+    const response = await fetch('http://localhost:3001/api/master/getAll');
     const result = await response.json();
     setIsLoading(false);
     setArray(result);
   };
-  const headerKeys = Object.keys(Object.assign({}, ...array));
 
+  useEffect(() => {
+    getListHandler();
+  }, []);
   return (
     <VStack p={4}>
       <Heading size={'lg'} pb={10}>
         Master SKU Section
       </Heading>
-      <Stack textAlign={'center'} w={80}>
-        <Stack py={5}>
-          <Flex>
-            <Input placeholder="enter single sku" textAlign={'center'}></Input>
-            <Select>
-              <option>test1</option>
-              <option>test2</option>
-              <option>test3</option>
-            </Select>
-          </Flex>
-          <Button width={'100%'}>Submit</Button>
-        </Stack>
-        <FormLabel
-          htmlFor={'csvInput'}
-          p={'5px '}
-          border={'1px solid grey'}
-          _hover={{ cursor: 'pointer' }}
-          borderRadius={'5px'}
-        >
-          <Text textAlign={'center'}>
-            Select csv <DownloadIcon />
-          </Text>
-        </FormLabel>
+      <Flex>
         <Input
-          display={'none'}
-          type={'file'}
-          id={'csvInput'}
-          accept={'.csv'}
-          onChange={onChangeHandler}
+          textAlign={'center'}
+          onChange={e => {
+            setGrandParent(e.target.value);
+          }}
+          placeholder="grand-parent"
         />
+        <Input
+          textAlign={'center'}
+          onChange={e => {
+            setParent(e.target.value);
+          }}
+          placeholder="parent"
+        />
+        <Input
+          textAlign={'center'}
+          onChange={e => {
+            setChild(e.target.value);
+          }}
+          placeholder="child"
+        />
+      </Flex>
+      <Stack textAlign={'center'} w={80}>
         <Button
           type={'button'}
           width={'100%'}
-          onClick={e => {
-            onSubmitHandler(e);
+          onClick={() => {
             submitArrayHandler();
-            getListHandler();
           }}
         >
           Submit
@@ -138,18 +104,20 @@ const Mapped = () => {
           <Table variant="simple">
             <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
               <Tr key={'header'}>
-                {headerKeys.map(key => (
-                  <Th textAlign={'center'}>{key}</Th>
-                ))}
+                <Th textAlign={'center'}>GrandParent</Th>
+                <Th textAlign={'center'}>Parent</Th>
+                <Th textAlign={'center'}>Child</Th>
+                <Th textAlign={'center'}>Master SKU</Th>
               </Tr>
             </Thead>
 
             <Tbody>
               {array.map(item => (
-                <Tr key={item.id}>
-                  {Object.values(item).map(val => (
-                    <Td textAlign={'center'}>{val}</Td>
-                  ))}
+                <Tr key={item._id}>
+                  <Td textAlign={'center'}>{item.grand_parent}</Td>
+                  <Td textAlign={'center'}>{item.parent}</Td>
+                  <Td textAlign={'center'}>{item.child}</Td>
+                  <Td textAlign={'center'}>{item.mastersku}</Td>
                 </Tr>
               ))}
             </Tbody>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   VStack,
   Select,
@@ -23,6 +23,7 @@ import { DownloadIcon } from '@chakra-ui/icons';
 const UnMapped = () => {
   const [file, setFile] = useState();
   const [array, setArray] = useState([]);
+  const [mappedArray, setMappedArray] = useState([]);
   const fileReader = new FileReader();
 
   const onChangeHandler = e => {
@@ -49,15 +50,26 @@ const UnMapped = () => {
     if (file) {
       fileReader.onload = function (e) {
         const csvOutput = e.target.result;
-        console.log(csvOutput);
         csvFileToArray(csvOutput);
       };
       fileReader.readAsText(file);
     }
   };
 
+  const masterskuHandler = () => {
+    fetch('http://localhost:3001/api/master/getAll')
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        setMappedArray(data);
+      });
+  };
   // const headerKeys = Object.keys(Object.assign({}, ...array));
 
+  useEffect(() => {
+    masterskuHandler();
+  }, []);
   return (
     <VStack p={4} pb={120}>
       <Heading size={'lg'} pb={10}>
@@ -121,9 +133,9 @@ const UnMapped = () => {
                   <Td>example test</Td>
                   <Td>
                     <Select>
-                      <option>red-saree</option>
-                      <option>green-top</option>
-                      <option>yellow-gown</option>
+                      {mappedArray.map(item => (
+                        <option key={item._id}>{item.mastersku}</option>
+                      ))}
                     </Select>
                   </Td>
                 </Tr>

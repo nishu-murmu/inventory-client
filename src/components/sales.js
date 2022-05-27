@@ -42,7 +42,7 @@ const Sales = () => {
       }, {});
       return obj;
     });
-
+    console.log(array);
     fetch('http://localhost:3001/api/sales/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -139,7 +139,7 @@ const Sales = () => {
 
             <Tbody>
               {array.map(item => (
-                <Tr key={item._id}>
+                <Tr key={item.AWB}>
                   {Object.values(item).map(val => (
                     <Td textAlign={'center'}>{val}</Td>
                   ))}

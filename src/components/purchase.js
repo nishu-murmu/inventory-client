@@ -19,6 +19,7 @@ import {
   Spinner,
   Box,
   Stack,
+  Select,
   FormLabel,
 } from '@chakra-ui/react';
 import {
@@ -46,6 +47,7 @@ const Purchase = () => {
   const [purchasedata, setPurchaseData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedsku, setSelectedsku] = useState('');
+  const [mappedArray, setMappedArray] = useState([]);
 
   const [enteredsku, setEnteredSku] = useState('');
   const [update, setUpdate] = useState(new Date());
@@ -102,10 +104,20 @@ const Purchase = () => {
       }),
     });
   };
-  // sorting product
+  // master sku hander
+  const masterskuHandler = () => {
+    fetch('http://localhost:3001/api/master/getAll')
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        setMappedArray(data);
+      });
+  };
 
   useEffect(() => {
     getListHandler();
+    masterskuHandler();
   }, []);
 
   return (
@@ -125,7 +137,7 @@ const Purchase = () => {
               }}
               style={{ margin: '20px' }}
             >
-              <Input
+              {/* <Input
                 placeholder="Enter SKU"
                 list={'mastersku'}
                 textAlign="center"
@@ -134,7 +146,12 @@ const Purchase = () => {
                   setSku(e.target.value);
                 }}
                 required
-              />
+              /> */}
+              <Select>
+                {mappedArray.map(item => (
+                  <option key={item._id}>{item.mastersku}</option>
+                ))}
+              </Select>
               <DatePicker
                 selected={start}
                 onChange={date => setStart(date)}
