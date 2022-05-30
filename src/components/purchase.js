@@ -17,24 +17,20 @@ import {
   Td,
   Button,
   Spinner,
-  Box,
-  Stack,
   Select,
-  FormLabel,
+  useDisclosure,
 } from '@chakra-ui/react';
 import {
-  Drawer,
-  DrawerBody,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from '@chakra-ui/react';
 
 import DatePicker from 'react-datepicker';
-
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
@@ -148,6 +144,7 @@ const Purchase = () => {
               </Select>
               <DatePicker
                 selected={start}
+                placeholderText={'Select Date'}
                 onChange={date => setStart(date)}
               ></DatePicker>
               <Input
@@ -212,64 +209,46 @@ const Purchase = () => {
                         <Button colorScheme="teal" onClick={onOpen}>
                           Edit
                         </Button>
-                        <Drawer
-                          isOpen={isOpen}
-                          placement="right"
-                          onClose={onClose}
-                        >
-                          <DrawerOverlay />
-                          <DrawerContent>
-                            <DrawerCloseButton />
-                            <DrawerHeader borderBottomWidth="1px">
-                              Edit Product Details
-                            </DrawerHeader>
-
-                            <DrawerBody>
-                              <Stack spacing="24px">
-                                <Box>
-                                  <FormLabel htmlFor="master">
-                                    Master SKU
-                                  </FormLabel>
-                                  <Input
-                                    id="master"
-                                    onChange={e => {
-                                      setEnteredSku(e.target.value);
-                                    }}
-                                    placeholder="Please enter Master SKU"
-                                  />
-                                  <DatePicker
-                                    selected={update}
-                                    onChange={date => setUpdate(date)}
-                                  ></DatePicker>
-                                  <FormLabel htmlFor="quantity">
-                                    Quantity
-                                  </FormLabel>
-                                  <Input
-                                    id="quantity"
-                                    onChange={newQuantityChange}
-                                    placeholder="Please enter Quantity"
-                                  />
-                                </Box>
-                              </Stack>
-                            </DrawerBody>
-
-                            <DrawerFooter borderTopWidth="1px">
+                        <Modal isCentered isOpen={isOpen} onClose={onClose}>
+                          <ModalOverlay />
+                          <ModalContent>
+                            <ModalHeader>Edit Purchase Product</ModalHeader>
+                            <ModalCloseButton />
+                            <ModalBody>
+                              <Select
+                                onChange={e => {
+                                  setEnteredSku(e.target.value);
+                                }}
+                              >
+                                {mappedArray.map(item => (
+                                  <option key={item._id}>
+                                    {item.mastersku}
+                                  </option>
+                                ))}
+                              </Select>
+                              <DatePicker
+                                selected={start}
+                                onChange={date => setUpdate(date)}
+                              ></DatePicker>
+                              <Input
+                                placeholder="Enter Quantity"
+                                onChange={newQuantityChange}
+                                required
+                                textAlign="center"
+                              />
+                            </ModalBody>
+                            <ModalFooter>
                               <Button
-                                variant="outline"
+                                colorScheme="blue"
                                 mr={3}
                                 onClick={onClose}
                               >
-                                Cancel
+                                Close
                               </Button>
-                              <Button
-                                colorScheme="blue"
-                                onClick={updateHandler}
-                              >
-                                Submit
-                              </Button>
-                            </DrawerFooter>
-                          </DrawerContent>
-                        </Drawer>
+                              <Button variant="ghost">Submit</Button>
+                            </ModalFooter>
+                          </ModalContent>
+                        </Modal>
                       </Td>
                       <Td textAlign={'center'}>
                         <Button

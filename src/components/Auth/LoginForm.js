@@ -73,9 +73,10 @@ const Login = () => {
                 </InputRightElement>
               </InputGroup>
             </FormControl>
-            <Stack spacing={10}>
+            <Stack>
               <Stack
                 direction={{ base: 'column', sm: 'row' }}
+                pt={5}
                 align={'start'}
                 justify="space-between"
               >

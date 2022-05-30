@@ -100,10 +100,11 @@ const SignUp = () => {
                 </InputRightElement>
               </InputGroup>
             </FormControl>
-            <Stack spacing={10}>
+            <Stack>
               <Stack
                 direction={{ base: 'column', sm: 'row' }}
                 align={'start'}
+                pt={5}
                 justify="space-between"
               >
                 <Text>Already a user?</Text>

@@ -91,7 +91,7 @@ const PurchaseReturn = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         mastersku: enteredsku,
-        date: update,
+        Date: update,
         quantity: newQuantity,
       }),
     });

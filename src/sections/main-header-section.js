@@ -12,7 +12,7 @@ import {
   Image,
   // useColorModeValue,
 } from '@chakra-ui/react';
-import { FaUser } from 'react-icons/fa/index';
+import { FaUser, FaGithub } from 'react-icons/fa/index';
 import { Link } from 'react-router-dom';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
 const MainHeader = () => {
@@ -43,9 +43,12 @@ const MainHeader = () => {
       </Link>
       <Spacer />
       <Flex spacing={5} gridColumnGap={4}>
+        <Button variant={'ghost'}>
+          <Icon as={FaGithub} />
+        </Button>
         <ColorModeSwitcher justifySelf="flex-end" />
         <Menu>
-          <MenuButton as={Button} cursor={'pointer'} variant={'outline'}>
+          <MenuButton as={Button} cursor={'pointer'} variant={'ghost'}>
             <Icon as={FaUser} />
           </MenuButton>
           <MenuList>
