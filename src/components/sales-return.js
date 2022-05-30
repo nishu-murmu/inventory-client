@@ -275,14 +275,15 @@ const SalesReturn = () => {
                     <Td textAlign={'center'}>{item.QTY}</Td>
                     <Td mr={10}>
                       <Select
+                        defaultValue={'dispatch'}
                         mx={10}
                         onChange={e => {
                           setStatus(e.target.value);
                         }}
                       >
-                        <option selected>pending</option>
-                        <option>dispatch</option>
-                        <option>cancel</option>
+                        <option value={'pending'}>pending</option>
+                        <option value={'dispatch'}>dispatch</option>
+                        <option value={'cancel'}>cancel</option>
                       </Select>
                     </Td>
                     <Td textAlign={'center'}>{item['Return Received Date']}</Td>
