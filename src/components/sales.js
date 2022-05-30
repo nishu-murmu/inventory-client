@@ -17,6 +17,7 @@ import {
   VStack,
   Box,
   Flex,
+  Select,
 } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
 
@@ -26,9 +27,12 @@ const Sales = () => {
  */
   const [file, setFile] = useState();
   const [array, setArray] = useState([]);
+  const [filterArray, setFilterArray] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isScan, setIsScan] = useState(false);
   const [isList, setIsList] = useState(true);
+  const [status, setStatus] = useState('');
+  const [enteredAWB, setEnteredAWB] = useState('');
   const fileReader = new FileReader();
 
   /*
@@ -87,6 +91,23 @@ const Sales = () => {
     setArray(result);
   };
 
+  const getFilterDataHandler = async e => {
+    e.preventDefault();
+    setIsLoading(true);
+    const recievedFilterData = await fetch(
+      'http://localhost:3001/api/sales/filter',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          awb: enteredAWB,
+        }),
+      }
+    );
+    const result = await recievedFilterData.json();
+    setIsLoading(false);
+    setFilterArray(result);
+  };
   /* 
     Hooks
   */
@@ -146,8 +167,8 @@ const Sales = () => {
               boxShadow={'lg'}
               overflowY={'auto'}
               overflowX={'auto'}
-              h={400}
-              w={800}
+              h={600}
+              w={1200}
               mb={20}
             >
               <Table variant="simple">
@@ -161,6 +182,7 @@ const Sales = () => {
                     <Th textAlign={'center'}>order id</Th>
                     <Th textAlign={'center'}>SKU</Th>
                     <Th textAlign={'center'}>QTY</Th>
+                    <Th textAlign={'center'}>STATUS</Th>
                     <Th textAlign={'center'}>courier</Th>
                     <Th textAlign={'center'}>date</Th>
                     <Th textAlign={'center'}>firm</Th>
@@ -175,6 +197,7 @@ const Sales = () => {
                       <Td>{item.ORDER_ID}</Td>
                       <Td>{item.SKU}</Td>
                       <Td>{item.QTY}</Td>
+                      <Td>{item.status}</Td>
                       <Td>{item.courier}</Td>
                       <Td>{item.date}</Td>
                       <Td>{item.firm}</Td>
@@ -189,18 +212,66 @@ const Sales = () => {
       )}
       {isList && (
         <Box>
-          <Input type={'text'} textAlign={'center'} placeholder="Enter AWB" />
-          <TableContainer>
+          <form onSubmit={getFilterDataHandler}>
+            <Input
+              width={'38%'}
+              type={'text'}
+              mt={5}
+              textAlign={'center'}
+              onChange={e => {
+                setEnteredAWB(e.target.value);
+              }}
+              placeholder="Enter AWB"
+            />
+          </form>
+          <TableContainer
+            pt={10}
+            rounded={'lg'}
+            boxShadow={'lg'}
+            h={400}
+            w={1200}
+            overflowY={'auto'}
+            overflowX={'scroll'}
+          >
             <Table variant={'simple'}>
               <Thead>
-                <Tr>
-                  <Th textAlign={'center'}>Heading</Th>
+                <Tr key={'header'}>
+                  <Th textAlign={'center'}>AWB</Th>
+                  <Th textAlign={'center'}>order id</Th>
+                  <Th textAlign={'center'}>SKU</Th>
+                  <Th textAlign={'center'}>QTY</Th>
+                  <Th textAlign={'center'}>Status</Th>
+                  <Th textAlign={'center'}>courier</Th>
+                  <Th textAlign={'center'}>date</Th>
+                  <Th textAlign={'center'}>firm</Th>
+                  <Th textAlign={'center'}>Portal</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                <Tr>
-                  <Td textAlign={'center'}>Row</Td>
-                </Tr>
+                {filterArray.map(item => (
+                  <Tr key={item._id}>
+                    <Td>{item.AWB}</Td>
+                    <Td>{item.ORDER_ID}</Td>
+                    <Td>{item.SKU}</Td>
+                    <Td>{item.QTY}</Td>
+                    <Td mr={10}>
+                      <Select
+                        mx={10}
+                        onChange={e => {
+                          setStatus(e.target.value);
+                        }}
+                      >
+                        <option selected>pending</option>
+                        <option>dispatch</option>
+                        <option>cancel</option>
+                      </Select>
+                    </Td>
+                    <Td>{item.courier}</Td>
+                    <Td>{item.date}</Td>
+                    <Td>{item.firm}</Td>
+                    <Td>{item['PORTAL\r']}</Td>
+                  </Tr>
+                ))}
               </Tbody>
             </Table>
           </TableContainer>

@@ -163,7 +163,7 @@ const UnMapped = () => {
             <Table variant="simple" w={'50%'}>
               <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
                 <Tr>
-                  <Th textAlign={'center'}>UnMapped SKUs</Th>
+                  <Th textAlign={'center'}>Mapped SKUs</Th>
                   <Th textAlign={'center'}>Master SKUs</Th>
                 </Tr>
               </Thead>

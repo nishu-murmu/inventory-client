@@ -24,8 +24,8 @@ const LiveStock = () => {
       <TableContainer
         rounded={'lg'}
         boxShadow={'lg'}
-        h={250}
-        w={900}
+        h={400}
+        w={1200}
         overflowY={'auto'}
         overflowX={'scroll'}
         bg={useColorModeValue('gray.100', 'gray.700')}

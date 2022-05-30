@@ -245,7 +245,9 @@ const Purchase = () => {
                               >
                                 Close
                               </Button>
-                              <Button variant="ghost">Submit</Button>
+                              <Button variant="ghost" onClick={updateHandler}>
+                                Submit
+                              </Button>
                             </ModalFooter>
                           </ModalContent>
                         </Modal>
