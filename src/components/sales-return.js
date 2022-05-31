@@ -87,25 +87,33 @@ const SalesReturn = () => {
     setIsLoading(false);
     setArray(result);
   };
-  const getFilterDataHandler = async e => {
+  const updateHandler = async e => {
     e.preventDefault();
-    setIsLoading(true);
-    const recievedFilterData = await fetch(
+    await fetch('http://localhost:3001/api/salesReturn/filter', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        awb: enteredAWB,
+        status,
+      }),
+    });
+  };
+
+  const filterHandler = async e => {
+    e.preventDefault();
+    const receivedList = await fetch(
       'http://localhost:3001/api/salesReturn/filter',
       {
-        method: 'POST',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           awb: enteredAWB,
         }),
       }
     );
-    const result = await recievedFilterData.json();
-    setIsLoading(false);
+    const result = await receivedList.json();
     setFilterArray(result);
-    console.log(result);
   };
-
   /* 
     Hooks
   */
@@ -224,7 +232,12 @@ const SalesReturn = () => {
       )}
       {isList && (
         <Box>
-          <form onSubmit={getFilterDataHandler}>
+          <form
+            onSubmit={e => {
+              updateHandler(e);
+              filterHandler(e);
+            }}
+          >
             <Input
               width={'38%'}
               type={'text'}
@@ -232,6 +245,7 @@ const SalesReturn = () => {
               textAlign={'center'}
               onChange={e => {
                 setEnteredAWB(e.target.value);
+                setStatus('dispatch');
               }}
               placeholder="Enter AWB"
             />

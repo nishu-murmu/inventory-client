@@ -17,8 +17,8 @@ import {
   VStack,
   Box,
   Flex,
-  Select,
 } from '@chakra-ui/react';
+import { Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
 
 const Sales = () => {
@@ -27,10 +27,14 @@ const Sales = () => {
  */
   const [file, setFile] = useState();
   const [array, setArray] = useState([]);
+  const [dispatchArray, setIsDispatchArray] = useState([]);
+  const [pendingArray, setIsPendingArray] = useState([]);
   const [filterArray, setFilterArray] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isScan, setIsScan] = useState(false);
-  const [isList, setIsList] = useState(true);
+  const [isPending, setIsPending] = useState(false);
+  const [isCancel, setIsCancel] = useState(false);
+  const [isDispatch, setIsDispatch] = useState(true);
   const [status, setStatus] = useState('');
   const [enteredAWB, setEnteredAWB] = useState('');
   const fileReader = new FileReader();
@@ -43,16 +47,33 @@ const Sales = () => {
   };
   const switchScanHandler = () => {
     if (isScan === true) setIsScan(false);
-    if (isList === false) setIsList(true);
+    if (isDispatch === false) setIsDispatch(true);
+    if (isCancel === false) setIsCancel(true);
+    if (isPending === false) setIsPending(true);
   };
-  const switchListHandler = () => {
+  const switchDispatchHandler = () => {
     if (isScan === false) setIsScan(true);
-    if (isList === true) setIsList(false);
+    if (isDispatch === true) setIsDispatch(false);
+    if (isCancel === false) setIsCancel(true);
+    if (isPending === false) setIsPending(true);
+  };
+  const switchPendingHandler = () => {
+    if (isScan === false) setIsScan(true);
+    if (isPending === true) setIsPending(false);
+    if (isDispatch === false) setIsDispatch(true);
+    if (isCancel === false) setIsCancel(true);
+  };
+  const switchCancelHandler = () => {
+    if (isScan === false) setIsScan(true);
+    if (isDispatch === false) setIsDispatch(true);
+    if (isPending === false) setIsPending(true);
+    if (isCancel === true) setIsCancel(false);
   };
 
   /* 
     API Action Handlers
   */
+  // csv to array conversion
   const csvFileToArray = string => {
     const csvHeader = string.slice(0, string.indexOf('\n')).split(',');
     const csvRows = string.slice(string.indexOf('\n') + 1).split('\n');
@@ -74,6 +95,7 @@ const Sales = () => {
       }),
     });
   };
+  // submit csv file to function
   const onSubmitHandler = e => {
     setIsLoading(true);
     if (file) {
@@ -84,35 +106,74 @@ const Sales = () => {
       fileReader.readAsText(file);
     }
   };
+  // get the whole data from backend
   const getDataHandler = async () => {
     const recievedData = await fetch('http://localhost:3001/api/sales/getAll');
     const result = await recievedData.json();
     setIsLoading(false);
     setArray(result);
   };
-
-  const getFilterDataHandler = async e => {
+  // update or scan the product with dispatch
+  const updateHandler = async e => {
     e.preventDefault();
-    setIsLoading(true);
-    const recievedFilterData = await fetch(
-      'http://localhost:3001/api/sales/filter',
+    await fetch('http://localhost:3001/api/sales/update', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        awb: enteredAWB,
+        status,
+      }),
+    });
+  };
+  // filter the product according to AWB
+  const filterHandler = async e => {
+    e.preventDefault();
+    const receivedList = await fetch('http://localhost:3001/api/sales/filter', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        awb: enteredAWB,
+      }),
+    });
+    const result = await receivedList.json();
+    setFilterArray(result);
+  };
+
+  const dispatchFilter = async () => {
+    const receivedList = await fetch(
+      'http://localhost:3001/api/sales/productsfilter',
       {
-        method: 'POST',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          awb: enteredAWB,
+          status: 'pending',
         }),
       }
     );
-    const result = await recievedFilterData.json();
-    setIsLoading(false);
-    setFilterArray(result);
+    const result = await receivedList.json();
+    setIsDispatchArray(result);
   };
+  // const pendingFilter = async () => {
+  //   const receivedList = await fetch(
+  //     'http://localhost:3001/api/sales/productsfilter',
+  //     {
+  //       method: 'PUT',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({
+  //         status: 'pending',
+  //       }),
+  //     }
+  //   );
+  //   const result = await receivedList.json();
+  //   setIsPendingArray(result);
+  // };
+
   /* 
     Hooks
   */
   useEffect(() => {
     getDataHandler();
+    dispatchFilter();
   }, []);
 
   return (
@@ -152,13 +213,201 @@ const Sales = () => {
         </FormControl>
         <Flex py={2}>
           <Button onClick={switchScanHandler}>Scan Products</Button>
-          <Button onClick={switchListHandler}>List Products</Button>
+          <Menu>
+            <MenuButton as={Button}>List Products</MenuButton>
+            <MenuList>
+              <MenuItem onClick={switchDispatchHandler}>Dispatch List</MenuItem>
+              <MenuItem onClick={switchPendingHandler}>Pending List</MenuItem>
+              <MenuItem onClick={switchCancelHandler}>Cancel List</MenuItem>
+            </MenuList>
+          </Menu>
         </Flex>
       </Box>
-      {isScan && (
+
+      {/* Scan Section */}
+      {isDispatch && isCancel && isPending && (
+        <Box>
+          <form
+            onSubmit={e => {
+              updateHandler(e);
+              filterHandler(e);
+            }}
+          >
+            <Input
+              width={'38%'}
+              type={'text'}
+              mt={5}
+              textAlign={'center'}
+              onChange={e => {
+                setEnteredAWB(e.target.value);
+                setStatus('dispatch');
+              }}
+              placeholder="Enter AWB"
+            />
+          </form>
+          <TableContainer
+            pt={10}
+            rounded={'lg'}
+            boxShadow={'lg'}
+            h={400}
+            w={1200}
+            overflowY={'auto'}
+            overflowX={'scroll'}
+          >
+            <Table variant={'simple'}>
+              <Thead>
+                <Tr key={'header'}>
+                  <Th textAlign={'center'}>AWB</Th>
+                  <Th textAlign={'center'}>order id</Th>
+                  <Th textAlign={'center'}>SKU</Th>
+                  <Th textAlign={'center'}>QTY</Th>
+                  <Th textAlign={'center'}>Status</Th>
+                  <Th textAlign={'center'}>courier</Th>
+                  <Th textAlign={'center'}>date</Th>
+                  <Th textAlign={'center'}>firm</Th>
+                  <Th textAlign={'center'}>Portal</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {filterArray.map(item => (
+                  <Tr key={item._id}>
+                    <Td>{item.AWB}</Td>
+                    <Td>{item.ORDER_ID}</Td>
+                    <Td>{item.SKU}</Td>
+                    <Td>{item.QTY}</Td>
+                    <Td>{item.status}</Td>
+                    <Td>{item.courier}</Td>
+                    <Td>{item.date}</Td>
+                    <Td>{item.firm}</Td>
+                    <Td>{item['PORTAL\r']}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </Box>
+      )}
+
+      {/* Dispatch Section */}
+      {isScan && isPending && isCancel && (
         <Box>
           <Heading size={'md'} pt={20} pb={4}>
-            Sales Table
+            Dispatch Table
+          </Heading>
+
+          {isLoading && <Spinner size={'xl'} />}
+          {!isLoading && (
+            <TableContainer
+              rounded={'lg'}
+              boxShadow={'lg'}
+              overflowY={'auto'}
+              overflowX={'auto'}
+              h={600}
+              w={1200}
+              mb={20}
+            >
+              <Table variant="simple">
+                <Thead
+                  position={'sticky'}
+                  top={0}
+                  backgroundColor={'lightblue'}
+                >
+                  <Tr key={'header'}>
+                    <Th textAlign={'center'}>AWB</Th>
+                    <Th textAlign={'center'}>order id</Th>
+                    <Th textAlign={'center'}>SKU</Th>
+                    <Th textAlign={'center'}>QTY</Th>
+                    <Th textAlign={'center'}>STATUS</Th>
+                    <Th textAlign={'center'}>courier</Th>
+                    <Th textAlign={'center'}>date</Th>
+                    <Th textAlign={'center'}>firm</Th>
+                    <Th textAlign={'center'}>Portal</Th>
+                  </Tr>
+                </Thead>
+
+                <Tbody>
+                  {dispatchArray.map(item => (
+                    <Tr key={item._id}>
+                      <Td>{item.AWB}</Td>
+                      <Td>{item.ORDER_ID}</Td>
+                      <Td>{item.SKU}</Td>
+                      <Td>{item.QTY}</Td>
+                      <Td>{item.status}</Td>
+                      <Td>{item.courier}</Td>
+                      <Td>{item.date}</Td>
+                      <Td>{item.firm}</Td>
+                      <Td>{item['PORTAL\r']}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          )}
+        </Box>
+      )}
+
+      {/* Pending Section */}
+      {isScan && isDispatch && isCancel && (
+        <Box>
+          <Heading size={'md'} pt={20} pb={4}>
+            Pending Table
+          </Heading>
+          {isLoading && <Spinner size={'xl'} />}
+          {!isLoading && (
+            <TableContainer
+              rounded={'lg'}
+              boxShadow={'lg'}
+              overflowY={'auto'}
+              overflowX={'auto'}
+              h={600}
+              w={1200}
+              mb={20}
+            >
+              <Table variant="simple">
+                <Thead
+                  position={'sticky'}
+                  top={0}
+                  backgroundColor={'lightblue'}
+                >
+                  <Tr key={'header'}>
+                    <Th textAlign={'center'}>AWB</Th>
+                    <Th textAlign={'center'}>order id</Th>
+                    <Th textAlign={'center'}>SKU</Th>
+                    <Th textAlign={'center'}>QTY</Th>
+                    <Th textAlign={'center'}>STATUS</Th>
+                    <Th textAlign={'center'}>courier</Th>
+                    <Th textAlign={'center'}>date</Th>
+                    <Th textAlign={'center'}>firm</Th>
+                    <Th textAlign={'center'}>Portal</Th>
+                  </Tr>
+                </Thead>
+
+                <Tbody>
+                  {pendingArray.map(item => (
+                    <Tr key={item._id}>
+                      <Td>{item.AWB}</Td>
+                      <Td>{item.ORDER_ID}</Td>
+                      <Td>{item.SKU}</Td>
+                      <Td>{item.QTY}</Td>
+                      <Td>{item.status}</Td>
+                      <Td>{item.courier}</Td>
+                      <Td>{item.date}</Td>
+                      <Td>{item.firm}</Td>
+                      <Td>{item['PORTAL\r']}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          )}
+        </Box>
+      )}
+
+      {/* Cancel Section */}
+      {isScan && isDispatch && isPending && (
+        <Box>
+          <Heading size={'md'} pt={20} pb={4}>
+            Cancel Table
           </Heading>
           {isLoading && <Spinner size={'xl'} />}
           {!isLoading && (
@@ -208,74 +457,6 @@ const Sales = () => {
               </Table>
             </TableContainer>
           )}
-        </Box>
-      )}
-      {isList && (
-        <Box>
-          <form onSubmit={getFilterDataHandler}>
-            <Input
-              width={'38%'}
-              type={'text'}
-              mt={5}
-              textAlign={'center'}
-              onChange={e => {
-                setEnteredAWB(e.target.value);
-              }}
-              placeholder="Enter AWB"
-            />
-          </form>
-          <TableContainer
-            pt={10}
-            rounded={'lg'}
-            boxShadow={'lg'}
-            h={400}
-            w={1200}
-            overflowY={'auto'}
-            overflowX={'scroll'}
-          >
-            <Table variant={'simple'}>
-              <Thead>
-                <Tr key={'header'}>
-                  <Th textAlign={'center'}>AWB</Th>
-                  <Th textAlign={'center'}>order id</Th>
-                  <Th textAlign={'center'}>SKU</Th>
-                  <Th textAlign={'center'}>QTY</Th>
-                  <Th textAlign={'center'}>Status</Th>
-                  <Th textAlign={'center'}>courier</Th>
-                  <Th textAlign={'center'}>date</Th>
-                  <Th textAlign={'center'}>firm</Th>
-                  <Th textAlign={'center'}>Portal</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {filterArray.map(item => (
-                  <Tr key={item._id}>
-                    <Td>{item.AWB}</Td>
-                    <Td>{item.ORDER_ID}</Td>
-                    <Td>{item.SKU}</Td>
-                    <Td>{item.QTY}</Td>
-                    <Td mr={10}>
-                      <Select
-                        defaultValue={'dispatch'}
-                        mx={10}
-                        onChange={e => {
-                          setStatus(e.target.value);
-                        }}
-                      >
-                        <option value={'pending'}>pending</option>
-                        <option value={'dispatch'}>dispatch</option>
-                        <option value={'cancel'}>cancel</option>
-                      </Select>
-                    </Td>
-                    <Td>{item.courier}</Td>
-                    <Td>{item.date}</Td>
-                    <Td>{item.firm}</Td>
-                    <Td>{item['PORTAL\r']}</Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
         </Box>
       )}
     </VStack>

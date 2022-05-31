@@ -1,15 +1,16 @@
 import {
-  Container,
+  VStack,
+  HStack,
   Stack,
   Box,
   Text,
-  Spacer,
   Link,
   Icon,
   useColorModeValue,
+  Button,
 } from '@chakra-ui/react';
-import { FaLinkedin, FaFacebook, FaInstagram } from 'react-icons/fa';
-
+import { FaHeart } from 'react-icons/fa';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 const year = new Date().getFullYear();
 
 const Footer = () => {
@@ -21,7 +22,7 @@ const Footer = () => {
       className={'footer'}
       borderColor={useColorModeValue('gray.200', 'gray.700')}
     >
-      <Container
+      <VStack
         as={Stack}
         maxW={'6xl'}
         py={4}
@@ -30,20 +31,38 @@ const Footer = () => {
         justify={{ md: 'space-between' }}
         align={{ md: 'center' }}
       >
-        <Text>© {year} F3 E-Commerce Consultancy. All rights reserved</Text>
-        <Spacer />
-        <Stack direction={'row'} spacing={6}>
+        <Stack direction={'row'} spacing={6} pt={2}>
           <Link href="https://www.linkedin.com/company/f3-e-commerce-consultancy-llp/mycompany/">
-            <Icon as={FaLinkedin} />
+            <Button variant={'ghost'}>
+              LinkedIn
+              <ExternalLinkIcon w={5} h={4} pl={1} />
+            </Button>
           </Link>
           <Link href="https://www.facebook.com/f3ecommerceconsultancyllp/">
-            <Icon as={FaFacebook} />
+            <Button variant={'ghost'}>
+              FaceBook
+              <ExternalLinkIcon w={5} h={4} pl={1} />
+            </Button>
           </Link>
           <Link href="https://instagram.com/f3ecommerceconsultancyllp?utm_medium=copy_link">
-            <Icon as={FaInstagram} />
+            <Button variant={'ghost'}>
+              Instagram
+              <ExternalLinkIcon w={5} h={4} pl={1} />
+            </Button>
           </Link>
         </Stack>
-      </Container>
+        <HStack>
+          <Text fontSize={'16px'}>
+            © {year} F3 E-Commerce Consultancy. All rights reserved
+          </Text>
+        </HStack>
+        <HStack>
+          <Text fontSize={'12px'}>
+            Made by <a href={'https://github.com/nishu-murmu/'}>Nishu</a> with
+          </Text>
+          <Icon fontSize={'12px'} as={FaHeart} />
+        </HStack>
+      </VStack>
     </Box>
   );
 };

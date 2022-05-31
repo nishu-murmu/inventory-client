@@ -45,7 +45,7 @@ const Login = () => {
 
   const handleClick = () => setShow(!show);
   return (
-    <Stack spacing={8} mx={'auto'} py={40}>
+    <Stack spacing={8} mx={'auto'} pt={40} pb={20}>
       <Heading>User Login</Heading>
       <Box
         rounded={'lg'}

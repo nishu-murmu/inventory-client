@@ -52,7 +52,7 @@ const SignUp = () => {
   };
 
   return (
-    <Stack spacing={8} mx={'auto'} py={20}>
+    <Stack spacing={8} mx={'auto'} pt={20} pb={36}>
       <Heading fontSize={'4xl'}>User Sign Up</Heading>
       <Box
         rounded={'lg'}
