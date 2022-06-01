@@ -60,7 +60,7 @@ const Purchase = () => {
   const submitHandler = async e => {
     e.preventDefault();
     // e.preventDefault();
-    await fetch('http://localhost:3001/api/purchase/create', {
+    await fetch('https://cryptic-bayou-61420.herokuapp.com/purchase/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -73,14 +73,16 @@ const Purchase = () => {
   // get list of products
   const getListHandler = async () => {
     setIsLoading(true);
-    const response = await fetch('http://localhost:3001/api/purchase/getAll');
+    const response = await fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/purchase/getAll'
+    );
     const result = await response.json();
     setIsLoading(false);
     setPurchaseData(result);
   };
   // update product
   const updateHandler = () => {
-    fetch('http://localhost:3001/api/purchase/update', {
+    fetch('https://cryptic-bayou-61420.herokuapp.com/purchase/update', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -92,7 +94,7 @@ const Purchase = () => {
   };
   // delete product
   const deleteHandler = async () => {
-    await fetch('http://localhost:3001/api/purchase/delete', {
+    await fetch('https://cryptic-bayou-61420.herokuapp.com/purchase/delete', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -102,7 +104,7 @@ const Purchase = () => {
   };
   // master sku hander
   const masterskuHandler = () => {
-    fetch('http://localhost:3001/api/master/getAll')
+    fetch('https://cryptic-bayou-61420.herokuapp.com/master/getAll')
       .then(res => {
         return res.json();
       })

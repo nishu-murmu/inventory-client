@@ -61,21 +61,24 @@ const PurchaseReturn = () => {
   const submitHandler = async e => {
     e.preventDefault();
     // e.preventDefault();
-    await fetch('http://localhost:3001/api/purchaseReturn/create', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        mastersku: sku,
-        Date: start,
-        quantity: quantity,
-      }),
-    });
+    await fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/purchaseReturn/create',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mastersku: sku,
+          Date: start,
+          quantity: quantity,
+        }),
+      }
+    );
   };
   // get list of products
   const getListHandler = async () => {
     setIsLoading(true);
     const response = await fetch(
-      'http://localhost:3001/api/purchaseReturn/getAll'
+      'https://cryptic-bayou-61420.herokuapp.com/purchaseReturn/getAll'
     );
     const result = await response.json();
     setIsLoading(false);
@@ -83,7 +86,7 @@ const PurchaseReturn = () => {
   };
   // update product
   const updateHandler = () => {
-    fetch('http://localhost:3001/api/purchaseReturn/update', {
+    fetch('https://cryptic-bayou-61420.herokuapp.com/purchaseReturn/update', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -95,17 +98,20 @@ const PurchaseReturn = () => {
   };
   // delete product
   const deleteHandler = async () => {
-    await fetch('http://localhost:3001/api/purchaseReturn/delete', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        mastersku: selectedsku,
-      }),
-    });
+    await fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/purchaseReturn/delete',
+      {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mastersku: selectedsku,
+        }),
+      }
+    );
   };
   // master sku
   const masterskuHandler = () => {
-    fetch('http://localhost:3001/api/master/getAll')
+    fetch('https://cryptic-bayou-61420.herokuapp.com/master/getAll')
       .then(res => {
         return res.json();
       })
