@@ -20,6 +20,9 @@ import {
 } from '@chakra-ui/react';
 import { Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
+import { DateRangePicker } from 'react-date-range';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
 
 const Sales = () => {
   /*   
@@ -27,13 +30,14 @@ const Sales = () => {
  */
   const [file, setFile] = useState();
   const [array, setArray] = useState([]);
+  const [toggleDate, setToggleDate] = useState(false);
   const [dispatchArray, setIsDispatchArray] = useState([]);
   const [pendingArray, setIsPendingArray] = useState([]);
   const [filterArray, setFilterArray] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isScan, setIsScan] = useState(false);
-  const [isPending, setIsPending] = useState(false);
-  const [isCancel, setIsCancel] = useState(false);
+  const [isPending, setIsPending] = useState(true);
+  const [isCancel, setIsCancel] = useState(true);
   const [isDispatch, setIsDispatch] = useState(true);
   const [status, setStatus] = useState('');
   const [enteredAWB, setEnteredAWB] = useState('');
@@ -69,6 +73,13 @@ const Sales = () => {
     if (isPending === false) setIsPending(true);
     if (isCancel === true) setIsCancel(false);
   };
+  const handleSelect = ranges => {
+    console.log(ranges);
+  };
+  // toggle is done this way
+  const toggleDateRange = () => {
+    setToggleDate(!toggleDate);
+  };
 
   /* 
     API Action Handlers
@@ -86,14 +97,12 @@ const Sales = () => {
       }, {});
       return obj;
     });
-    console.log(array);
     fetch('http://localhost:3001/api/sales/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        array,
-      }),
+      body: JSON.stringify(array),
     });
+    console.log(array);
   };
   // submit csv file to function
   const onSubmitHandler = e => {
@@ -138,35 +147,20 @@ const Sales = () => {
     const result = await receivedList.json();
     setFilterArray(result);
   };
-
   const dispatchFilter = async () => {
     const receivedList = await fetch(
-      'http://localhost:3001/api/sales/productsfilter',
-      {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          status: 'pending',
-        }),
-      }
+      'http://localhost:3001/api/sales/dispatchfilter'
     );
     const result = await receivedList.json();
     setIsDispatchArray(result);
   };
-  // const pendingFilter = async () => {
-  //   const receivedList = await fetch(
-  //     'http://localhost:3001/api/sales/productsfilter',
-  //     {
-  //       method: 'PUT',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({
-  //         status: 'pending',
-  //       }),
-  //     }
-  //   );
-  //   const result = await receivedList.json();
-  //   setIsPendingArray(result);
-  // };
+  const pendingFilter = async () => {
+    const receivedList = await fetch(
+      'http://localhost:3001/api/sales/pendingfilter'
+    );
+    const result = await receivedList.json();
+    setIsPendingArray(result);
+  };
 
   /* 
     Hooks
@@ -174,7 +168,14 @@ const Sales = () => {
   useEffect(() => {
     getDataHandler();
     dispatchFilter();
+    pendingFilter();
   }, []);
+
+  const SelectionRange = {
+    startDate: new Date(),
+    endDate: new Date(),
+    key: 'selection',
+  };
 
   return (
     <VStack p={4} pb={20}>
@@ -211,6 +212,12 @@ const Sales = () => {
             Import
           </Button>
         </FormControl>
+        <Button mt={4} width={'100%'} onClick={toggleDateRange}>
+          Date Filter
+        </Button>
+        {toggleDate ? (
+          <DateRangePicker ranges={[SelectionRange]} onChange={handleSelect} />
+        ) : null}
         <Flex py={2}>
           <Button onClick={switchScanHandler}>Scan Products</Button>
           <Menu>
@@ -218,7 +225,7 @@ const Sales = () => {
             <MenuList>
               <MenuItem onClick={switchDispatchHandler}>Dispatch List</MenuItem>
               <MenuItem onClick={switchPendingHandler}>Pending List</MenuItem>
-              <MenuItem onClick={switchCancelHandler}>Cancel List</MenuItem>
+              <MenuItem onClick={switchCancelHandler}>Full Sales List</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
@@ -407,7 +414,7 @@ const Sales = () => {
       {isScan && isDispatch && isPending && (
         <Box>
           <Heading size={'md'} pt={20} pb={4}>
-            Cancel Table
+            Full Sales Table
           </Heading>
           {isLoading && <Spinner size={'xl'} />}
           {!isLoading && (

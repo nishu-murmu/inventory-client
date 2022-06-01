@@ -19,16 +19,25 @@ import {
   FormControl,
   Select,
 } from '@chakra-ui/react';
+import { Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
+import { DateRangePicker } from 'react-date-range';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
 // files
 
 const SalesReturn = () => {
   const [file, setFile] = useState();
   const [array, setArray] = useState([]);
+  const [toggleDate, setToggleDate] = useState(false);
+  const [dispatchArray, setIsDispatchArray] = useState([]);
+  const [pendingArray, setIsPendingArray] = useState([]);
   const [filterArray, setFilterArray] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isScan, setIsScan] = useState(false);
-  const [isList, setIsList] = useState(true);
+  const [isPending, setIsPending] = useState(true);
+  const [isCancel, setIsCancel] = useState(true);
+  const [isDispatch, setIsDispatch] = useState(true);
   const [status, setStatus] = useState('');
   const [enteredAWB, setEnteredAWB] = useState('');
   const fileReader = new FileReader();
@@ -38,11 +47,34 @@ const SalesReturn = () => {
   };
   const switchScanHandler = () => {
     if (isScan === true) setIsScan(false);
-    if (isList === false) setIsList(true);
+    if (isDispatch === false) setIsDispatch(true);
+    if (isCancel === false) setIsCancel(true);
+    if (isPending === false) setIsPending(true);
   };
-  const switchListHandler = () => {
+  const switchDispatchHandler = () => {
     if (isScan === false) setIsScan(true);
-    if (isList === true) setIsList(false);
+    if (isDispatch === true) setIsDispatch(false);
+    if (isCancel === false) setIsCancel(true);
+    if (isPending === false) setIsPending(true);
+  };
+  const switchPendingHandler = () => {
+    if (isScan === false) setIsScan(true);
+    if (isPending === true) setIsPending(false);
+    if (isDispatch === false) setIsDispatch(true);
+    if (isCancel === false) setIsCancel(true);
+  };
+  const switchCancelHandler = () => {
+    if (isScan === false) setIsScan(true);
+    if (isDispatch === false) setIsDispatch(true);
+    if (isPending === false) setIsPending(true);
+    if (isCancel === true) setIsCancel(false);
+  };
+  const handleSelect = ranges => {
+    console.log(ranges);
+  };
+  // toggle is done this way
+  const toggleDateRange = () => {
+    setToggleDate(!toggleDate);
   };
 
   const csvFileToArray = string => {
@@ -61,14 +93,11 @@ const SalesReturn = () => {
     fetch('http://localhost:3001/api/salesReturn/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        array,
-      }),
+      body: JSON.stringify(array),
     });
   };
 
   const onSubmitHandler = e => {
-    // e.preventDefault();
     setIsLoading(true);
     if (file) {
       fileReader.onload = function (e) {
@@ -81,7 +110,7 @@ const SalesReturn = () => {
   };
   const getDataHandler = async () => {
     const recievedData = await fetch(
-      'http://localhost:3001/api/salesReturn/getSalesReturn'
+      'http://localhost:3001/api/salesReturn/getAll'
     );
     const result = await recievedData.json();
     setIsLoading(false);
@@ -89,7 +118,7 @@ const SalesReturn = () => {
   };
   const updateHandler = async e => {
     e.preventDefault();
-    await fetch('http://localhost:3001/api/salesReturn/filter', {
+    await fetch('http://localhost:3001/api/salesReturn/update', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -114,11 +143,32 @@ const SalesReturn = () => {
     const result = await receivedList.json();
     setFilterArray(result);
   };
+  const dispatchFilter = async () => {
+    const receivedList = await fetch(
+      'http://localhost:3001/api/salesReturn/dispatchfilter'
+    );
+    const result = await receivedList.json();
+    setIsDispatchArray(result);
+  };
+  const pendingFilter = async () => {
+    const receivedList = await fetch(
+      'http://localhost:3001/api/salesReturn/pendingfilter'
+    );
+    const result = await receivedList.json();
+    setIsPendingArray(result);
+  };
+  const SelectionRange = {
+    startDate: new Date(),
+    endDate: new Date(),
+    key: 'selection',
+  };
   /* 
     Hooks
   */
   useEffect(() => {
     getDataHandler();
+    dispatchFilter();
+    pendingFilter();
   }, []);
 
   return (
@@ -156,81 +206,27 @@ const SalesReturn = () => {
             Import
           </Button>
         </FormControl>
+        <Button mt={4} width={'100%'} onClick={toggleDateRange}>
+          Date Filter
+        </Button>
+        {toggleDate ? (
+          <DateRangePicker ranges={[SelectionRange]} onChange={handleSelect} />
+        ) : null}
         <Flex py={2}>
           <Button onClick={switchScanHandler}>Scan Products</Button>
-          <Button onClick={switchListHandler}>List Products</Button>
+          <Menu>
+            <MenuButton as={Button}>List Products</MenuButton>
+            <MenuList>
+              <MenuItem onClick={switchDispatchHandler}>Dispatch List</MenuItem>
+              <MenuItem onClick={switchPendingHandler}>Pending List</MenuItem>
+              <MenuItem onClick={switchCancelHandler}>Full Sales List</MenuItem>
+            </MenuList>
+          </Menu>
         </Flex>
       </Box>
-      {isScan && (
-        <Box>
-          <Heading size={'md'} pt={20} pb={4}>
-            Sales Return Table
-          </Heading>
-          {isLoading && <Spinner size={'xl'} />}
-          {!isLoading && (
-            <TableContainer
-              rounded={'lg'}
-              boxShadow={'lg'}
-              overflowY={'auto'}
-              overflowX={'auto'}
-              h={400}
-              w={1200}
-              mb={20}
-            >
-              <Table variant="simple">
-                <Thead
-                  position={'sticky'}
-                  top={0}
-                  backgroundColor={'lightblue'}
-                >
-                  <Tr key={'header'}>
-                    <Th textAlign={'center'}>Suborder ID</Th>
-                    <Th textAlign={'center'}>Order ID</Th>
-                    <Th textAlign={'center'}>AWB</Th>
-                    <Th textAlign={'center'}>SKU</Th>
-                    <Th textAlign={'center'}>QTY</Th>
-                    <Th textAlign={'center'}>Return Received Date</Th>
-                    <Th textAlign={'center'}>WRONG RETURN</Th>
-                    <Th textAlign={'center'}>Return Request Date</Th>
-                    <Th textAlign={'center'}>
-                      Return Delivered Date As Per Website
-                    </Th>
-                    <Th textAlign={'center'}>Portal</Th>
-                    <Th textAlign={'center'}>Return Type Web</Th>
-                    <Th textAlign={'center'}>Company</Th>
-                  </Tr>
-                </Thead>
 
-                <Tbody>
-                  {array.map(item => (
-                    <Tr key={item._id}>
-                      <Td textAlign={'center'}>{item['Suborder ID']}</Td>
-                      <Td textAlign={'center'}>{item['Order ID']}</Td>
-                      <Td textAlign={'center'}>{item['AWB NO']}</Td>
-                      <Td textAlign={'center'}>{item.SKU}</Td>
-                      <Td textAlign={'center'}>{item.QTY}</Td>
-                      <Td textAlign={'center'}>
-                        {item['Return Received Date']}
-                      </Td>
-                      <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
-                      <Td textAlign={'center'}>
-                        {item['Return Request Date']}
-                      </Td>
-                      <Td textAlign={'center'}>
-                        {item['Return Delivered Date As Per Website']}
-                      </Td>
-                      <Td textAlign={'center'}>{item.Portal}</Td>
-                      <Td textAlign={'center'}>{item['RETURN TYPE WEB']}</Td>
-                      <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-            </TableContainer>
-          )}
-        </Box>
-      )}
-      {isList && (
+      {/* Scan Section */}
+      {isDispatch && isCancel && isPending && (
         <Box>
           <form
             onSubmit={e => {
@@ -314,6 +310,218 @@ const SalesReturn = () => {
               </Tbody>
             </Table>
           </TableContainer>
+        </Box>
+      )}
+
+      {/* Dispatch Section */}
+      {isScan && isPending && isCancel && (
+        <Box>
+          <Heading size={'md'} pt={20} pb={4}>
+            Dispatch Table
+          </Heading>
+          {isLoading && <Spinner size={'xl'} />}
+          {!isLoading && (
+            <TableContainer
+              rounded={'lg'}
+              boxShadow={'lg'}
+              overflowY={'auto'}
+              overflowX={'auto'}
+              h={400}
+              w={1200}
+              mb={20}
+            >
+              <Table variant="simple">
+                <Thead
+                  position={'sticky'}
+                  top={0}
+                  backgroundColor={'lightblue'}
+                >
+                  <Tr key={'header'}>
+                    <Th textAlign={'center'}>Suborder ID</Th>
+                    <Th textAlign={'center'}>Order ID</Th>
+                    <Th textAlign={'center'}>AWB</Th>
+                    <Th textAlign={'center'}>SKU</Th>
+                    <Th textAlign={'center'}>QTY</Th>
+                    <Th textAlign={'center'}>Return Received Date</Th>
+                    <Th textAlign={'center'}>WRONG RETURN</Th>
+                    <Th textAlign={'center'}>Return Request Date</Th>
+                    <Th textAlign={'center'}>
+                      Return Delivered Date As Per Website
+                    </Th>
+                    <Th textAlign={'center'}>Portal</Th>
+                    <Th textAlign={'center'}>Return Type Web</Th>
+                    <Th textAlign={'center'}>Company</Th>
+                  </Tr>
+                </Thead>
+
+                <Tbody>
+                  {dispatchArray.map(item => (
+                    <Tr key={item._id}>
+                      <Td textAlign={'center'}>{item['Suborder ID']}</Td>
+                      <Td textAlign={'center'}>{item['Order ID']}</Td>
+                      <Td textAlign={'center'}>{item['AWB NO']}</Td>
+                      <Td textAlign={'center'}>{item.SKU}</Td>
+                      <Td textAlign={'center'}>{item.QTY}</Td>
+                      <Td textAlign={'center'}>
+                        {item['Return Received Date']}
+                      </Td>
+                      <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
+                      <Td textAlign={'center'}>
+                        {item['Return Request Date']}
+                      </Td>
+                      <Td textAlign={'center'}>
+                        {item['Return Delivered Date As Per Website']}
+                      </Td>
+                      <Td textAlign={'center'}>{item.Portal}</Td>
+                      <Td textAlign={'center'}>{item['RETURN TYPE WEB']}</Td>
+                      <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          )}
+        </Box>
+      )}
+
+      {/* Pending Section */}
+      {isScan && isDispatch && isCancel && (
+        <Box>
+          <Heading size={'md'} pt={20} pb={4}>
+            Dispatch Table
+          </Heading>
+          {isLoading && <Spinner size={'xl'} />}
+          {!isLoading && (
+            <TableContainer
+              rounded={'lg'}
+              boxShadow={'lg'}
+              overflowY={'auto'}
+              overflowX={'auto'}
+              h={400}
+              w={1200}
+              mb={20}
+            >
+              <Table variant="simple">
+                <Thead
+                  position={'sticky'}
+                  top={0}
+                  backgroundColor={'lightblue'}
+                >
+                  <Tr key={'header'}>
+                    <Th textAlign={'center'}>Suborder ID</Th>
+                    <Th textAlign={'center'}>Order ID</Th>
+                    <Th textAlign={'center'}>AWB</Th>
+                    <Th textAlign={'center'}>SKU</Th>
+                    <Th textAlign={'center'}>QTY</Th>
+                    <Th textAlign={'center'}>Return Received Date</Th>
+                    <Th textAlign={'center'}>WRONG RETURN</Th>
+                    <Th textAlign={'center'}>Return Request Date</Th>
+                    <Th textAlign={'center'}>
+                      Return Delivered Date As Per Website
+                    </Th>
+                    <Th textAlign={'center'}>Portal</Th>
+                    <Th textAlign={'center'}>Return Type Web</Th>
+                    <Th textAlign={'center'}>Company</Th>
+                  </Tr>
+                </Thead>
+
+                <Tbody>
+                  {pendingArray.map(item => (
+                    <Tr key={item._id}>
+                      <Td textAlign={'center'}>{item['Suborder ID']}</Td>
+                      <Td textAlign={'center'}>{item['Order ID']}</Td>
+                      <Td textAlign={'center'}>{item['AWB NO']}</Td>
+                      <Td textAlign={'center'}>{item.SKU}</Td>
+                      <Td textAlign={'center'}>{item.QTY}</Td>
+                      <Td textAlign={'center'}>
+                        {item['Return Received Date']}
+                      </Td>
+                      <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
+                      <Td textAlign={'center'}>
+                        {item['Return Request Date']}
+                      </Td>
+                      <Td textAlign={'center'}>
+                        {item['Return Delivered Date As Per Website']}
+                      </Td>
+                      <Td textAlign={'center'}>{item.Portal}</Td>
+                      <Td textAlign={'center'}>{item['RETURN TYPE WEB']}</Td>
+                      <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          )}
+        </Box>
+      )}
+      {/* Full List Section */}
+      {isScan && isDispatch && isPending && (
+        <Box>
+          <Heading size={'md'} pt={20} pb={4}>
+            Dispatch Table
+          </Heading>
+          {isLoading && <Spinner size={'xl'} />}
+          {!isLoading && (
+            <TableContainer
+              rounded={'lg'}
+              boxShadow={'lg'}
+              overflowY={'auto'}
+              overflowX={'auto'}
+              h={400}
+              w={1200}
+              mb={20}
+            >
+              <Table variant="simple">
+                <Thead
+                  position={'sticky'}
+                  top={0}
+                  backgroundColor={'lightblue'}
+                >
+                  <Tr key={'header'}>
+                    <Th textAlign={'center'}>Suborder ID</Th>
+                    <Th textAlign={'center'}>Order ID</Th>
+                    <Th textAlign={'center'}>AWB</Th>
+                    <Th textAlign={'center'}>SKU</Th>
+                    <Th textAlign={'center'}>QTY</Th>
+                    <Th textAlign={'center'}>Return Received Date</Th>
+                    <Th textAlign={'center'}>WRONG RETURN</Th>
+                    <Th textAlign={'center'}>Return Request Date</Th>
+                    <Th textAlign={'center'}>
+                      Return Delivered Date As Per Website
+                    </Th>
+                    <Th textAlign={'center'}>Portal</Th>
+                    <Th textAlign={'center'}>Return Type Web</Th>
+                    <Th textAlign={'center'}>Company</Th>
+                  </Tr>
+                </Thead>
+
+                <Tbody>
+                  {array.map(item => (
+                    <Tr key={item._id}>
+                      <Td textAlign={'center'}>{item['Suborder ID']}</Td>
+                      <Td textAlign={'center'}>{item['Order ID']}</Td>
+                      <Td textAlign={'center'}>{item['AWB NO']}</Td>
+                      <Td textAlign={'center'}>{item.SKU}</Td>
+                      <Td textAlign={'center'}>{item.QTY}</Td>
+                      <Td textAlign={'center'}>
+                        {item['Return Received Date']}
+                      </Td>
+                      <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
+                      <Td textAlign={'center'}>
+                        {item['Return Request Date']}
+                      </Td>
+                      <Td textAlign={'center'}>
+                        {item['Return Delivered Date As Per Website']}
+                      </Td>
+                      <Td textAlign={'center'}>{item.Portal}</Td>
+                      <Td textAlign={'center'}>{item['RETURN TYPE WEB']}</Td>
+                      <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          )}
         </Box>
       )}
     </VStack>

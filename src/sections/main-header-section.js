@@ -10,7 +10,7 @@ import {
   Icon,
   Flex,
   Image,
-  // useColorModeValue,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { FaUser, FaGithub } from 'react-icons/fa/index';
 import { Link } from 'react-router-dom';
@@ -22,8 +22,13 @@ const MainHeader = () => {
       position={'fixed'}
       top={0}
       width={'100%'}
+      boxShadow={'0px 0px 15px 0px rgb(0,0,0,.2)'}
+      backgroundColor={useColorModeValue(
+        'rgba(246, 238, 236, 0.5)',
+        'rgba(74, 85, 104, .3)'
+      )}
       px={20}
-      py={5}
+      py={2}
       spacing={80}
       // bg={useColorModeValue('#cdf7f4', '#056159')}
       css={{ backdropFilter: 'blur(10px)' }}

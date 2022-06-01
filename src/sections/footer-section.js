@@ -60,7 +60,7 @@ const Footer = () => {
           <Text fontSize={'12px'}>
             Made by <a href={'https://github.com/nishu-murmu/'}>Nishu</a> with
           </Text>
-          <Icon fontSize={'12px'} as={FaHeart} />
+          <Icon fontSize={'12px'} color={'red'} as={FaHeart} />
         </HStack>
       </VStack>
     </Box>
