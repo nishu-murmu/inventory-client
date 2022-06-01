@@ -17,7 +17,6 @@ import {
   Td,
   Button,
   Spinner,
-  Select,
   useDisclosure,
 } from '@chakra-ui/react';
 import {
@@ -133,7 +132,9 @@ const Purchase = () => {
               }}
               style={{ margin: '20px' }}
             >
-              <Select
+              <Input list={'mastersku'}></Input>
+              <datalist
+                id={'mastersku'}
                 onChange={e => {
                   setSku(e.target.value);
                 }}
@@ -141,7 +142,7 @@ const Purchase = () => {
                 {mappedArray.map(item => (
                   <option key={item._id}>{item.mastersku}</option>
                 ))}
-              </Select>
+              </datalist>
               <DatePicker
                 selected={start}
                 placeholderText={'Select Date'}
@@ -215,7 +216,9 @@ const Purchase = () => {
                             <ModalHeader>Edit Purchase Product</ModalHeader>
                             <ModalCloseButton />
                             <ModalBody>
-                              <Select
+                              <Input list={'master'}></Input>
+                              <datalist
+                                id={'master'}
                                 onChange={e => {
                                   setEnteredSku(e.target.value);
                                 }}
@@ -225,7 +228,7 @@ const Purchase = () => {
                                     {item.mastersku}
                                   </option>
                                 ))}
-                              </Select>
+                              </datalist>
                               <DatePicker
                                 selected={start}
                                 onChange={date => setUpdate(date)}
