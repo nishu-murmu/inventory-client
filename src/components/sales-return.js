@@ -90,7 +90,7 @@ const SalesReturn = () => {
       return obj;
     });
     console.log(array);
-    fetch('https://cryptic-bayou-61420.herokuapp.com/salesReturn/create', {
+    fetch('http://localhost:3001/api/salesReturn/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(array),
@@ -110,7 +110,7 @@ const SalesReturn = () => {
   };
   const getDataHandler = async () => {
     const recievedData = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/salesReturn/getAll'
+      'http://localhost:3001/api/salesReturn/getAll'
     );
     const result = await recievedData.json();
     setIsLoading(false);
@@ -118,23 +118,20 @@ const SalesReturn = () => {
   };
   const updateHandler = async e => {
     e.preventDefault();
-    await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/salesReturn/update',
-      {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          awb: enteredAWB,
-          status,
-        }),
-      }
-    );
+    await fetch('http://localhost:3001/api/salesReturn/update', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        awb: enteredAWB,
+        status,
+      }),
+    });
   };
 
   const filterHandler = async e => {
     e.preventDefault();
     const receivedList = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/salesReturn/filter',
+      'http://localhost:3001/api/salesReturn/filter',
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -148,14 +145,14 @@ const SalesReturn = () => {
   };
   const dispatchFilter = async () => {
     const receivedList = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/salesReturn/dispatchfilter'
+      'http://localhost:3001/api/salesReturn/dispatchfilter'
     );
     const result = await receivedList.json();
     setIsDispatchArray(result);
   };
   const pendingFilter = async () => {
     const receivedList = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/salesReturn/pendingfilter'
+      'http://localhost:3001/api/salesReturn/pendingfilter'
     );
     const result = await receivedList.json();
     setIsPendingArray(result);
