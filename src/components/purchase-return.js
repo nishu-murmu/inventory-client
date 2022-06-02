@@ -45,6 +45,7 @@ const PurchaseReturn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [mappedArray, setMappedArray] = useState([]);
   const [selectedsku, setSelectedsku] = useState('');
+  const [toggleSubmit, setToggleSubmit] = useState(false);
 
   const [enteredsku, setEnteredSku] = useState('');
   const [update, setUpdate] = useState(new Date());
@@ -55,6 +56,9 @@ const PurchaseReturn = () => {
 
   const quantityChange = e => {
     setQuantity(e.target.value);
+  };
+  const submitToggleHandler = () => {
+    setToggleSubmit(!toggleSubmit);
   };
 
   // create product
@@ -133,18 +137,25 @@ const PurchaseReturn = () => {
             <form
               onSubmit={e => {
                 submitHandler(e);
+                submitToggleHandler();
               }}
               style={{ margin: '20px' }}
             >
-              <Select
+              <Input
+                list="sku"
                 onChange={e => {
                   setSku(e.target.value);
                 }}
-              >
+                value={sku}
+                autoComplete={'off'}
+                textAlign={'center'}
+                placeholder={'Enter SKU'}
+              />
+              <datalist id={'sku'}>
                 {mappedArray.map(item => (
                   <option key={item._id}>{item.mastersku}</option>
                 ))}
-              </Select>
+              </datalist>
               <DatePicker
                 selected={start}
                 onChange={date => setStart(date)}

@@ -41,8 +41,7 @@ const Mapped = () => {
     });
   };
 
-  const getListHandler = async e => {
-    e.preventDefault();
+  const getListHandler = async () => {
     setIsLoading(true);
     const response = await fetch('http://localhost:3001/api/master/getAll');
     const result = await response.json();

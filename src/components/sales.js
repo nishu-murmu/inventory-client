@@ -40,8 +40,7 @@ const Sales = () => {
   const [isPending, setIsPending] = useState(true);
   const [isCancel, setIsCancel] = useState(true);
   const [isDispatch, setIsDispatch] = useState(true);
-  const [isStatus, setIsStatus] = useState(false);
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState('dispatch');
   const [enteredAWB, setEnteredAWB] = useState('');
   const fileReader = new FileReader();
 
@@ -81,9 +80,6 @@ const Sales = () => {
   // toggle is done this way
   const toggleDateRange = () => {
     setToggleDate(!toggleDate);
-  };
-  const toggleStatus = () => {
-    setIsStatus(!isStatus);
   };
 
   /* 
@@ -127,29 +123,41 @@ const Sales = () => {
     setIsLoading(false);
     setArray(result);
   };
+
   // update or scan the product with dispatch
-  const updateHandler = async () => {
-    await fetch('http://localhost:3001/api/sales/update', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        awb: enteredAWB,
-        status,
-      }),
-    });
-  };
+  useEffect(() => {
+    const updateHandler = async () => {
+      await fetch('http://localhost:3001/api/sales/update', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          awb: enteredAWB,
+          status,
+        }),
+      });
+    };
+    updateHandler();
+  }, [status, enteredAWB]);
+
   // filter the product according to AWB
-  const filterHandler = async () => {
-    const receivedList = await fetch('http://localhost:3001/api/sales/filter', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        awb: enteredAWB,
-      }),
-    });
-    const result = await receivedList.json();
-    setFilterArray(result);
-  };
+  useEffect(() => {
+    const filterHandler = async () => {
+      const receivedList = await fetch(
+        'http://localhost:3001/api/sales/filter',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            awb: enteredAWB,
+          }),
+        }
+      );
+      const result = await receivedList.json();
+      setFilterArray(result);
+    };
+    filterHandler();
+  }, [enteredAWB]);
+
   const dispatchFilter = async () => {
     const receivedList = await fetch(
       'http://localhost:3001/api/sales/dispatchfilter'
@@ -170,14 +178,10 @@ const Sales = () => {
   */
 
   useEffect(() => {
-    updateHandler();
-    filterHandler();
-  }, [isStatus]);
-  useEffect(() => {
     getDataHandler();
     dispatchFilter();
     pendingFilter();
-  }, [isScan, isPending, isDispatch, isCancel, isStatus]);
+  }, [isScan, isPending, isDispatch, isCancel]);
 
   const SelectionRange = {
     startDate: new Date(),
@@ -233,7 +237,7 @@ const Sales = () => {
             <MenuList>
               <MenuItem onClick={switchDispatchHandler}>Dispatch List</MenuItem>
               <MenuItem onClick={switchPendingHandler}>Pending List</MenuItem>
-              <MenuItem onClick={switchCancelHandler}>Full Sales List</MenuItem>
+              <MenuItem onClick={switchCancelHandler}>Cancel List</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
@@ -243,16 +247,18 @@ const Sales = () => {
       {isDispatch && isCancel && isPending && (
         <Box>
           <Input
-            width={'38%'}
+            width={'22%'}
             type={'text'}
             mt={5}
             textAlign={'center'}
             onChange={e => {
               setEnteredAWB(e.target.value);
               setStatus('dispatch');
-              toggleStatus();
             }}
+            value={enteredAWB}
             placeholder="Enter AWB"
+            autoFocus
+            autoCapitalize="true"
           />
           <TableContainer
             pt={10}
@@ -286,14 +292,13 @@ const Sales = () => {
                     <Td>{item.QTY}</Td>
                     <Td>
                       <Select
-                        onChange={() => {
-                          setStatus(Select.options[Select.selectedIndex].text);
-                          console.log(
-                            Select.options[Select.selectedIndex].text
-                          );
+                        onChange={e => {
+                          setStatus(e.target.value);
                         }}
+                        value={status}
+                        mx={8}
                       >
-                        <option value={'dispatch'} defaultValue>
+                        <option value={'dispatch'} defaultChecked>
                           dispatch
                         </option>
                         <option value={'pending'}>pending</option>
@@ -431,7 +436,7 @@ const Sales = () => {
       {isScan && isDispatch && isPending && (
         <Box>
           <Heading size={'md'} pt={20} pb={4}>
-            Full Sales Table
+            Cancel Table
           </Heading>
           {isLoading && <Spinner size={'xl'} />}
           {!isLoading && (

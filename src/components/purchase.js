@@ -43,6 +43,7 @@ const Purchase = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedsku, setSelectedsku] = useState('');
   const [mappedArray, setMappedArray] = useState([]);
+  const [toggleSubmit, setToggleSubmit] = useState(false);
 
   const [enteredsku, setEnteredSku] = useState('');
   const [update, setUpdate] = useState(new Date());
@@ -54,11 +55,13 @@ const Purchase = () => {
   const quantityChange = e => {
     setQuantity(e.target.value);
   };
+  const submitToggleHandler = () => {
+    setToggleSubmit(!toggleSubmit);
+  };
 
   // create product
   const submitHandler = async e => {
     e.preventDefault();
-    // e.preventDefault();
     await fetch('http://localhost:3001/api/purchase/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -70,13 +73,16 @@ const Purchase = () => {
     });
   };
   // get list of products
-  const getListHandler = async () => {
-    setIsLoading(true);
-    const response = await fetch('http://localhost:3001/api/purchase/getAll');
-    const result = await response.json();
-    setIsLoading(false);
-    setPurchaseData(result);
-  };
+  useEffect(() => {
+    const getListHandler = async () => {
+      setIsLoading(true);
+      const response = await fetch('http://localhost:3001/api/purchase/getAll');
+      const result = await response.json();
+      setIsLoading(false);
+      setPurchaseData(result);
+    };
+    getListHandler();
+  }, [toggleSubmit]);
   // update product
   const updateHandler = () => {
     fetch('http://localhost:3001/api/purchase/update', {
@@ -89,6 +95,7 @@ const Purchase = () => {
       }),
     });
   };
+
   // delete product
   const deleteHandler = async () => {
     await fetch('http://localhost:3001/api/purchase/delete', {
@@ -100,18 +107,16 @@ const Purchase = () => {
     });
   };
   // master sku hander
-  const masterskuHandler = () => {
-    fetch('http://localhost:3001/api/master/getAll')
-      .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        setMappedArray(data);
-      });
-  };
-
   useEffect(() => {
-    getListHandler();
+    const masterskuHandler = () => {
+      fetch('http://localhost:3001/api/master/getAll')
+        .then(res => {
+          return res.json();
+        })
+        .then(data => {
+          setMappedArray(data);
+        });
+    };
     masterskuHandler();
   }, []);
 
@@ -127,20 +132,27 @@ const Purchase = () => {
           </Heading>
           <VStack width={60}>
             <form
-              onSubmit={e => {
-                submitHandler(e);
+              onSubmit={() => {
+                submitHandler();
+                submitToggleHandler();
               }}
               style={{ margin: '20px' }}
             >
-              <Input list={'mastersku'} autoComplete={'off'}></Input>
-              <datalist
-                id={'mastersku'}
+              <Input
+                list={'mastersku'}
                 onChange={e => {
                   setSku(e.target.value);
                 }}
-              >
+                value={sku}
+                autoComplete={'off'}
+                textAlign={'center'}
+                placeholder={'Enter SKU'}
+              ></Input>
+              <datalist id={'mastersku'}>
                 {mappedArray.map(item => (
-                  <option key={item._id}>{item.mastersku}</option>
+                  <option key={item._id} value={item.mastersku}>
+                    {item.mastersku}
+                  </option>
                 ))}
               </datalist>
               <DatePicker
@@ -154,11 +166,11 @@ const Purchase = () => {
                 required
                 textAlign="center"
               />
-              <Button type={'submit'} w={'100%'}>
+              <Button type={'submit'} variant={'outline'} w={'100%'}>
                 Submit
               </Button>
               <Menu>
-                <MenuButton w={'100%'} as={Button}>
+                <MenuButton w={'100%'} variant={'outline'} as={Button}>
                   Filter
                 </MenuButton>
                 <MenuList>
@@ -248,7 +260,7 @@ const Purchase = () => {
                               >
                                 Close
                               </Button>
-                              <Button variant="ghost" onClick={updateHandler}>
+                              <Button variant="outline" onClick={updateHandler}>
                                 Submit
                               </Button>
                             </ModalFooter>

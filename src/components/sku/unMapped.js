@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
   VStack,
-  Select,
   Heading,
   Table,
   TableContainer,
@@ -132,11 +131,12 @@ const UnMapped = () => {
                 <Tr>
                   <Td>example test</Td>
                   <Td>
-                    <Select>
+                    <Input list={'mastersku'} autoFocus />
+                    <datalist id={'mastersku'}>
                       {mappedArray.map(item => (
                         <option key={item._id}>{item.mastersku}</option>
                       ))}
-                    </Select>
+                    </datalist>
                   </Td>
                 </Tr>
               </Tbody>

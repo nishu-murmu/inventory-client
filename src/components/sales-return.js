@@ -192,15 +192,18 @@ const SalesReturn = () => {
             }}
           >
             <Input
-              width={'38%'}
+              width={'22%'}
               type={'text'}
               mt={5}
               textAlign={'center'}
               onChange={e => {
                 setEnteredAWB(e.target.value);
                 setStatus('dispatch');
+                e.target.select();
               }}
+              value={enteredAWB}
               placeholder="Enter AWB"
+              autoFocus
             />
           </form>
           <TableContainer
@@ -245,7 +248,7 @@ const SalesReturn = () => {
                         defaultValue={'dispatch'}
                         mx={10}
                         onChange={e => {
-                          setStatus(e.target.value);
+                          setStatus(e.target.value());
                         }}
                       >
                         <option value={'pending'}>pending</option>
