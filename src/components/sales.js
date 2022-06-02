@@ -17,6 +17,7 @@ import {
   VStack,
   Box,
   Flex,
+  Select,
 } from '@chakra-ui/react';
 import { Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
@@ -39,6 +40,7 @@ const Sales = () => {
   const [isPending, setIsPending] = useState(true);
   const [isCancel, setIsCancel] = useState(true);
   const [isDispatch, setIsDispatch] = useState(true);
+  const [isStatus, setIsStatus] = useState(false);
   const [status, setStatus] = useState('');
   const [enteredAWB, setEnteredAWB] = useState('');
   const fileReader = new FileReader();
@@ -79,6 +81,9 @@ const Sales = () => {
   // toggle is done this way
   const toggleDateRange = () => {
     setToggleDate(!toggleDate);
+  };
+  const toggleStatus = () => {
+    setIsStatus(!isStatus);
   };
 
   /* 
@@ -123,8 +128,7 @@ const Sales = () => {
     setArray(result);
   };
   // update or scan the product with dispatch
-  const updateHandler = async e => {
-    e.preventDefault();
+  const updateHandler = async () => {
     await fetch('http://localhost:3001/api/sales/update', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -135,8 +139,7 @@ const Sales = () => {
     });
   };
   // filter the product according to AWB
-  const filterHandler = async e => {
-    e.preventDefault();
+  const filterHandler = async () => {
     const receivedList = await fetch('http://localhost:3001/api/sales/filter', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -165,11 +168,16 @@ const Sales = () => {
   /* 
     Hooks
   */
+
+  useEffect(() => {
+    updateHandler();
+    filterHandler();
+  }, [isStatus]);
   useEffect(() => {
     getDataHandler();
     dispatchFilter();
     pendingFilter();
-  }, []);
+  }, [isScan, isPending, isDispatch, isCancel, isStatus]);
 
   const SelectionRange = {
     startDate: new Date(),
@@ -234,24 +242,18 @@ const Sales = () => {
       {/* Scan Section */}
       {isDispatch && isCancel && isPending && (
         <Box>
-          <form
-            onSubmit={e => {
-              updateHandler(e);
-              filterHandler(e);
+          <Input
+            width={'38%'}
+            type={'text'}
+            mt={5}
+            textAlign={'center'}
+            onChange={e => {
+              setEnteredAWB(e.target.value);
+              setStatus('dispatch');
+              toggleStatus();
             }}
-          >
-            <Input
-              width={'38%'}
-              type={'text'}
-              mt={5}
-              textAlign={'center'}
-              onChange={e => {
-                setEnteredAWB(e.target.value);
-                setStatus('dispatch');
-              }}
-              placeholder="Enter AWB"
-            />
-          </form>
+            placeholder="Enter AWB"
+          />
           <TableContainer
             pt={10}
             rounded={'lg'}
@@ -282,7 +284,22 @@ const Sales = () => {
                     <Td>{item.ORDER_ID}</Td>
                     <Td>{item.SKU}</Td>
                     <Td>{item.QTY}</Td>
-                    <Td>{item.status}</Td>
+                    <Td>
+                      <Select
+                        onChange={() => {
+                          setStatus(Select.options[Select.selectedIndex].text);
+                          console.log(
+                            Select.options[Select.selectedIndex].text
+                          );
+                        }}
+                      >
+                        <option value={'dispatch'} defaultValue>
+                          dispatch
+                        </option>
+                        <option value={'pending'}>pending</option>
+                        <option value={'cancel'}>cancel</option>
+                      </Select>
+                    </Td>
                     <Td>{item.courier}</Td>
                     <Td>{item.date}</Td>
                     <Td>{item.firm}</Td>

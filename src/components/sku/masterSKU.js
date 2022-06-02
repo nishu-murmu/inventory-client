@@ -23,6 +23,11 @@ const Mapped = () => {
   const [parent, setParent] = useState('');
   const [child, setChild] = useState('');
 
+  const [isChange, setIsChange] = useState(false);
+
+  const toggleChange = () => {
+    setIsChange(!isChange);
+  };
   const submitArrayHandler = () => {
     fetch('http://localhost:3001/api/master/store', {
       method: 'POST',
@@ -36,7 +41,8 @@ const Mapped = () => {
     });
   };
 
-  const getListHandler = async () => {
+  const getListHandler = async e => {
+    e.preventDefault();
     setIsLoading(true);
     const response = await fetch('http://localhost:3001/api/master/getAll');
     const result = await response.json();
@@ -46,13 +52,18 @@ const Mapped = () => {
 
   useEffect(() => {
     getListHandler();
-  }, []);
+  }, [isChange]);
   return (
     <VStack p={4}>
       <Heading size={'lg'} pb={10}>
         Master SKU Section
       </Heading>
-      <form onSubmit={submitArrayHandler}>
+      <form
+        onSubmit={e => {
+          submitArrayHandler(e);
+          toggleChange(e);
+        }}
+      >
         <Flex>
           <Input
             textAlign={'center'}

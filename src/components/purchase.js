@@ -132,7 +132,7 @@ const Purchase = () => {
               }}
               style={{ margin: '20px' }}
             >
-              <Input list={'mastersku'}></Input>
+              <Input list={'mastersku'} autoComplete={'off'}></Input>
               <datalist
                 id={'mastersku'}
                 onChange={e => {
