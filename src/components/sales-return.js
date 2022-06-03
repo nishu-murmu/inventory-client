@@ -17,17 +17,20 @@ import {
   VStack,
   Flex,
   FormControl,
+  useDisclosure,
   Select,
 } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalBody, ModalContent } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
-import { DateRangePicker } from 'react-date-range';
+import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 // files
 
 const SalesReturn = () => {
   const [file, setFile] = useState();
-  const [toggleDate, setToggleDate] = useState(false);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [dispatchArray, setIsDispatchArray] = useState([]);
   const [filterArray, setFilterArray] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -50,11 +53,8 @@ const SalesReturn = () => {
   };
 
   const handleSelect = ranges => {
-    console.log(ranges);
-  };
-  // toggle is done this way
-  const toggleDateRange = () => {
-    setToggleDate(!toggleDate);
+    setEndDate(ranges.selection.endDate);
+    setStartDate(ranges.selection.startDate);
   };
 
   const csvFileToArray = string => {
@@ -124,8 +124,8 @@ const SalesReturn = () => {
   };
 
   const SelectionRange = {
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate,
+    endDate,
     key: 'selection',
   };
   /* 
@@ -134,6 +134,8 @@ const SalesReturn = () => {
   useEffect(() => {
     dispatchFilter();
   }, []);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <VStack p={4} pb={20}>
@@ -170,12 +172,17 @@ const SalesReturn = () => {
             Import
           </Button>
         </FormControl>
-        <Button mt={4} width={'100%'} onClick={toggleDateRange}>
+        <Button mt={4} width={'100%'} onClick={onOpen}>
           Date Filter
         </Button>
-        {toggleDate ? (
-          <DateRangePicker ranges={[SelectionRange]} onChange={handleSelect} />
-        ) : null}
+        <Modal size={'sm'} isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalBody>
+              <DateRange ranges={[SelectionRange]} onChange={handleSelect} />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
         <Flex py={2}>
           <Button onClick={switchScanHandler}>Scan Products</Button>
           <Button onClick={switchDispatchHandler}>List Products</Button>
@@ -277,7 +284,7 @@ const SalesReturn = () => {
       {isScan && (
         <Box>
           <Heading size={'md'} pt={20} pb={4}>
-            Dispatch Table
+            Sales Return Table
           </Heading>
           {isLoading && <Spinner size={'xl'} />}
           {!isLoading && (

@@ -18,10 +18,13 @@ import {
   Box,
   Flex,
   Select,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalBody, ModalContent } from '@chakra-ui/react';
+
 import { DownloadIcon } from '@chakra-ui/icons';
-import { DateRangePicker } from 'react-date-range';
+import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 
@@ -30,19 +33,28 @@ const Sales = () => {
     States
  */
   const [file, setFile] = useState();
-  const [array, setArray] = useState([]);
-  const [toggleDate, setToggleDate] = useState(false);
-  const [dispatchArray, setIsDispatchArray] = useState([]);
-  const [pendingArray, setIsPendingArray] = useState([]);
-  const [filterArray, setFilterArray] = useState([]);
+  const fileReader = new FileReader();
   const [isLoading, setIsLoading] = useState(false);
+
+  const [status, setStatus] = useState('dispatch');
+  const [enteredAWB, setEnteredAWB] = useState('');
+
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+
+  const [dispatchcount, setDispatchCount] = useState(0);
+  const [pendingcount, setPendingCount] = useState(0);
+  const [cancelcount, setCancelCount] = useState(0);
+
+  const [dispatchArray, setDispatchArray] = useState([]);
+  const [pendingArray, setPendingArray] = useState([]);
+  const [cancelArray, setCancelArray] = useState([]);
+  const [filterArray, setFilterArray] = useState([]);
+
   const [isScan, setIsScan] = useState(false);
   const [isPending, setIsPending] = useState(true);
   const [isCancel, setIsCancel] = useState(true);
   const [isDispatch, setIsDispatch] = useState(true);
-  const [status, setStatus] = useState('dispatch');
-  const [enteredAWB, setEnteredAWB] = useState('');
-  const fileReader = new FileReader();
 
   /*
     Event Handlers 
@@ -75,12 +87,17 @@ const Sales = () => {
     if (isCancel === true) setIsCancel(false);
   };
   const handleSelect = ranges => {
-    console.log(ranges);
+    setEndDate(ranges.selection.endDate);
+    setStartDate(ranges.selection.startDate);
   };
-  // toggle is done this way
-  const toggleDateRange = () => {
-    setToggleDate(!toggleDate);
+
+  const SelectionRange = {
+    startDate: startDate,
+    endDate: endDate,
+    key: 'selection',
   };
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   /* 
     API Action Handlers
@@ -115,13 +132,6 @@ const Sales = () => {
       };
       fileReader.readAsText(file);
     }
-  };
-  // get the whole data from backend
-  const getDataHandler = async () => {
-    const recievedData = await fetch('http://localhost:3001/api/sales/getAll');
-    const result = await recievedData.json();
-    setIsLoading(false);
-    setArray(result);
   };
 
   // update or scan the product with dispatch
@@ -158,19 +168,45 @@ const Sales = () => {
     filterHandler();
   }, [enteredAWB]);
 
+  // dispatch filter
   const dispatchFilter = async () => {
     const receivedList = await fetch(
       'http://localhost:3001/api/sales/dispatchfilter'
     );
     const result = await receivedList.json();
-    setIsDispatchArray(result);
+    setDispatchArray(result);
   };
+  // pending filter
   const pendingFilter = async () => {
     const receivedList = await fetch(
       'http://localhost:3001/api/sales/pendingfilter'
     );
     const result = await receivedList.json();
-    setIsPendingArray(result);
+    setPendingArray(result);
+  };
+  // Cancel filter
+  const cancelHandler = async () => {
+    const recievedData = await fetch(
+      'http://localhost:3001/api/sales/cancelfilter'
+    );
+    const result = await recievedData.json();
+    setCancelArray(result);
+  };
+  const filterCount = async status => {
+    const response = await fetch(
+      'http://localhost:3001/api/sales/filterCount',
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          status: status,
+        }),
+      }
+    );
+    const count = await response.json();
+    if (status === 'dispatch') setDispatchCount(count);
+    if (status === 'pending') setPendingCount(count);
+    if (status === 'cancel') setCancelCount(count);
   };
 
   /* 
@@ -178,16 +214,20 @@ const Sales = () => {
   */
 
   useEffect(() => {
-    getDataHandler();
+    cancelHandler();
     dispatchFilter();
     pendingFilter();
   }, [isScan, isPending, isDispatch, isCancel]);
 
-  const SelectionRange = {
-    startDate: new Date(),
-    endDate: new Date(),
-    key: 'selection',
-  };
+  useEffect(() => {
+    filterCount('dispatch');
+  }, [isDispatch]);
+  useEffect(() => {
+    filterCount('pending');
+  }, [isPending]);
+  useEffect(() => {
+    filterCount('cancel');
+  }, [isCancel]);
 
   return (
     <VStack p={4} pb={20}>
@@ -224,12 +264,17 @@ const Sales = () => {
             Import
           </Button>
         </FormControl>
-        <Button mt={4} width={'100%'} onClick={toggleDateRange}>
+        <Button mt={4} width={'100%'} onClick={onOpen}>
           Date Filter
         </Button>
-        {toggleDate ? (
-          <DateRangePicker ranges={[SelectionRange]} onChange={handleSelect} />
-        ) : null}
+        <Modal size={'sm'} isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalBody>
+              <DateRange ranges={[SelectionRange]} onChange={handleSelect} />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
         <Flex py={2}>
           <Button onClick={switchScanHandler}>Scan Products</Button>
           <Menu>
@@ -244,7 +289,7 @@ const Sales = () => {
       </Box>
 
       {/* Scan Section */}
-      {isDispatch && isCancel && isPending && (
+      {!isScan && (
         <Box>
           <Input
             width={'22%'}
@@ -317,12 +362,29 @@ const Sales = () => {
         </Box>
       )}
 
-      {/* Dispatch Section */}
-      {isScan && isPending && isCancel && (
-        <Box>
-          <Heading size={'md'} pt={20} pb={4}>
-            Dispatch Table
-          </Heading>
+      {/* Filters Section */}
+      {isScan && (
+        <VStack>
+          <Flex py={8} justifyContent={'space-between'}>
+            <Heading mt={2} size={'md'}>
+              {!isDispatch
+                ? 'Dispatch Table'
+                : !isPending
+                ? 'Pending Table'
+                : !isCancel
+                ? 'Cancel Table'
+                : ''}
+            </Heading>
+            <Button>
+              {!isDispatch
+                ? `${dispatchcount}`
+                : !isPending
+                ? `${pendingcount}`
+                : !isCancel
+                ? `${cancelcount}`
+                : 'null'}
+            </Button>
+          </Flex>
 
           {isLoading && <Spinner size={'xl'} />}
           {!isLoading && (
@@ -355,138 +417,58 @@ const Sales = () => {
                 </Thead>
 
                 <Tbody>
-                  {dispatchArray.map(item => (
-                    <Tr key={item._id}>
-                      <Td>{item.AWB}</Td>
-                      <Td>{item.ORDER_ID}</Td>
-                      <Td>{item.SKU}</Td>
-                      <Td>{item.QTY}</Td>
-                      <Td>{item.status}</Td>
-                      <Td>{item.courier}</Td>
-                      <Td>{item.date}</Td>
-                      <Td>{item.firm}</Td>
-                      <Td>{item['PORTAL\r']}</Td>
+                  {!isDispatch ? (
+                    dispatchArray.map(item => (
+                      <Tr key={item._id}>
+                        <Td>{item.AWB}</Td>
+                        <Td>{item.ORDER_ID}</Td>
+                        <Td>{item.SKU}</Td>
+                        <Td>{item.QTY}</Td>
+                        <Td>{item.status}</Td>
+                        <Td>{item.courier}</Td>
+                        <Td>{item.date}</Td>
+                        <Td>{item.firm}</Td>
+                        <Td>{item['PORTAL\r']}</Td>
+                      </Tr>
+                    ))
+                  ) : !isPending ? (
+                    pendingArray.map(item => (
+                      <Tr key={item._id}>
+                        <Td>{item.AWB}</Td>
+                        <Td>{item.ORDER_ID}</Td>
+                        <Td>{item.SKU}</Td>
+                        <Td>{item.QTY}</Td>
+                        <Td>{item.status}</Td>
+                        <Td>{item.courier}</Td>
+                        <Td>{item.date}</Td>
+                        <Td>{item.firm}</Td>
+                        <Td>{item['PORTAL\r']}</Td>
+                      </Tr>
+                    ))
+                  ) : !isCancel ? (
+                    cancelArray.map(item => (
+                      <Tr key={item._id}>
+                        <Td>{item.AWB}</Td>
+                        <Td>{item.ORDER_ID}</Td>
+                        <Td>{item.SKU}</Td>
+                        <Td>{item.QTY}</Td>
+                        <Td>{item.status}</Td>
+                        <Td>{item.courier}</Td>
+                        <Td>{item.date}</Td>
+                        <Td>{item.firm}</Td>
+                        <Td>{item['PORTAL\r']}</Td>
+                      </Tr>
+                    ))
+                  ) : (
+                    <Tr>
+                      <Td>Error</Td>
                     </Tr>
-                  ))}
+                  )}
                 </Tbody>
               </Table>
             </TableContainer>
           )}
-        </Box>
-      )}
-
-      {/* Pending Section */}
-      {isScan && isDispatch && isCancel && (
-        <Box>
-          <Heading size={'md'} pt={20} pb={4}>
-            Pending Table
-          </Heading>
-          {isLoading && <Spinner size={'xl'} />}
-          {!isLoading && (
-            <TableContainer
-              rounded={'lg'}
-              boxShadow={'lg'}
-              overflowY={'auto'}
-              overflowX={'auto'}
-              h={600}
-              w={1200}
-              mb={20}
-            >
-              <Table variant="simple">
-                <Thead
-                  position={'sticky'}
-                  top={0}
-                  backgroundColor={'lightblue'}
-                >
-                  <Tr key={'header'}>
-                    <Th textAlign={'center'}>AWB</Th>
-                    <Th textAlign={'center'}>order id</Th>
-                    <Th textAlign={'center'}>SKU</Th>
-                    <Th textAlign={'center'}>QTY</Th>
-                    <Th textAlign={'center'}>STATUS</Th>
-                    <Th textAlign={'center'}>courier</Th>
-                    <Th textAlign={'center'}>date</Th>
-                    <Th textAlign={'center'}>firm</Th>
-                    <Th textAlign={'center'}>Portal</Th>
-                  </Tr>
-                </Thead>
-
-                <Tbody>
-                  {pendingArray.map(item => (
-                    <Tr key={item._id}>
-                      <Td>{item.AWB}</Td>
-                      <Td>{item.ORDER_ID}</Td>
-                      <Td>{item.SKU}</Td>
-                      <Td>{item.QTY}</Td>
-                      <Td>{item.status}</Td>
-                      <Td>{item.courier}</Td>
-                      <Td>{item.date}</Td>
-                      <Td>{item.firm}</Td>
-                      <Td>{item['PORTAL\r']}</Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-            </TableContainer>
-          )}
-        </Box>
-      )}
-
-      {/* Cancel Section */}
-      {isScan && isDispatch && isPending && (
-        <Box>
-          <Heading size={'md'} pt={20} pb={4}>
-            Cancel Table
-          </Heading>
-          {isLoading && <Spinner size={'xl'} />}
-          {!isLoading && (
-            <TableContainer
-              rounded={'lg'}
-              boxShadow={'lg'}
-              overflowY={'auto'}
-              overflowX={'auto'}
-              h={600}
-              w={1200}
-              mb={20}
-            >
-              <Table variant="simple">
-                <Thead
-                  position={'sticky'}
-                  top={0}
-                  backgroundColor={'lightblue'}
-                >
-                  <Tr key={'header'}>
-                    <Th textAlign={'center'}>AWB</Th>
-                    <Th textAlign={'center'}>order id</Th>
-                    <Th textAlign={'center'}>SKU</Th>
-                    <Th textAlign={'center'}>QTY</Th>
-                    <Th textAlign={'center'}>STATUS</Th>
-                    <Th textAlign={'center'}>courier</Th>
-                    <Th textAlign={'center'}>date</Th>
-                    <Th textAlign={'center'}>firm</Th>
-                    <Th textAlign={'center'}>Portal</Th>
-                  </Tr>
-                </Thead>
-
-                <Tbody>
-                  {array.map(item => (
-                    <Tr key={item._id}>
-                      <Td>{item.AWB}</Td>
-                      <Td>{item.ORDER_ID}</Td>
-                      <Td>{item.SKU}</Td>
-                      <Td>{item.QTY}</Td>
-                      <Td>{item.status}</Td>
-                      <Td>{item.courier}</Td>
-                      <Td>{item.date}</Td>
-                      <Td>{item.firm}</Td>
-                      <Td>{item['PORTAL\r']}</Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-            </TableContainer>
-          )}
-        </Box>
+        </VStack>
       )}
     </VStack>
   );
