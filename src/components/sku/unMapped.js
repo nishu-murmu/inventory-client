@@ -21,8 +21,8 @@ import { DownloadIcon } from '@chakra-ui/icons';
 
 const UnMapped = () => {
   const [file, setFile] = useState();
-  const [array, setArray] = useState([]);
   const [mappedArray, setMappedArray] = useState([]);
+  const [unMappedArray, setUnMappedArray] = useState([]);
   const fileReader = new FileReader();
 
   const onChangeHandler = e => {
@@ -42,7 +42,11 @@ const UnMapped = () => {
       return obj;
     });
 
-    setArray(array);
+    fetch('http://localhost:3001/api/unmapped/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(array),
+    });
   };
 
   const onSubmitHandler = e => {
@@ -55,20 +59,31 @@ const UnMapped = () => {
     }
   };
 
-  const masterskuHandler = () => {
-    fetch('http://localhost:3001/api/master/getAll')
+  const getArrayHandler = async () => {
+    await fetch('http://localhost:3001/api/unmapped/getAll')
       .then(res => {
         return res.json();
       })
       .then(data => {
-        setMappedArray(data);
+        console.log(data);
+        setUnMappedArray(data);
       });
   };
-  // const headerKeys = Object.keys(Object.assign({}, ...array));
 
   useEffect(() => {
+    const masterskuHandler = async () => {
+      await fetch('http://localhost:3001/api/master/getAll')
+        .then(res => {
+          return res.json();
+        })
+        .then(data => {
+          setMappedArray(data);
+        });
+    };
     masterskuHandler();
-  }, []);
+    getArrayHandler();
+  });
+
   return (
     <VStack p={4} pb={120}>
       <Heading size={'lg'} pb={10}>
@@ -97,7 +112,10 @@ const UnMapped = () => {
         <Button
           type={'button'}
           width={'100%'}
-          onClick={onSubmitHandler}
+          onClick={() => {
+            onSubmitHandler();
+            getArrayHandler();
+          }}
           variant={'outline'}
         >
           Import
@@ -117,28 +135,31 @@ const UnMapped = () => {
             overflowY={'auto'}
             overflowX={'auto'}
             h={400}
-            w={500}
+            w={600}
             bg={useColorModeValue('gray.100', 'gray.700')}
           >
             <Table variant="simple">
               <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
                 <Tr>
                   <Th textAlign={'center'}>UnMapped SKUs</Th>
-                  <Th textAlign={'center'}>Master SKU</Th>
+                  <Th textAlign={'center'}>CATALOG</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                <Tr>
-                  <Td>example test</Td>
-                  <Td>
-                    <Input list={'mastersku'} autoFocus />
-                    <datalist id={'mastersku'}>
-                      {mappedArray.map(item => (
-                        <option key={item._id}>{item.mastersku}</option>
-                      ))}
-                    </datalist>
-                  </Td>
-                </Tr>
+                {unMappedArray.map(item => (
+                  <Tr key={item._id}>
+                    <Td textAlign={'center'}>{item['STYLE ID']}</Td>
+                    <Td textAlign={'center'}>{item['CATALOG ID']}</Td>
+                    {/* <Td>
+                      <Input list={'mastersku'} autoFocus />
+                      <datalist id={'mastersku'}>
+                        {mappedArray.map(item => (
+                          <option key={item._id}>{item.mastersku}</option>
+                        ))}
+                      </datalist>
+                    </Td> */}
+                  </Tr>
+                ))}
               </Tbody>
             </Table>
           </TableContainer>
@@ -148,7 +169,7 @@ const UnMapped = () => {
         </Box>
 
         {/* Mapped SKU Table */}
-        <Box>
+        {/* <Box>
           <Heading size={'md'} pt={20} pb={4}>
             Mapped SKU Table
           </Heading>
@@ -175,7 +196,7 @@ const UnMapped = () => {
               </Tbody>
             </Table>
           </TableContainer>
-        </Box>
+        </Box> */}
       </Flex>
     </VStack>
   );

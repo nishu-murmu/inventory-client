@@ -14,12 +14,16 @@ import {
   VStack,
   Radio,
   RadioGroup,
-  Select,
-  Checkbox,
+  Wrap,
+  WrapItem,
   Flex,
   FormControl,
   FormLabel,
+  useDisclosure,
+  Checkbox,
 } from '@chakra-ui/react';
+import { Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalBody, ModalContent } from '@chakra-ui/react';
 
 const Mapped = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -28,6 +32,7 @@ const Mapped = () => {
   const [grandParent, setGrandParent] = useState('');
   const [parent, setParent] = useState('');
   const [child, setChild] = useState('');
+  const [combo, setCombo] = useState([]);
 
   const [isSingle, setIsSingle] = useState(true);
 
@@ -45,6 +50,7 @@ const Mapped = () => {
         parent,
         child,
         mastersku: [grandParent, parent, child].join('_'),
+        combo: combo,
       }),
     });
   };
@@ -60,6 +66,9 @@ const Mapped = () => {
   useEffect(() => {
     getListHandler();
   }, [isChange]);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <VStack p={4}>
       <Heading size={'lg'} pb={10}>
@@ -157,7 +166,37 @@ const Mapped = () => {
                   required
                 />
               </Flex>
-              <VStack></VStack>
+              <Button as={'button'} w={'100%'} onClick={onOpen} px={10} my={5}>
+                Select single master SKUs
+              </Button>
+              <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalBody>
+                    <Wrap spacing={4}>
+                      {array.map(item => (
+                        <WrapItem key={item._id}>
+                          <Checkbox
+                            type={'checkbox'}
+                            onChange={e => {
+                              if (e.target.checked)
+                                setCombo(prevCombo => [
+                                  ...prevCombo,
+                                  `${item.mastersku}`,
+                                ]);
+                              else {
+                                combo.pop();
+                              }
+                            }}
+                          >
+                            {item.mastersku}
+                          </Checkbox>
+                        </WrapItem>
+                      ))}
+                    </Wrap>
+                  </ModalBody>
+                </ModalContent>
+              </Modal>
               <Button type={'submit'} w={'100%'} px={10} my={5}>
                 Submit
               </Button>
@@ -188,6 +227,7 @@ const Mapped = () => {
                   <Th textAlign={'center'}>Parent</Th>
                   <Th textAlign={'center'}>Child</Th>
                   <Th textAlign={'center'}>Master SKU</Th>
+                  <Th textAlign={'center'}>Type</Th>
                 </Tr>
               </Thead>
 
@@ -198,6 +238,20 @@ const Mapped = () => {
                     <Td textAlign={'center'}>{item.parent}</Td>
                     <Td textAlign={'center'}>{item.child}</Td>
                     <Td textAlign={'center'}>{item.mastersku}</Td>
+                    <Td textAlign={'center'}>
+                      {item.combo.length !== 0 ? (
+                        <Menu>
+                          <MenuButton as={Button}>Combo</MenuButton>
+                          <MenuList>
+                            {item.combo.map(val => (
+                              <MenuItem key={val}>{val}</MenuItem>
+                            ))}
+                          </MenuList>
+                        </Menu>
+                      ) : (
+                        <Button>Single</Button>
+                      )}
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>
