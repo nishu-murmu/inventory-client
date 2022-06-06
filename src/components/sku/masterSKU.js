@@ -85,6 +85,7 @@ const Mapped = () => {
         </Flex>
       </RadioGroup>
 
+      {/* Single Master SKU */}
       {isSingle && (
         <form
           onSubmit={e => {
@@ -129,6 +130,8 @@ const Mapped = () => {
           </FormControl>
         </form>
       )}
+
+      {/* Combo master SKU */}
       {!isSingle && (
         <form
           onSubmit={e => {

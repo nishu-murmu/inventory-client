@@ -46,7 +46,7 @@ const PurchaseReturn = () => {
   const [mappedArray, setMappedArray] = useState([]);
   const [selectedsku, setSelectedsku] = useState('');
   const [toggleSubmit, setToggleSubmit] = useState(false);
-
+  const [toggleDelete, setToggleDelete] = useState(false);
   const [enteredsku, setEnteredSku] = useState('');
   const [update, setUpdate] = useState(new Date());
   const [newQuantity, setNewQuantity] = useState('');
@@ -59,6 +59,9 @@ const PurchaseReturn = () => {
   };
   const submitToggleHandler = () => {
     setToggleSubmit(!toggleSubmit);
+  };
+  const toggleRemove = () => {
+    setToggleDelete(!toggleDelete);
   };
 
   // create product
@@ -74,17 +77,23 @@ const PurchaseReturn = () => {
         quantity: quantity,
       }),
     });
+    console.log(sku + ',' + start + ',' + quantity);
   };
+
   // get list of products
-  const getListHandler = async () => {
-    setIsLoading(true);
-    const response = await fetch(
-      'http://localhost:3001/api/purchaseReturn/getAll'
-    );
-    const result = await response.json();
-    setIsLoading(false);
-    setPurchaseReturnData(result);
-  };
+  useEffect(() => {
+    const getListHandler = async () => {
+      setIsLoading(true);
+      const response = await fetch(
+        'http://localhost:3001/api/purchaseReturn/getAll'
+      );
+      const result = await response.json();
+      setIsLoading(false);
+      setPurchaseReturnData(result);
+    };
+    getListHandler();
+  }, [toggleDelete, toggleSubmit]);
+
   // update product
   const updateHandler = () => {
     fetch('http://localhost:3001/api/purchaseReturn/update', {
@@ -97,29 +106,32 @@ const PurchaseReturn = () => {
       }),
     });
   };
-  // delete product
-  const deleteHandler = async () => {
-    await fetch('http://localhost:3001/api/purchaseReturn/delete', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        mastersku: selectedsku,
-      }),
-    });
-  };
-  // master sku
-  const masterskuHandler = () => {
-    fetch('http://localhost:3001/api/master/getAll')
-      .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        setMappedArray(data);
-      });
-  };
 
+  // delete product
   useEffect(() => {
-    getListHandler();
+    const deleteHandler = async () => {
+      await fetch('http://localhost:3001/api/purchaseReturn/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mastersku: selectedsku,
+        }),
+      });
+    };
+    deleteHandler();
+  }, [toggleDelete, selectedsku]);
+
+  // master sku
+  useEffect(() => {
+    const masterskuHandler = () => {
+      fetch('http://localhost:3001/api/master/getAll')
+        .then(res => {
+          return res.json();
+        })
+        .then(data => {
+          setMappedArray(data);
+        });
+    };
     masterskuHandler();
   }, []);
 
@@ -269,7 +281,7 @@ const PurchaseReturn = () => {
                         <Button
                           onClick={() => {
                             setSelectedsku(val.mastersku);
-                            deleteHandler();
+                            toggleRemove();
                           }}
                           colorScheme={'red'}
                         >

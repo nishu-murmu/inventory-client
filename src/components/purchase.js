@@ -44,7 +44,8 @@ const Purchase = () => {
   const [selectedsku, setSelectedsku] = useState('');
   const [mappedArray, setMappedArray] = useState([]);
   const [toggleSubmit, setToggleSubmit] = useState(false);
-
+  const [toggleUpdate, setToggleUpdate] = useState(false);
+  const [toggleDelete, setToggleDelete] = useState(false);
   const [enteredsku, setEnteredSku] = useState('');
   const [update, setUpdate] = useState(new Date());
   const [newQuantity, setNewQuantity] = useState('');
@@ -57,6 +58,12 @@ const Purchase = () => {
   };
   const submitToggleHandler = () => {
     setToggleSubmit(!toggleSubmit);
+  };
+  const toggleRemove = () => {
+    setToggleDelete(!toggleDelete);
+  };
+  const toggleUpdateHandler = () => {
+    setToggleUpdate(!toggleUpdate);
   };
 
   // create product
@@ -82,10 +89,11 @@ const Purchase = () => {
       setPurchaseData(result);
     };
     getListHandler();
-  }, [toggleSubmit]);
+  }, [toggleSubmit, toggleDelete]);
   // update product
-  const updateHandler = () => {
-    fetch('http://localhost:3001/api/purchase/update', {
+  const updateHandler = async e => {
+    e.preventDefault();
+    await fetch('http://localhost:3001/api/purchase/update', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -97,15 +105,19 @@ const Purchase = () => {
   };
 
   // delete product
-  const deleteHandler = async () => {
-    await fetch('http://localhost:3001/api/purchase/delete', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        mastersku: selectedsku,
-      }),
-    });
-  };
+  useEffect(() => {
+    const deleteHandler = async () => {
+      await fetch('http://localhost:3001/api/purchase/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mastersku: selectedsku,
+        }),
+      });
+    };
+    deleteHandler();
+  }, [toggleDelete, selectedsku]);
+
   // master sku hander
   useEffect(() => {
     const masterskuHandler = () => {
@@ -132,8 +144,8 @@ const Purchase = () => {
           </Heading>
           <VStack width={60}>
             <form
-              onSubmit={() => {
-                submitHandler();
+              onSubmit={e => {
+                submitHandler(e);
                 submitToggleHandler();
               }}
               style={{ margin: '20px' }}
@@ -224,46 +236,57 @@ const Purchase = () => {
                         </Button>
                         <Modal isCentered isOpen={isOpen} onClose={onClose}>
                           <ModalOverlay />
-                          <ModalContent>
+                          <ModalContent width={80}>
                             <ModalHeader>Edit Purchase Product</ModalHeader>
                             <ModalCloseButton />
-                            <ModalBody>
-                              <Input list={'master'}></Input>
-                              <datalist
-                                id={'master'}
-                                onChange={e => {
-                                  setEnteredSku(e.target.value);
-                                }}
-                              >
-                                {mappedArray.map(item => (
-                                  <option key={item._id}>
-                                    {item.mastersku}
-                                  </option>
-                                ))}
-                              </datalist>
-                              <DatePicker
-                                selected={start}
-                                onChange={date => setUpdate(date)}
-                              ></DatePicker>
-                              <Input
-                                placeholder="Enter Quantity"
-                                onChange={newQuantityChange}
-                                required
-                                textAlign="center"
-                              />
-                            </ModalBody>
-                            <ModalFooter>
-                              <Button
-                                colorScheme="blue"
-                                mr={3}
-                                onClick={onClose}
-                              >
-                                Close
-                              </Button>
-                              <Button variant="outline" onClick={updateHandler}>
-                                Submit
-                              </Button>
-                            </ModalFooter>
+                            <form
+                              onSubmit={e => {
+                                updateHandler(e);
+                                toggleUpdateHandler();
+                              }}
+                            >
+                              <ModalBody>
+                                <Input
+                                  list={'master'}
+                                  onChange={e => {
+                                    setEnteredSku(e.target.value);
+                                  }}
+                                  value={enteredsku}
+                                  autoComplete={'off'}
+                                  textAlign={'center'}
+                                ></Input>
+                                <datalist id={'master'}>
+                                  {mappedArray.map(item => (
+                                    <option key={item._id}>
+                                      {item.mastersku}
+                                    </option>
+                                  ))}
+                                </datalist>
+                                <DatePicker
+                                  selected={start}
+                                  onChange={date => setUpdate(date)}
+                                  placeholderText={'Select Date to Update'}
+                                ></DatePicker>
+                                <Input
+                                  placeholder="Enter Quantity"
+                                  onChange={newQuantityChange}
+                                  required
+                                  textAlign="center"
+                                />
+                              </ModalBody>
+                              <ModalFooter>
+                                <Button
+                                  colorScheme="blue"
+                                  mr={3}
+                                  onClick={onClose}
+                                >
+                                  Close
+                                </Button>
+                                <Button type="submit" variant="outline">
+                                  Submit
+                                </Button>
+                              </ModalFooter>
+                            </form>
                           </ModalContent>
                         </Modal>
                       </Td>
@@ -271,7 +294,7 @@ const Purchase = () => {
                         <Button
                           onClick={() => {
                             setSelectedsku(val.mastersku);
-                            deleteHandler();
+                            toggleRemove();
                           }}
                           colorScheme={'red'}
                         >
