@@ -9,6 +9,7 @@ import AccountPage from '../pages/Auth/AccountPage.js';
 import MasterSKUPage from '../pages/Sku/masterSKUPage.js';
 import UnMappedPage from '../pages/Sku/unMapped.js';
 import LiveStockPage from '../pages/livestockPage.js';
+import ErrorPage from '../components/Auth/_404.js';
 
 const AllRoutes = () => {
   return (
@@ -16,6 +17,7 @@ const AllRoutes = () => {
       <Route path="/" element={<SignUpPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/account" element={<AccountPage />} />
+      <Route path="/_404" element={<ErrorPage />} />
       <Route path="/master" element={<MasterSKUPage />} />
       <Route path="/unmapped" element={<UnMappedPage />} />
       <Route path="/purchase" element={<PurchasePage />} />

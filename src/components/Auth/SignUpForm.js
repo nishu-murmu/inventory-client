@@ -14,7 +14,7 @@ import {
   Button,
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const SignUp = () => {
   const [firstname, setFirstName] = useState('');
@@ -22,10 +22,11 @@ const SignUp = () => {
   const [lastname, setlastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const nav = useNavigate();
 
   const submitHandler = e => {
     e.preventDefault();
-    fetch('http://localhost:3001/api/users/register', {
+    fetch('http://localhost:3001/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -34,6 +35,9 @@ const SignUp = () => {
         email: email,
         password,
       }),
+    }).then(res => {
+      console.log(res.status);
+      if (res.status === 200) nav('/login');
     });
   };
   const handleClick = () => setShow(!show);

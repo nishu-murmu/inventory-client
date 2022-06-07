@@ -82,7 +82,7 @@ const UnMapped = () => {
     };
     masterskuHandler();
     getArrayHandler();
-  });
+  }, []);
 
   return (
     <VStack p={4} pb={120}>
@@ -142,22 +142,22 @@ const UnMapped = () => {
               <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
                 <Tr>
                   <Th textAlign={'center'}>UnMapped SKUs</Th>
-                  <Th textAlign={'center'}>CATALOG</Th>
+                  <Th textAlign={'center'}>Master SKU</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {unMappedArray.map(item => (
                   <Tr key={item._id}>
                     <Td textAlign={'center'}>{item['STYLE ID']}</Td>
-                    <Td textAlign={'center'}>{item['CATALOG ID']}</Td>
-                    {/* <Td>
+                    {/* <Td textAlign={'center'}>{item['CATALOG ID']}</Td> */}
+                    <Td>
                       <Input list={'mastersku'} autoFocus />
                       <datalist id={'mastersku'}>
                         {mappedArray.map(item => (
                           <option key={item._id}>{item.mastersku}</option>
                         ))}
                       </datalist>
-                    </Td> */}
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>

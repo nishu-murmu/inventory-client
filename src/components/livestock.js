@@ -18,8 +18,8 @@ const LiveStock = () => {
   const [purchaseArray, setPurchaseArray] = useState([]);
   const [purchaseReturnArray, setPurchaseReturnArray] = useState([]);
   const [salesArray, setSalesArray] = useState([]);
-  const [mergedArray, setMergedArray] = useState([]);
   const [salesReturnArray, setSalesReturnArray] = useState([]);
+  const [mergedArray, setMergedArray] = useState([]);
   const [livestockArray, setLiveStockArray] = useState([]);
 
   useEffect(() => {
@@ -29,7 +29,6 @@ const LiveStock = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(mergedArray),
       });
-      console.log(mergedArray);
     };
     const masterskuData = async () => {
       const resposne = await fetch('http://localhost:3001/api/master/getAll');
@@ -82,26 +81,20 @@ const LiveStock = () => {
     salesReturnData();
   }, [mergedArray]);
 
-  for (let i = 0; i < masterskuArray; i++) {
-    setMergedArray(oldArray => [
-      ...oldArray,
-      {
-        ...masterskuArray[i],
-        ...purchaseArray.find(
-          item => item.mastersku === masterskuArray[i].mastersku
-        ),
-        ...purchaseReturnArray.find(
-          item => item.mastersku === masterskuArray[i].mastersku
-        ),
-        ...salesReturnArray.find(
-          item => item.mastersku === masterskuArray[i].mastersku
-        ),
-        ...salesArray.find(
-          item => item.mastersku === masterskuArray[i].mastersku
-        ),
-      },
-    ]);
-  }
+  const mergeMasterArray = () => {
+    for (let i = 0; i < masterskuArray.length; i++) {
+      setMergedArray(prevMergedArray => [
+        ...prevMergedArray,
+        {
+          ...masterskuArray[i],
+          ...purchaseArray.find(
+            item => item.mastersku === masterskuArray[i].mastersku
+          ),
+        },
+      ]);
+    }
+  };
+
   return (
     <Box p={4}>
       <Heading size={'lg'} pb={10}>
