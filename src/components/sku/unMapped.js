@@ -65,7 +65,6 @@ const UnMapped = () => {
         return res.json();
       })
       .then(data => {
-        console.log(data);
         setUnMappedArray(data);
       });
   };

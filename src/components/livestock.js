@@ -9,6 +9,7 @@ import {
   Td,
   Heading,
   useColorModeValue,
+  Button,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 // files
@@ -81,18 +82,21 @@ const LiveStock = () => {
     salesReturnData();
   }, [mergedArray]);
 
-  const mergeMasterArray = () => {
-    for (let i = 0; i < masterskuArray.length; i++) {
-      setMergedArray(prevMergedArray => [
-        ...prevMergedArray,
-        {
-          ...masterskuArray[i],
-          ...purchaseArray.find(
-            item => item.mastersku === masterskuArray[i].mastersku
-          ),
-        },
-      ]);
-    }
+  const mergeArray = () => {
+    setMergedArray(
+      masterskuArray.map(itm => ({
+        ...purchaseArray.find(item => item.mastersku === itm.mastersku && item),
+        ...itm,
+      }))
+    );
+    setMergedArray(
+      purchaseArray.map(itm => ({
+        ...purchaseReturnArray.find(
+          item => item.mastersku === itm.mastersku && item
+        ),
+        ...itm,
+      }))
+    );
   };
 
   return (
@@ -100,6 +104,7 @@ const LiveStock = () => {
       <Heading size={'lg'} pb={10}>
         Live Stock Section
       </Heading>
+      <Button onClick={mergeArray}>Get List</Button>
       <Heading size={'md'} pb={4}>
         Live Stock Table
       </Heading>
