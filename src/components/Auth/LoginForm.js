@@ -23,7 +23,7 @@ const Login = () => {
   const nav = useNavigate();
   const submitHandler = async e => {
     e.preventDefault();
-    await fetch('http://localhost:3001/api/auth/login', {
+    await fetch('https://cryptic-bayou-61420.herokuapp.com/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
