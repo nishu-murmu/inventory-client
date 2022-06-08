@@ -1,8 +1,12 @@
 //files
 import Login from '../../components/Auth/LoginForm';
-
+import AnimatedPage from '../AnimatedPage';
 const LoginPage = () => {
-  return <Login />;
+  return (
+    <AnimatedPage>
+      <Login />
+    </AnimatedPage>
+  );
 };
 
 export default LoginPage;

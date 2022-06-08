@@ -3,13 +3,16 @@ import { VStack } from '@chakra-ui/react';
 //files
 import PurchaseReturn from '../components/purchase-return';
 import Navigation from '../sections/navigation-section';
+import AnimatedPage from './AnimatedPage';
 
 const PurchaseReturnPage = () => {
   return (
-    <VStack>
-      <Navigation />
-      <PurchaseReturn />
-    </VStack>
+    <AnimatedPage>
+      <VStack>
+        <Navigation />
+        <PurchaseReturn />
+      </VStack>
+    </AnimatedPage>
   );
 };
 

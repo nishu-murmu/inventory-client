@@ -1,4 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+// files
 import PurchasePage from '../pages/purchasePage.js';
 import PurchaseReturnPage from '../pages/purchaseReturnPage.js';
 import SalesPage from '../pages/salesPage.js';
@@ -12,20 +15,23 @@ import LiveStockPage from '../pages/livestockPage.js';
 import ErrorPage from '../components/Auth/_404.js';
 
 const AllRoutes = () => {
+  const location = useLocation();
   return (
-    <Routes>
-      <Route path="/" element={<SignUpPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/account" element={<AccountPage />} />
-      <Route path="/_404" element={<ErrorPage />} />
-      <Route path="/master" element={<MasterSKUPage />} />
-      <Route path="/unmapped" element={<UnMappedPage />} />
-      <Route path="/purchase" element={<PurchasePage />} />
-      <Route path="/purchaseReturn" element={<PurchaseReturnPage />} />
-      <Route path="/sales" element={<SalesPage />} />
-      <Route path="/salesReturn" element={<SalesReturnPage />} />
-      <Route path="/livestock" element={<LiveStockPage />} />
-    </Routes>
+    <AnimatePresence exitBeforeEnter>
+      <Routes location={location} key={location.pathname}>
+        <Route exact path="/" element={<SignUpPage />} />
+        <Route exact path="/login" element={<LoginPage />} />
+        <Route exact path="/account" element={<AccountPage />} />
+        <Route exact path="/_404" element={<ErrorPage />} />
+        <Route exact path="/master" element={<MasterSKUPage />} />
+        <Route exact path="/unmapped" element={<UnMappedPage />} />
+        <Route exact path="/purchase" element={<PurchasePage />} />
+        <Route exact path="/purchaseReturn" element={<PurchaseReturnPage />} />
+        <Route exact path="/sales" element={<SalesPage />} />
+        <Route exact path="/salesReturn" element={<SalesReturnPage />} />
+        <Route exact path="/livestock" element={<LiveStockPage />} />
+      </Routes>
+    </AnimatePresence>
   );
 };
 

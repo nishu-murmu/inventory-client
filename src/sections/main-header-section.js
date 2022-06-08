@@ -62,7 +62,7 @@ const MainHeader = () => {
             <Link to="/account">
               <MenuItem>Account Settings</MenuItem>
             </Link>
-            <Link to="/">
+            <Link to="/login">
               <MenuItem>Log out</MenuItem>
             </Link>
           </MenuList>
