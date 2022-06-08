@@ -16,7 +16,6 @@ import {
   Th,
   Td,
   Button,
-  Spinner,
   Select,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -35,6 +34,9 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
+// files
+import AnimatedPage from '../pages/AnimatedPage';
+
 const PurchaseReturn = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -42,7 +44,6 @@ const PurchaseReturn = () => {
   const [start, setStart] = useState(new Date());
   const [quantity, setQuantity] = useState('');
   const [purchaseReturndata, setPurchaseReturnData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [mappedArray, setMappedArray] = useState([]);
   const [selectedsku, setSelectedsku] = useState('');
   const [toggleSubmit, setToggleSubmit] = useState(false);
@@ -77,18 +78,15 @@ const PurchaseReturn = () => {
         quantity: quantity,
       }),
     });
-    console.log(sku + ',' + start + ',' + quantity);
   };
 
   // get list of products
   useEffect(() => {
     const getListHandler = async () => {
-      setIsLoading(true);
       const response = await fetch(
         'http://localhost:3001/api/purchaseReturn/getAll'
       );
       const result = await response.json();
-      setIsLoading(false);
       setPurchaseReturnData(result);
     };
     getListHandler();
@@ -137,70 +135,77 @@ const PurchaseReturn = () => {
 
   return (
     <VStack>
-      <Heading as={'h1'} size={'lg'}>
-        Purchase Return Section
-      </Heading>
+      <AnimatedPage>
+        <Heading as={'h1'} size={'lg'}>
+          Purchase Return Section
+        </Heading>
+      </AnimatedPage>
       <HStack px={10} spacing={20}>
         <VStack p={5}>
-          <Heading className="purchase-return-heading" size={'md'} pb={10}>
-            Input Products Details
-          </Heading>
-          <VStack width={60}>
-            <form
-              onSubmit={e => {
-                submitHandler(e);
-                submitToggleHandler();
-              }}
-              style={{ margin: '20px' }}
-            >
-              <Input
-                list="sku"
-                onChange={e => {
-                  setSku(e.target.value);
+          <AnimatedPage>
+            <Heading className="purchase-return-heading" size={'md'} pb={10}>
+              Input Products Details
+            </Heading>
+          </AnimatedPage>
+          <AnimatedPage>
+            <VStack width={60}>
+              <form
+                onSubmit={e => {
+                  submitHandler(e);
+                  submitToggleHandler();
                 }}
-                value={sku}
-                autoComplete={'off'}
-                textAlign={'center'}
-                placeholder={'Enter SKU'}
-              />
-              <datalist id={'sku'}>
-                {mappedArray.map(item => (
-                  <option key={item._id}>{item.mastersku}</option>
-                ))}
-              </datalist>
-              <DatePicker
-                selected={start}
-                onChange={date => setStart(date)}
-              ></DatePicker>
-              <Input
-                placeholder="Enter Quantity"
-                onChange={quantityChange}
-                required
-                textAlign="center"
-              />
-              <Button type={'submit'} w={'100%'}>
-                Submit
-              </Button>
-              <Menu>
-                <MenuButton w={'100%'} as={Button}>
-                  Filter
-                </MenuButton>
-                <MenuList>
-                  <MenuItem>SKU</MenuItem>
-                  <MenuItem>Date</MenuItem>
-                  <MenuItem>Quantity</MenuItem>
-                </MenuList>
-              </Menu>
-            </form>
-          </VStack>
+                style={{ margin: '20px' }}
+              >
+                <Input
+                  list="sku"
+                  onChange={e => {
+                    setSku(e.target.value);
+                  }}
+                  value={sku}
+                  autoComplete={'off'}
+                  textAlign={'center'}
+                  placeholder={'Enter SKU'}
+                />
+                <datalist id={'sku'}>
+                  {mappedArray.map(item => (
+                    <option key={item._id}>{item.mastersku}</option>
+                  ))}
+                </datalist>
+                <DatePicker
+                  selected={start}
+                  onChange={date => setStart(date)}
+                ></DatePicker>
+                <Input
+                  placeholder="Enter Quantity"
+                  onChange={quantityChange}
+                  required
+                  textAlign="center"
+                />
+                <Button type={'submit'} w={'100%'}>
+                  Submit
+                </Button>
+                <Menu>
+                  <MenuButton w={'100%'} as={Button}>
+                    Filter
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem>SKU</MenuItem>
+                    <MenuItem>Date</MenuItem>
+                    <MenuItem>Quantity</MenuItem>
+                  </MenuList>
+                </Menu>
+              </form>
+            </VStack>
+          </AnimatedPage>
         </VStack>
         <VStack>
-          <Heading pb={5} size={'md'}>
-            Purchase Return Table
-          </Heading>
-          {isLoading && <Spinner size={'xl'} />}
+          <AnimatedPage>
+            <Heading pb={5} size={'md'}>
+              Purchase Return Table
+            </Heading>
+          </AnimatedPage>
 
-          {!isLoading && (
+          <AnimatedPage>
             <TableContainer
               rounded={'lg'}
               boxShadow={'lg'}
@@ -293,7 +298,7 @@ const PurchaseReturn = () => {
                 </Tbody>
               </Table>
             </TableContainer>
-          )}
+          </AnimatedPage>
         </VStack>
       </HStack>
     </VStack>

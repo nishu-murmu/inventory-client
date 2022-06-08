@@ -9,102 +9,28 @@ import {
   Td,
   Heading,
   useColorModeValue,
-  Button,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 // files
 
 const LiveStock = () => {
-  const [masterskuArray, setMasterskuArray] = useState([]);
-  const [purchaseArray, setPurchaseArray] = useState([]);
-  const [purchaseReturnArray, setPurchaseReturnArray] = useState([]);
-  const [salesArray, setSalesArray] = useState([]);
-  const [salesReturnArray, setSalesReturnArray] = useState([]);
-  const [mergedArray, setMergedArray] = useState([]);
   const [livestockArray, setLiveStockArray] = useState([]);
 
   useEffect(() => {
-    const createLiveStock = async () => {
-      await fetch('http://localhost:3001/api/livestock/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(mergedArray),
-      });
-    };
-    const masterskuData = async () => {
-      const resposne = await fetch('http://localhost:3001/api/master/getAll');
-      const result = await resposne.json();
-      setMasterskuArray(result);
-    };
-    const purchaseData = async () => {
-      const resposne = await fetch('http://localhost:3001/api/purchase/getAll');
-      const result = await resposne.json();
-      setPurchaseArray(result);
-    };
-    const purchaseReturnData = async () => {
-      const resposne = await fetch(
-        'http://localhost:3001/api/purchaseReturn/getAll'
-      );
-      const result = await resposne.json();
-      setPurchaseReturnArray(result);
-    };
-    const salesData = async () => {
-      const resposne = await fetch(
-        'http://localhost:3001/api/sales/dispatchfilter'
-      );
-      const result = await resposne.json();
-      setSalesArray(result);
-    };
-    const salesReturnData = async () => {
-      const resposne = await fetch(
-        'http://localhost:3001/api/salesReturn/getAll'
-      );
-      const result = await resposne.json();
-      setSalesReturnArray(result);
-    };
-
-    const getLiveStock = async () => {
-      const response = await fetch(
-        'http://localhost:3001/api/livestock/calculations',
-        {
-          method: 'PUT',
-        }
-      );
-      const result = await response.json();
+    const mergedData = async () => {
+      const response = await fetch('http://localhost:3001/api/purchase/merged');
+      const result = await response.json(response);
+      console.log(result);
       setLiveStockArray(result);
     };
-    createLiveStock();
-    getLiveStock();
-    masterskuData();
-    purchaseData();
-    purchaseReturnData();
-    salesData();
-    salesReturnData();
-  }, [mergedArray]);
-
-  const mergeArray = () => {
-    setMergedArray(
-      masterskuArray.map(itm => ({
-        ...purchaseArray.find(item => item.mastersku === itm.mastersku && item),
-        ...itm,
-      }))
-    );
-    setMergedArray(
-      purchaseArray.map(itm => ({
-        ...purchaseReturnArray.find(
-          item => item.mastersku === itm.mastersku && item
-        ),
-        ...itm,
-      }))
-    );
-  };
+    mergedData();
+  }, []);
 
   return (
     <Box p={4}>
       <Heading size={'lg'} pb={10}>
         Live Stock Section
       </Heading>
-      <Button onClick={mergeArray}>Get List</Button>
       <Heading size={'md'} pb={4}>
         Live Stock Table
       </Heading>
@@ -134,11 +60,18 @@ const LiveStock = () => {
               <Tr key={item._id}>
                 <Td textAlign="center">{item.mastersku}</Td>
                 <Td textAlign="center"> {item.opening_stock}</Td>
-                <Td textAlign="center"> {item.purchase}</Td>
-                <Td textAlign="center"> {item.sales}</Td>
-                <Td textAlign="center"> {item.salesReturn}</Td>
-                <Td textAlign="center"> {item.purchaseReturn}</Td>
-                <Td textAlign="center"> {item.livestock}</Td>
+                <Td textAlign="center"> {item.quantity}</Td>
+                <Td textAlign="center"> {item.sales[0].QTY}</Td>
+                <Td textAlign="center">0</Td>
+                <Td textAlign="center"> {item.purchaseReturn[0].quantity}</Td>
+                <Td textAlign="center">
+                  {Math.abs(
+                    parseInt(item.quantity) +
+                      0 -
+                      (parseInt(item.sales[0].QTY) +
+                        parseInt(item.purchaseReturn[0].quantity))
+                  )}
+                </Td>
               </Tr>
             ))}
           </Tbody>

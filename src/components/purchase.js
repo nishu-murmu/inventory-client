@@ -16,7 +16,6 @@ import {
   Th,
   Td,
   Button,
-  Spinner,
   useDisclosure,
 } from '@chakra-ui/react';
 import {
@@ -40,7 +39,6 @@ const Purchase = () => {
   const [start, setStart] = useState(new Date());
   const [quantity, setQuantity] = useState('');
   const [purchasedata, setPurchaseData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedsku, setSelectedsku] = useState('');
   const [mappedArray, setMappedArray] = useState([]);
   const [toggleSubmit, setToggleSubmit] = useState(false);
@@ -82,10 +80,8 @@ const Purchase = () => {
   // get list of products
   useEffect(() => {
     const getListHandler = async () => {
-      setIsLoading(true);
       const response = await fetch('http://localhost:3001/api/purchase/getAll');
       const result = await response.json();
-      setIsLoading(false);
       setPurchaseData(result);
     };
     getListHandler();
@@ -198,115 +194,108 @@ const Purchase = () => {
           <Heading pb={5} size={'md'}>
             Purchase Table
           </Heading>
-          {isLoading && <Spinner size={'xl'} />}
 
-          {!isLoading && (
-            <TableContainer
-              rounded={'lg'}
-              boxShadow={'lg'}
-              h={250}
-              overflowY={'auto'}
-              overflowX={'hidden'}
-            >
-              <Table variant="simple">
-                <Thead
-                  position={'sticky'}
-                  top={0}
-                  backgroundColor={'lightblue'}
-                >
-                  <Tr>
-                    <Th textAlign="center">SKU</Th>
-                    <Th textAlign="center">Date</Th>
-                    <Th textAlign="center">Quantity</Th>
-                    <Th textAlign="center">Edit</Th>
-                    <Th textAlign="center">Delete</Th>
+          <TableContainer
+            rounded={'lg'}
+            boxShadow={'lg'}
+            h={250}
+            overflowY={'auto'}
+            overflowX={'hidden'}
+          >
+            <Table variant="simple">
+              <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
+                <Tr>
+                  <Th textAlign="center">SKU</Th>
+                  <Th textAlign="center">Date</Th>
+                  <Th textAlign="center">Quantity</Th>
+                  <Th textAlign="center">Edit</Th>
+                  <Th textAlign="center">Delete</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {purchasedata.map(val => (
+                  <Tr key={val._id}>
+                    <Td textAlign={'center'}>{val.mastersku}</Td>
+                    <Td textAlign={'center'}>
+                      {val.Date.toString().substring(0, 10)}
+                    </Td>
+                    <Td textAlign={'center'}>{val.quantity}</Td>
+                    <Td>
+                      <Button colorScheme="teal" onClick={onOpen}>
+                        Edit
+                      </Button>
+                      <Modal isCentered isOpen={isOpen} onClose={onClose}>
+                        <ModalOverlay />
+                        <ModalContent width={80}>
+                          <ModalHeader>Edit Purchase Product</ModalHeader>
+                          <ModalCloseButton />
+                          <form
+                            onSubmit={e => {
+                              updateHandler(e);
+                              toggleUpdateHandler();
+                            }}
+                          >
+                            <ModalBody>
+                              <Input
+                                list={'master'}
+                                onChange={e => {
+                                  setEnteredSku(e.target.value);
+                                }}
+                                value={enteredsku}
+                                autoComplete={'off'}
+                                textAlign={'center'}
+                              ></Input>
+                              <datalist id={'master'}>
+                                {mappedArray.map(item => (
+                                  <option key={item._id}>
+                                    {item.mastersku}
+                                  </option>
+                                ))}
+                              </datalist>
+                              <DatePicker
+                                selected={start}
+                                onChange={date => setUpdate(date)}
+                                placeholderText={'Select Date to Update'}
+                              ></DatePicker>
+                              <Input
+                                placeholder="Enter Quantity"
+                                onChange={newQuantityChange}
+                                required
+                                textAlign="center"
+                              />
+                            </ModalBody>
+                            <ModalFooter>
+                              <Button
+                                colorScheme="blue"
+                                mr={3}
+                                onClick={onClose}
+                              >
+                                Close
+                              </Button>
+                              <Button type="submit" variant="outline">
+                                Submit
+                              </Button>
+                            </ModalFooter>
+                          </form>
+                        </ModalContent>
+                      </Modal>
+                    </Td>
+                    <Td textAlign={'center'}>
+                      <Button
+                        onClick={() => {
+                          setSelectedsku(val.mastersku);
+                          toggleRemove();
+                        }}
+                        colorScheme={'red'}
+                      >
+                        Delete
+                      </Button>
+                    </Td>
                   </Tr>
-                </Thead>
-                <Tbody>
-                  {purchasedata.map(val => (
-                    <Tr key={val._id}>
-                      <Td textAlign={'center'}>{val.mastersku}</Td>
-                      <Td textAlign={'center'}>
-                        {val.Date.toString().substring(0, 10)}
-                      </Td>
-                      <Td textAlign={'center'}>{val.quantity}</Td>
-                      <Td>
-                        <Button colorScheme="teal" onClick={onOpen}>
-                          Edit
-                        </Button>
-                        <Modal isCentered isOpen={isOpen} onClose={onClose}>
-                          <ModalOverlay />
-                          <ModalContent width={80}>
-                            <ModalHeader>Edit Purchase Product</ModalHeader>
-                            <ModalCloseButton />
-                            <form
-                              onSubmit={e => {
-                                updateHandler(e);
-                                toggleUpdateHandler();
-                              }}
-                            >
-                              <ModalBody>
-                                <Input
-                                  list={'master'}
-                                  onChange={e => {
-                                    setEnteredSku(e.target.value);
-                                  }}
-                                  value={enteredsku}
-                                  autoComplete={'off'}
-                                  textAlign={'center'}
-                                ></Input>
-                                <datalist id={'master'}>
-                                  {mappedArray.map(item => (
-                                    <option key={item._id}>
-                                      {item.mastersku}
-                                    </option>
-                                  ))}
-                                </datalist>
-                                <DatePicker
-                                  selected={start}
-                                  onChange={date => setUpdate(date)}
-                                  placeholderText={'Select Date to Update'}
-                                ></DatePicker>
-                                <Input
-                                  placeholder="Enter Quantity"
-                                  onChange={newQuantityChange}
-                                  required
-                                  textAlign="center"
-                                />
-                              </ModalBody>
-                              <ModalFooter>
-                                <Button
-                                  colorScheme="blue"
-                                  mr={3}
-                                  onClick={onClose}
-                                >
-                                  Close
-                                </Button>
-                                <Button type="submit" variant="outline">
-                                  Submit
-                                </Button>
-                              </ModalFooter>
-                            </form>
-                          </ModalContent>
-                        </Modal>
-                      </Td>
-                      <Td textAlign={'center'}>
-                        <Button
-                          onClick={() => {
-                            setSelectedsku(val.mastersku);
-                            toggleRemove();
-                          }}
-                          colorScheme={'red'}
-                        >
-                          Delete
-                        </Button>
-                      </Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-            </TableContainer>
-          )}
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
         </VStack>
       </HStack>
     </VStack>
