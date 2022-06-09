@@ -343,9 +343,7 @@ const Sales = () => {
                         value={status}
                         mx={8}
                       >
-                        <option value={'dispatch'} defaultChecked>
-                          dispatch
-                        </option>
+                        <option value={'dispatch'}>dispatch</option>
                         <option value={'pending'}>pending</option>
                         <option value={'cancel'}>cancel</option>
                       </Select>
@@ -364,7 +362,7 @@ const Sales = () => {
 
       {/* Filters Section */}
       {isScan && (
-        <VStack>
+        <Box>
           <Flex py={8} justifyContent={'space-between'}>
             <Heading mt={2} size={'md'}>
               {!isDispatch
@@ -468,7 +466,7 @@ const Sales = () => {
               </Table>
             </TableContainer>
           )}
-        </VStack>
+        </Box>
       )}
     </VStack>
   );

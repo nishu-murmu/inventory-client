@@ -17,10 +17,12 @@ import {
   VStack,
   Flex,
   FormControl,
-  useDisclosure,
   Select,
+  useDisclosure,
 } from '@chakra-ui/react';
+import { Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalBody, ModalContent } from '@chakra-ui/react';
+
 import { DownloadIcon } from '@chakra-ui/icons';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main style file
@@ -29,34 +31,62 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 
 const SalesReturn = () => {
   const [file, setFile] = useState();
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [dispatchArray, setIsDispatchArray] = useState([]);
-  const [filterArray, setFilterArray] = useState([]);
+  const fileReader = new FileReader();
   const [isLoading, setIsLoading] = useState(false);
-  const [isScan, setIsScan] = useState(false);
-  const [isDispatch, setIsDispatch] = useState(true);
+
   const [status, setStatus] = useState('');
   const [enteredAWB, setEnteredAWB] = useState('');
-  const fileReader = new FileReader();
+
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+
+  const [receivedCount, setReceivedCount] = useState(0);
+  const [wrongCount, setWrongCount] = useState(0);
+  const [partialCount, setPartialCount] = useState(0);
+
+  const [receivedArray, setIsReceivedArray] = useState([]);
+  const [wrongArray, setIsWrongArray] = useState([]);
+  const [partialArray, setIsPartialArray] = useState([]);
+  const [filterArray, setFilterArray] = useState([]);
+
+  const [isScan, setIsScan] = useState(false);
+  const [isReceived, setIsReceived] = useState(true);
+  const [isPartial, setIsPartial] = useState(true);
+  const [isWrong, setIsWrong] = useState(true);
 
   const onChangeHandler = e => {
     setFile(e.target.files[0]);
   };
   const switchScanHandler = () => {
     if (isScan === true) setIsScan(false);
-    if (isDispatch === false) setIsDispatch(true);
+    if (isReceived === false) setIsReceived(true);
+    if (isWrong === false) setIsWrong(true);
+    if (isPartial === false) setIsPartial(true);
   };
-  const switchDispatchHandler = () => {
+  const switchReceivedHandler = () => {
     if (isScan === false) setIsScan(true);
-    if (isDispatch === true) setIsDispatch(false);
+    if (isReceived === true) setIsReceived(false);
+    if (isWrong === false) setIsWrong(true);
+    if (isPartial === false) setIsPartial(true);
+  };
+  const switchPartialHandler = () => {
+    if (isScan === false) setIsScan(true);
+    if (isPartial === true) setIsPartial(false);
+    if (isReceived === false) setIsReceived(true);
+    if (isWrong === false) setIsWrong(true);
+  };
+  const switchWrongHandler = () => {
+    if (isScan === false) setIsScan(true);
+    if (isReceived === false) setIsReceived(true);
+    if (isPartial === false) setIsPartial(true);
+    if (isWrong === true) setIsWrong(false);
   };
 
   const handleSelect = ranges => {
     setEndDate(ranges.selection.endDate);
     setStartDate(ranges.selection.startDate);
   };
-
+  // convert csv to array
   const csvFileToArray = string => {
     const csvHeader = string.slice(0, string.indexOf('\n')).split(',');
     const csvRows = string.slice(string.indexOf('\n') + 1).split('\n');
@@ -69,14 +99,13 @@ const SalesReturn = () => {
       }, {});
       return obj;
     });
-    console.log(array);
     fetch('http://localhost:3001/api/salesReturn/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(array),
     });
   };
-
+  // submit csv file
   const onSubmitHandler = e => {
     setIsLoading(true);
     if (file) {
@@ -88,54 +117,108 @@ const SalesReturn = () => {
     }
   };
 
-  const updateHandler = async e => {
-    e.preventDefault();
-    await fetch('http://localhost:3001/api/salesReturn/update', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        awb: enteredAWB,
-        status,
-      }),
-    });
-  };
-
-  const filterHandler = async e => {
-    e.preventDefault();
-    const receivedList = await fetch(
-      'http://localhost:3001/api/salesReturn/filter',
-      {
+  // update the status
+  useEffect(() => {
+    const updateHandler = async () => {
+      await fetch('http://localhost:3001/api/salesReturn/update', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           awb: enteredAWB,
+          status,
+        }),
+      });
+    };
+    updateHandler();
+  }, [status, enteredAWB]);
+
+  // filter the product according to AWB
+  useEffect(() => {
+    const filterHandler = async () => {
+      const receivedList = await fetch(
+        'http://localhost:3001/api/salesReturn/filter',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            awb: enteredAWB,
+          }),
+        }
+      );
+      const result = await receivedList.json();
+      setFilterArray(result);
+      console.log(result);
+    };
+    filterHandler();
+  }, [enteredAWB]);
+
+  // Received filter
+  const receivedFilter = async () => {
+    const receivedList = await fetch(
+      'http://localhost:3001/api/salesReturn/receivedfilter'
+    );
+    const result = await receivedList.json();
+    setIsReceivedArray(result);
+  };
+  // Wrong filter
+  const wrongFilter = async () => {
+    const recievedData = await fetch(
+      'http://localhost:3001/api/salesReturn/wrongfilter'
+    );
+    const result = await recievedData.json();
+    setIsWrongArray(result);
+  };
+  // Partial filter
+  const partialFilter = async () => {
+    const recievedData = await fetch(
+      'http://localhost:3001/api/salesReturn/partialfilter'
+    );
+    const result = await recievedData.json();
+    setIsPartialArray(result);
+  };
+  // Filter Count
+  const filterCount = async status => {
+    const response = await fetch(
+      'http://localhost:3001/api/salesReturn/filterCount',
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          status: status,
         }),
       }
     );
-    const result = await receivedList.json();
-    setFilterArray(result);
-  };
-  const dispatchFilter = async () => {
-    const receivedList = await fetch(
-      'http://localhost:3001/api/salesReturn/dispatchfilter'
-    );
-    const result = await receivedList.json();
-    setIsDispatchArray(result);
+    const count = await response.json();
+    if (status === 'received') setReceivedCount(count);
+    if (status === 'wrong') setWrongCount(count);
+    if (status === 'partial') setPartialCount(count);
   };
 
+  /* 
+    Hooks
+  */
+  useEffect(() => {
+    receivedFilter();
+    partialFilter();
+    wrongFilter();
+  }, [isScan, isReceived, isPartial, isWrong]);
+
+  useEffect(() => {
+    filterCount('received');
+  }, [isReceived]);
+  useEffect(() => {
+    filterCount('wrong');
+  }, [isWrong]);
+  useEffect(() => {
+    filterCount('partial');
+  }, [isPartial]);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const SelectionRange = {
     startDate,
     endDate,
     key: 'selection',
   };
-  /* 
-    Hooks
-  */
-  useEffect(() => {
-    dispatchFilter();
-  }, []);
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <VStack p={4} pb={20}>
@@ -185,34 +268,34 @@ const SalesReturn = () => {
         </Modal>
         <Flex py={2}>
           <Button onClick={switchScanHandler}>Scan Products</Button>
-          <Button onClick={switchDispatchHandler}>List Products</Button>
+          <Menu>
+            <MenuButton as={Button}>List Products</MenuButton>
+            <MenuList>
+              <MenuItem onClick={switchReceivedHandler}>Received List</MenuItem>
+              <MenuItem onClick={switchPartialHandler}>Partial List</MenuItem>
+              <MenuItem onClick={switchWrongHandler}>Wrong List</MenuItem>
+            </MenuList>
+          </Menu>
         </Flex>
       </Box>
 
       {/* Scan Section */}
-      {isDispatch && (
+      {!isScan && (
         <Box>
-          <form
-            onSubmit={e => {
-              updateHandler(e);
-              filterHandler(e);
+          <Input
+            width={'22%'}
+            type={'text'}
+            mt={5}
+            textAlign={'center'}
+            onChange={e => {
+              setEnteredAWB(e.target.value);
+              setStatus('received');
             }}
-          >
-            <Input
-              width={'22%'}
-              type={'text'}
-              mt={5}
-              textAlign={'center'}
-              onChange={e => {
-                setEnteredAWB(e.target.value);
-                setStatus('dispatch');
-                e.target.select();
-              }}
-              value={enteredAWB}
-              placeholder="Enter AWB"
-              autoFocus
-            />
-          </form>
+            value={enteredAWB}
+            placeholder="Enter AWB"
+            autoFocus
+            autoCapitalize="true"
+          />
           <TableContainer
             pt={10}
             rounded={'lg'}
@@ -252,15 +335,15 @@ const SalesReturn = () => {
                     <Td textAlign={'center'}>{item.QTY}</Td>
                     <Td mr={10}>
                       <Select
-                        defaultValue={'dispatch'}
-                        mx={10}
+                        mx={8}
                         onChange={e => {
-                          setStatus(e.target.value());
+                          setStatus(e.target.value);
                         }}
+                        value={status}
                       >
-                        <option value={'pending'}>pending</option>
-                        <option value={'dispatch'}>dispatch</option>
-                        <option value={'cancel'}>cancel</option>
+                        <option value={'received'}>received</option>
+                        <option value={'partial'}>partial</option>
+                        <option value={'wrong'}>wrong</option>
                       </Select>
                     </Td>
                     <Td textAlign={'center'}>{item['Return Received Date']}</Td>
@@ -280,12 +363,29 @@ const SalesReturn = () => {
         </Box>
       )}
 
-      {/* Dispatch Section */}
+      {/* Filters Section */}
       {isScan && (
         <Box>
-          <Heading size={'md'} pt={20} pb={4}>
-            Sales Return Table
-          </Heading>
+          <Flex py={8} justifyContent={'space-between'}>
+            <Heading mt={2} size={'md'}>
+              {!isReceived
+                ? 'Received Table'
+                : !isPartial
+                ? 'Partial Table'
+                : !isWrong
+                ? 'Wrong Table'
+                : ''}
+            </Heading>
+            <Button>
+              {!isReceived
+                ? `${receivedCount}`
+                : !isPartial
+                ? `${partialCount}`
+                : !isWrong
+                ? `${wrongCount}`
+                : 'null'}
+            </Button>
+          </Flex>
           {isLoading && <Spinner size={'xl'} />}
           {!isLoading && (
             <TableContainer
@@ -323,29 +423,83 @@ const SalesReturn = () => {
                 </Thead>
 
                 <Tbody>
-                  {dispatchArray.map(item => (
-                    <Tr key={item._id}>
-                      <Td textAlign={'center'}>{item['Suborder ID']}</Td>
-                      <Td textAlign={'center'}>{item['Order ID']}</Td>
-                      <Td textAlign={'center'}>{item['AWB NO']}</Td>
-                      <Td textAlign={'center'}>{item.SKU}</Td>
-                      <Td textAlign={'center'}>{item.QTY}</Td>
-                      <Td textAlign={'center'}>{item.status}</Td>
-                      <Td textAlign={'center'}>
-                        {item['Return Received Date']}
-                      </Td>
-                      <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
-                      <Td textAlign={'center'}>
-                        {item['Return Request Date']}
-                      </Td>
-                      <Td textAlign={'center'}>
-                        {item['Return Delivered Date As Per Website']}
-                      </Td>
-                      <Td textAlign={'center'}>{item.Portal}</Td>
-                      <Td textAlign={'center'}>{item['RETURN TYPE WEB']}</Td>
-                      <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
+                  {!isReceived ? (
+                    receivedArray.map(item => (
+                      <Tr key={item._id}>
+                        <Td textAlign={'center'}>{item['Suborder ID']}</Td>
+                        <Td textAlign={'center'}>{item['Order ID']}</Td>
+                        <Td textAlign={'center'}>{item['AWB NO']}</Td>
+                        <Td textAlign={'center'}>{item.SKU}</Td>
+                        <Td textAlign={'center'}>{item.QTY}</Td>
+                        <Td textAlign={'center'}>{item.status}</Td>
+                        <Td textAlign={'center'}>
+                          {item['Return Received Date']}
+                        </Td>
+                        <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
+                        <Td textAlign={'center'}>
+                          {item['Return Request Date']}
+                        </Td>
+                        <Td textAlign={'center'}>
+                          {item['Return Delivered Date As Per Website']}
+                        </Td>
+                        <Td textAlign={'center'}>{item.Portal}</Td>
+                        <Td textAlign={'center'}>{item['RETURN TYPE WEB']}</Td>
+                        <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
+                      </Tr>
+                    ))
+                  ) : !isPartial ? (
+                    partialArray.map(item => (
+                      <Tr key={item._id}>
+                        <Td textAlign={'center'}>{item['Suborder ID']}</Td>
+                        <Td textAlign={'center'}>{item['Order ID']}</Td>
+                        <Td textAlign={'center'}>{item['AWB NO']}</Td>
+                        <Td textAlign={'center'}>{item.SKU}</Td>
+                        <Td textAlign={'center'}>{item.QTY}</Td>
+                        <Td textAlign={'center'}>{item.status}</Td>
+                        <Td textAlign={'center'}>
+                          {item['Return Received Date']}
+                        </Td>
+                        <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
+                        <Td textAlign={'center'}>
+                          {item['Return Request Date']}
+                        </Td>
+                        <Td textAlign={'center'}>
+                          {item['Return Delivered Date As Per Website']}
+                        </Td>
+                        <Td textAlign={'center'}>{item.Portal}</Td>
+                        <Td textAlign={'center'}>{item['RETURN TYPE WEB']}</Td>
+                        <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
+                      </Tr>
+                    ))
+                  ) : !isWrong ? (
+                    wrongArray.map(item => (
+                      <Tr key={item._id}>
+                        <Td textAlign={'center'}>{item['Suborder ID']}</Td>
+                        <Td textAlign={'center'}>{item['Order ID']}</Td>
+                        <Td textAlign={'center'}>{item['AWB NO']}</Td>
+                        <Td textAlign={'center'}>{item.SKU}</Td>
+                        <Td textAlign={'center'}>{item.QTY}</Td>
+                        <Td textAlign={'center'}>{item.status}</Td>
+                        <Td textAlign={'center'}>
+                          {item['Return Received Date']}
+                        </Td>
+                        <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
+                        <Td textAlign={'center'}>
+                          {item['Return Request Date']}
+                        </Td>
+                        <Td textAlign={'center'}>
+                          {item['Return Delivered Date As Per Website']}
+                        </Td>
+                        <Td textAlign={'center'}>{item.Portal}</Td>
+                        <Td textAlign={'center'}>{item['RETURN TYPE WEB']}</Td>
+                        <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
+                      </Tr>
+                    ))
+                  ) : (
+                    <Tr>
+                      <Td>Error</Td>
                     </Tr>
-                  ))}
+                  )}
                 </Tbody>
               </Table>
             </TableContainer>
