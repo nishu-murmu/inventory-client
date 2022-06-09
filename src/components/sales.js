@@ -115,7 +115,7 @@ const Sales = () => {
       }, {});
       return obj;
     });
-    fetch('https://cryptic-bayou-61420.herokuapp.com/sales/create', {
+    fetch('http://localhost:3001/api/sales/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(array),
@@ -137,7 +137,7 @@ const Sales = () => {
   // update or scan the product with dispatch
   useEffect(() => {
     const updateHandler = async () => {
-      await fetch('https://cryptic-bayou-61420.herokuapp.com/sales/update', {
+      await fetch('http://localhost:3001/api/sales/update', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -153,7 +153,7 @@ const Sales = () => {
   useEffect(() => {
     const filterHandler = async () => {
       const receivedList = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/sales/filter',
+        'http://localhost:3001/api/sales/filter',
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -171,7 +171,7 @@ const Sales = () => {
   // dispatch filter
   const dispatchFilter = async () => {
     const receivedList = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/sales/dispatchfilter'
+      'http://localhost:3001/api/sales/dispatchfilter'
     );
     const result = await receivedList.json();
     setDispatchArray(result);
@@ -179,7 +179,7 @@ const Sales = () => {
   // pending filter
   const pendingFilter = async () => {
     const receivedList = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/sales/pendingfilter'
+      'http://localhost:3001/api/sales/pendingfilter'
     );
     const result = await receivedList.json();
     setPendingArray(result);
@@ -187,14 +187,14 @@ const Sales = () => {
   // Cancel filter
   const cancelHandler = async () => {
     const recievedData = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/sales/cancelfilter'
+      'http://localhost:3001/api/sales/cancelfilter'
     );
     const result = await recievedData.json();
     setCancelArray(result);
   };
   const filterCount = async status => {
     const response = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/sales/filterCount',
+      'http://localhost:3001/api/sales/filterCount',
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },

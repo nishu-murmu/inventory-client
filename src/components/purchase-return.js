@@ -69,25 +69,22 @@ const PurchaseReturn = () => {
   const submitHandler = async e => {
     e.preventDefault();
     // e.preventDefault();
-    await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/purchaseReturn/create',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          mastersku: sku,
-          Date: start,
-          quantity: quantity,
-        }),
-      }
-    );
+    await fetch('http://localhost:3001/api/purchaseReturn/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mastersku: sku,
+        Date: start,
+        quantity: quantity,
+      }),
+    });
   };
 
   // get list of products
   useEffect(() => {
     const getListHandler = async () => {
       const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/purchaseReturn/getAll'
+        'http://localhost:3001/api/purchaseReturn/getAll'
       );
       const result = await response.json();
       setPurchaseReturnData(result);
@@ -97,7 +94,7 @@ const PurchaseReturn = () => {
 
   // update product
   const updateHandler = () => {
-    fetch('https://cryptic-bayou-61420.herokuapp.com/purchaseReturn/update', {
+    fetch('http://localhost:3001/api/purchaseReturn/update', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -111,16 +108,13 @@ const PurchaseReturn = () => {
   // delete product
   useEffect(() => {
     const deleteHandler = async () => {
-      await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/purchaseReturn/delete',
-        {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            mastersku: selectedsku,
-          }),
-        }
-      );
+      await fetch('http://localhost:3001/api/purchaseReturn/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mastersku: selectedsku,
+        }),
+      });
     };
     deleteHandler();
   }, [toggleDelete, selectedsku]);
@@ -128,7 +122,7 @@ const PurchaseReturn = () => {
   // master sku
   useEffect(() => {
     const masterskuHandler = () => {
-      fetch('https://cryptic-bayou-61420.herokuapp.com/master/getAll')
+      fetch('http://localhost:3001/api/master/getAll')
         .then(res => {
           return res.json();
         })

@@ -99,7 +99,7 @@ const SalesReturn = () => {
       }, {});
       return obj;
     });
-    fetch('https://cryptic-bayou-61420.herokuapp.com/salesReturn/create', {
+    fetch('http://localhost:3001/api/salesReturn/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(array),
@@ -120,17 +120,14 @@ const SalesReturn = () => {
   // update the status
   useEffect(() => {
     const updateHandler = async () => {
-      await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/salesReturn/update',
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            awb: enteredAWB,
-            status,
-          }),
-        }
-      );
+      await fetch('http://localhost:3001/api/salesReturn/update', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          awb: enteredAWB,
+          status,
+        }),
+      });
     };
     updateHandler();
   }, [status, enteredAWB]);
@@ -139,7 +136,7 @@ const SalesReturn = () => {
   useEffect(() => {
     const filterHandler = async () => {
       const receivedList = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/salesReturn/filter',
+        'http://localhost:3001/api/salesReturn/filter',
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -158,7 +155,7 @@ const SalesReturn = () => {
   // Received filter
   const receivedFilter = async () => {
     const receivedList = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/salesReturn/receivedfilter'
+      'http://localhost:3001/api/salesReturn/receivedfilter'
     );
     const result = await receivedList.json();
     setIsReceivedArray(result);
@@ -166,7 +163,7 @@ const SalesReturn = () => {
   // Wrong filter
   const wrongFilter = async () => {
     const recievedData = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/salesReturn/wrongfilter'
+      'http://localhost:3001/api/salesReturn/wrongfilter'
     );
     const result = await recievedData.json();
     setIsWrongArray(result);
@@ -174,7 +171,7 @@ const SalesReturn = () => {
   // Partial filter
   const partialFilter = async () => {
     const recievedData = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/salesReturn/partialfilter'
+      'http://localhost:3001/api/salesReturn/partialfilter'
     );
     const result = await recievedData.json();
     setIsPartialArray(result);
@@ -182,7 +179,7 @@ const SalesReturn = () => {
   // Filter Count
   const filterCount = async status => {
     const response = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/salesReturn/filterCount',
+      'http://localhost:3001/api/salesReturn/filterCount',
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
