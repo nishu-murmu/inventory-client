@@ -42,7 +42,7 @@ const UnMapped = () => {
       return obj;
     });
 
-    fetch('http://localhost:3001/api/unmapped/create', {
+    fetch('https://cryptic-bayou-61420.herokuapp.com/api/unmapped/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(array),
@@ -60,7 +60,7 @@ const UnMapped = () => {
   };
 
   const getArrayHandler = async () => {
-    await fetch('http://localhost:3001/api/unmapped/getAll')
+    await fetch('https://cryptic-bayou-61420.herokuapp.com/api/unmapped/getAll')
       .then(res => {
         return res.json();
       })
@@ -71,7 +71,7 @@ const UnMapped = () => {
 
   useEffect(() => {
     const masterskuHandler = async () => {
-      await fetch('http://localhost:3001/api/master/getAll')
+      await fetch('https://cryptic-bayou-61420.herokuapp.com/api/master/getAll')
         .then(res => {
           return res.json();
         })

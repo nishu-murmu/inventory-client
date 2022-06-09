@@ -45,7 +45,7 @@ const Mapped = () => {
     setIsChange(!isChange);
   };
   const submitArrayHandler = () => {
-    fetch('http://localhost:3001/api/master/store', {
+    fetch('https://cryptic-bayou-61420.herokuapp.com/api/master/store', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -60,7 +60,9 @@ const Mapped = () => {
 
   const getListHandler = async () => {
     setIsLoading(true);
-    const response = await fetch('http://localhost:3001/api/master/getAll');
+    const response = await fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/api/master/getAll'
+    );
     const result = await response.json();
     setIsLoading(false);
     setArray(result);

@@ -67,20 +67,25 @@ const Purchase = () => {
   // create product
   const submitHandler = async e => {
     e.preventDefault();
-    await fetch('http://localhost:3001/api/purchase/create', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        mastersku: sku,
-        Date: start,
-        quantity: quantity,
-      }),
-    });
+    await fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/api/purchase/create',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mastersku: sku,
+          Date: start,
+          quantity: quantity,
+        }),
+      }
+    );
   };
   // get list of products
   useEffect(() => {
     const getListHandler = async () => {
-      const response = await fetch('http://localhost:3001/api/purchase/getAll');
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/api/purchase/getAll'
+      );
       const result = await response.json();
       setPurchaseData(result);
     };
@@ -89,27 +94,33 @@ const Purchase = () => {
   // update product
   const updateHandler = async e => {
     e.preventDefault();
-    await fetch('http://localhost:3001/api/purchase/update', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        mastersku: enteredsku,
-        date: update,
-        quantity: newQuantity,
-      }),
-    });
+    await fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/api/purchase/update',
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mastersku: enteredsku,
+          date: update,
+          quantity: newQuantity,
+        }),
+      }
+    );
   };
 
   // delete product
   useEffect(() => {
     const deleteHandler = async () => {
-      await fetch('http://localhost:3001/api/purchase/delete', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          mastersku: selectedsku,
-        }),
-      });
+      await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/api/purchase/delete',
+        {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mastersku: selectedsku,
+          }),
+        }
+      );
     };
     deleteHandler();
   }, [toggleDelete, selectedsku]);
@@ -117,7 +128,7 @@ const Purchase = () => {
   // master sku hander
   useEffect(() => {
     const masterskuHandler = () => {
-      fetch('http://localhost:3001/api/master/getAll')
+      fetch('https://cryptic-bayou-61420.herokuapp.com/api/master/getAll')
         .then(res => {
           return res.json();
         })
