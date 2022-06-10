@@ -12,7 +12,7 @@ import { FaHome } from 'react-icons/fa';
 
 const Navigation = () => {
   return (
-    <Flex spacing={10} pt={40} pb={10} gridColumnGap={4} className="app-nav">
+    <Flex spacing={10} pt={20} pb={10} gridColumnGap={4} className="app-nav">
       <Link to="/livestock">
         <Button _hover={{ color: 'green' }}>
           <FaHome />

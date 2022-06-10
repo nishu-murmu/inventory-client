@@ -9,7 +9,6 @@ import {
   Td,
   Heading,
   useColorModeValue,
-  Button,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 // files
@@ -31,27 +30,33 @@ const LiveStock = () => {
   }, []);
 
   // perform calculations and store it in backend
-  const sendMergedArray = async () => {
-    livestockArray.map(item =>
-      fetch('https://cryptic-bayou-61420.herokuapp.com/api/livestock/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          mastersku: item.mastersku,
-          purchase: item.purchase[0].quantity,
-          purchaseReturn: item.purchaseReturn[0].quantity,
-          sales: item.sales[0].QTY,
-          salesReturn: 0,
-          livestock: Math.abs(
-            parseInt(item.purchase[0].quantity) +
-              0 -
-              (parseInt(item.sales[0].QTY) +
-                parseInt(item.purchaseReturn[0].quantity))
-          ),
-        }),
-      })
-    );
-  };
+  useEffect(() => {
+    const sendMergedArray = async () => {
+      livestockArray.map(item =>
+        fetch(
+          'https://cryptic-bayou-61420.herokuapp.com/api/livestock/create',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              mastersku: item.mastersku,
+              purchase: item.purchase[0].quantity,
+              purchaseReturn: item.purchaseReturn[0].quantity,
+              sales: item.sales[0].QTY,
+              salesReturn: 0,
+              livestock: Math.abs(
+                parseInt(item.purchase[0].quantity) +
+                  0 -
+                  (parseInt(item.sales[0].QTY) +
+                    parseInt(item.purchaseReturn[0].quantity))
+              ),
+            }),
+          }
+        )
+      );
+    };
+    sendMergedArray();
+  }, [livestockArray]);
 
   // receive final livestock after calculations
   useEffect(() => {
@@ -70,7 +75,6 @@ const LiveStock = () => {
       <Heading size={'lg'} pb={10}>
         Live Stock Section
       </Heading>
-      <Button onClick={sendMergedArray}>Get List</Button>
       <Heading size={'md'} pb={4}>
         Live Stock Table
       </Heading>
@@ -87,6 +91,7 @@ const LiveStock = () => {
           <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
             <Tr>
               <Th textAlign={'center'}>SKU</Th>
+              <Th textAlign={'center'}>Master SKU</Th>
               <Th textAlign="center">Opening Stock</Th>
               <Th textAlign="center">Purchase</Th>
               <Th textAlign="center">Sales</Th>

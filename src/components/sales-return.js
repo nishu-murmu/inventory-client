@@ -280,89 +280,92 @@ const SalesReturn = () => {
             </MenuList>
           </Menu>
         </Flex>
+        <Input
+          type={'text'}
+          mt={5}
+          textAlign={'center'}
+          onChange={e => {
+            setEnteredAWB(e.target.value);
+            setStatus('received');
+          }}
+          value={enteredAWB}
+          placeholder="Enter AWB"
+          autoFocus
+          autoCapitalize="true"
+        />
       </Box>
 
       {/* Scan Section */}
       {!isScan && (
         <Box>
-          <Input
-            width={'22%'}
-            type={'text'}
-            mt={5}
-            textAlign={'center'}
-            onChange={e => {
-              setEnteredAWB(e.target.value);
-              setStatus('received');
-            }}
-            value={enteredAWB}
-            placeholder="Enter AWB"
-            autoFocus
-            autoCapitalize="true"
-          />
-          <TableContainer
-            pt={10}
-            rounded={'lg'}
-            boxShadow={'lg'}
-            h={400}
-            w={1200}
-            overflowY={'auto'}
-            overflowX={'scroll'}
-          >
-            <Table variant={'simple'}>
-              <Thead>
-                <Tr key={'header'}>
-                  <Th textAlign={'center'}>Suborder ID</Th>
-                  <Th textAlign={'center'}>Order ID</Th>
-                  <Th textAlign={'center'}>AWB</Th>
-                  <Th textAlign={'center'}>SKU</Th>
-                  <Th textAlign={'center'}>QTY</Th>
-                  <Th textAlign={'center'}>Status</Th>
-                  <Th textAlign={'center'}>Return Received Date</Th>
-                  <Th textAlign={'center'}>WRONG RETURN</Th>
-                  <Th textAlign={'center'}>Return Request Date</Th>
-                  <Th textAlign={'center'}>
-                    Return Delivered Date As Per Website
-                  </Th>
-                  <Th textAlign={'center'}>Portal</Th>
-                  <Th textAlign={'center'}>Return Type Web</Th>
-                  <Th textAlign={'center'}>Company</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {filterArray.map(item => (
-                  <Tr key={item._id}>
-                    <Td textAlign={'center'}>{item['Suborder ID']}</Td>
-                    <Td textAlign={'center'}>{item['Order ID']}</Td>
-                    <Td textAlign={'center'}>{item['AWB NO']}</Td>
-                    <Td textAlign={'center'}>{item.SKU}</Td>
-                    <Td textAlign={'center'}>{item.QTY}</Td>
-                    <Td mr={10}>
-                      <Select
-                        mx={8}
-                        onChange={e => {
-                          setStatus(e.target.value);
-                        }}
-                        value={status}
-                      >
-                        <option value={'received'}>received</option>
-                        <option value={'partial'}>partial</option>
-                        <option value={'wrong'}>wrong</option>
-                      </Select>
-                    </Td>
-                    <Td textAlign={'center'}>{item['Return Received Date']}</Td>
-                    <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
-                    <Td textAlign={'center'}>{item['Return Request Date']}</Td>
-                    <Td textAlign={'center'}>
-                      {item['Return Delivered Date As Per Website']}
-                    </Td>
-                    <Td textAlign={'center'}>{item.Portal}</Td>
-                    <Td textAlign={'center'}>{item['RETURN TYPE WEB']}</Td>
-                    <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
+          {enteredAWB.trim().length !== 0 && (
+            <TableContainer
+              pt={10}
+              rounded={'lg'}
+              boxShadow={'lg'}
+              h={400}
+              w={1200}
+              overflowY={'auto'}
+              overflowX={'scroll'}
+            >
+              <Table variant={'simple'}>
+                <Thead>
+                  <Tr key={'header'}>
+                    <Th textAlign={'center'}>Suborder ID</Th>
+                    <Th textAlign={'center'}>Order ID</Th>
+                    <Th textAlign={'center'}>AWB</Th>
+                    <Th textAlign={'center'}>SKU</Th>
+                    <Th textAlign={'center'}>QTY</Th>
+                    <Th textAlign={'center'}>Status</Th>
+                    <Th textAlign={'center'}>Return Received Date</Th>
+                    <Th textAlign={'center'}>WRONG RETURN</Th>
+                    <Th textAlign={'center'}>Return Request Date</Th>
+                    <Th textAlign={'center'}>
+                      Return Delivered Date As Per Website
+                    </Th>
+                    <Th textAlign={'center'}>Portal</Th>
+                    <Th textAlign={'center'}>Return Type Web</Th>
+                    <Th textAlign={'center'}>Company</Th>
                   </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+                </Thead>
+                <Tbody>
+                  {filterArray.map(item => (
+                    <Tr key={item._id}>
+                      <Td textAlign={'center'}>{item['Suborder ID']}</Td>
+                      <Td textAlign={'center'}>{item['Order ID']}</Td>
+                      <Td textAlign={'center'}>{item['AWB NO']}</Td>
+                      <Td textAlign={'center'}>{item.SKU}</Td>
+                      <Td textAlign={'center'}>{item.QTY}</Td>
+                      <Td mr={10}>
+                        <Select
+                          mx={8}
+                          onChange={e => {
+                            setStatus(e.target.value);
+                          }}
+                          value={status}
+                        >
+                          <option value={'received'}>received</option>
+                          <option value={'partial'}>partial</option>
+                          <option value={'wrong'}>wrong</option>
+                        </Select>
+                      </Td>
+                      <Td textAlign={'center'}>{Date.now}</Td>
+                      <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
+                      <Td textAlign={'center'}>
+                        {item['Return Request Date']}
+                      </Td>
+                      <Td textAlign={'center'}>
+                        {item['Return Delivered Date As Per Website']}
+                      </Td>
+                      <Td textAlign={'center'}>{item.Portal}</Td>
+                      <Td textAlign={'center'}>{item['RETURN TYPE WEB']}</Td>
+                      <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          )}
         </Box>
       )}
 
