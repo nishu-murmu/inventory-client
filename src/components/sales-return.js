@@ -28,11 +28,15 @@ import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 // files
-
+import Pagination from './pagination';
 const SalesReturn = () => {
   const [file, setFile] = useState();
   const fileReader = new FileReader();
   const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(50);
+  const LastProductIndex = currentPage * productsPerPage;
+  const FirstProductIndex = LastProductIndex - productsPerPage;
 
   const [status, setStatus] = useState('');
   const [enteredAWB, setEnteredAWB] = useState('');
@@ -128,7 +132,7 @@ const SalesReturn = () => {
           body: JSON.stringify({
             awb: enteredAWB,
             status,
-            date: Date.now(),
+            date: new Date().toLocaleString().substring(0, 10),
           }),
         }
       );
@@ -215,6 +219,12 @@ const SalesReturn = () => {
     filterCount('partial');
     filter('partial');
   }, [isPartial]);
+
+  const currentRecords = receivedArray.slice(
+    FirstProductIndex,
+    LastProductIndex
+  );
+  const pages = Math.ceil(receivedArray.length / productsPerPage);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const SelectionRange = {
@@ -415,7 +425,6 @@ const SalesReturn = () => {
                     <Th textAlign={'center'}>AWB</Th>
                     <Th textAlign={'center'}>SKU</Th>
                     <Th textAlign={'center'}>QTY</Th>
-                    <Th textAlign={'center'}>Status</Th>
                     <Th textAlign={'center'}>Return Received Date</Th>
                     <Th textAlign={'center'}>WRONG RETURN</Th>
                     <Th textAlign={'center'}>Return Request Date</Th>
@@ -430,14 +439,13 @@ const SalesReturn = () => {
 
                 <Tbody>
                   {!isReceived ? (
-                    receivedArray.map(item => (
+                    currentRecords.map(item => (
                       <Tr key={item._id}>
                         <Td textAlign={'center'}>{item['Suborder ID']}</Td>
                         <Td textAlign={'center'}>{item['Order ID']}</Td>
                         <Td textAlign={'center'}>{item['AWB NO']}</Td>
                         <Td textAlign={'center'}>{item.SKU}</Td>
                         <Td textAlign={'center'}>{item.QTY}</Td>
-                        <Td textAlign={'center'}>{item.status}</Td>
                         <Td textAlign={'center'}>
                           {item['Return Received Date']}
                         </Td>
@@ -510,6 +518,11 @@ const SalesReturn = () => {
               </Table>
             </TableContainer>
           )}
+          <Pagination
+            totalPages={pages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
         </Box>
       )}
     </VStack>
