@@ -128,6 +128,7 @@ const SalesReturn = () => {
           body: JSON.stringify({
             awb: enteredAWB,
             status,
+            date: Date.now(),
           }),
         }
       );
@@ -150,7 +151,6 @@ const SalesReturn = () => {
       );
       const result = await receivedList.json();
       setFilterArray(result);
-      console.log(result);
     };
     filterHandler();
   }, [enteredAWB]);
@@ -167,10 +167,21 @@ const SalesReturn = () => {
       }
     );
     const result = await response.json();
-    if (filter === 'received') setIsReceivedArray(result);
+    if (filter === 'received') setIsReceivedArray(prev => [...prev, ...result]);
     if (filter === 'partial') setIsPartialArray(result);
     if (filter === 'wrong') setIsWrongArray(result);
   };
+  // received date filter
+  useEffect(() => {
+    const receivedData = async () => {
+      const response = await fetch(
+        'http://localhost:3001/api/salesReturn/received'
+      );
+      const result = await response.json();
+      setIsReceivedArray(result);
+    };
+    receivedData();
+  }, []);
   // Filter Count
   const filterCount = async status => {
     const response = await fetch(
@@ -338,7 +349,7 @@ const SalesReturn = () => {
                           <option value={'wrong'}>wrong</option>
                         </Select>
                       </Td>
-                      <Td textAlign={'center'}>{Date.now}</Td>
+                      <Td textAlign={'center'}>{item.date}</Td>
                       <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
                       <Td textAlign={'center'}>
                         {item['Return Request Date']}

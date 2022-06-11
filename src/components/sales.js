@@ -233,7 +233,6 @@ const Sales = () => {
   const handleSelect = ranges => {
     setEndDate(ranges.selection.endDate);
     setStartDate(ranges.selection.startDate);
-    console.log(startDate, endDate);
   };
   const SelectionRange = {
     startDate: startDate,
