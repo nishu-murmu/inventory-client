@@ -398,7 +398,7 @@ const Sales = () => {
                 ? `${pendingcount}`
                 : !isCancel
                 ? `${cancelcount}`
-                : 'null'}
+                : '0'}
             </Button>
           </Flex>
 

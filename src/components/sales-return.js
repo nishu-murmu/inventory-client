@@ -157,7 +157,7 @@ const SalesReturn = () => {
   // universal filter
   const filter = async filter => {
     const response = await fetch(
-      'http://localhost:3001/api/salesReturn/filter',
+      'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filter',
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -171,30 +171,6 @@ const SalesReturn = () => {
     if (filter === 'partial') setIsPartialArray(result);
     if (filter === 'wrong') setIsWrongArray(result);
   };
-  // Received filter
-  // const receivedFilter = async () => {
-  //   const receivedList = await fetch(
-  //     'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/receivedfilter'
-  //   );
-  //   const result = await receivedList.json();
-  //   setIsReceivedArray(result);
-  // };
-  // // Wrong filter
-  // const wrongFilter = async () => {
-  //   const recievedData = await fetch(
-  //     'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/wrongfilter'
-  //   );
-  //   const result = await recievedData.json();
-  //   setIsWrongArray(result);
-  // };
-  // // Partial filter
-  // const partialFilter = async () => {
-  //   const recievedData = await fetch(
-  //     'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/partialfilter'
-  //   );
-  //   const result = await recievedData.json();
-  //   setIsPartialArray(result);
-  // };
   // Filter Count
   const filterCount = async status => {
     const response = await fetch(
@@ -216,12 +192,6 @@ const SalesReturn = () => {
   /* 
     Hooks
   */
-  // useEffect(() => {
-  //   receivedFilter();
-  //   partialFilter();
-  //   wrongFilter();
-  // }, [isScan, isReceived, isPartial, isWrong]);
-
   useEffect(() => {
     filterCount('received');
     filter('received');
