@@ -200,7 +200,7 @@ const Sales = () => {
   useEffect(() => {
     const filterHandler = async () => {
       const receivedList = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/sales/filter',
+        'https://cryptic-bayou-61420.herokuapp.com/api/sales/awbfilter',
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
