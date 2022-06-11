@@ -179,7 +179,7 @@ const SalesReturn = () => {
   useEffect(() => {
     const receivedData = async () => {
       const response = await fetch(
-        'http://localhost:3001/api/salesReturn/received'
+        'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/received'
       );
       const result = await response.json();
       setIsReceivedArray(result);
