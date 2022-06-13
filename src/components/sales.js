@@ -39,6 +39,10 @@ const Sales = () => {
   const [file, setFile] = useState();
   const fileReader = new FileReader();
   const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(50);
+  const LastProductIndex = currentPage * productsPerPage;
+  const FirstProductIndex = LastProductIndex - productsPerPage;
 
   const [status, setStatus] = useState('dispatch');
   const [enteredAWB, setEnteredAWB] = useState('');
@@ -157,7 +161,7 @@ const Sales = () => {
       }
     );
     const result = await response.json();
-    if (filter === 'dispatch') setDispatchArray(result);
+    if (filter === 'dispatch') setDispatchArray(prev => [...prev, ...result]);
     if (filter === 'pending') setPendingArray(result);
     if (filter === 'cancel') setCancelArray(result);
   };
@@ -242,7 +246,7 @@ const Sales = () => {
     key: 'selection',
   };
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const currentRecords = receivedArray.slice(
+  const currentRecords = dispatchArray.slice(
     FirstProductIndex,
     LastProductIndex
   );
