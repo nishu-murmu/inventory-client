@@ -196,7 +196,7 @@ const Sales = () => {
           body: JSON.stringify({
             awb: enteredAWB,
             status,
-            date: new Date().toLocaleDateString(),
+            date: new Date().toLocaleDateString().replace(/\//g, '-'),
           }),
         }
       );
@@ -213,6 +213,7 @@ const Sales = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             awb: enteredAWB,
+            date: new Date().toLocaleDateString().replace(/\//g, '-'),
           }),
         }
       );
@@ -252,11 +253,13 @@ const Sales = () => {
     LastProductIndex
   );
   const dispatchpages = Math.ceil(dispatchArray.length / productsPerPage);
+
   const pendingRecords = pendingArray.slice(
     FirstProductIndex,
     LastProductIndex
   );
   const pendingpages = Math.ceil(pendingArray.length / productsPerPage);
+
   const cancelRecords = cancelArray.slice(FirstProductIndex, LastProductIndex);
   const cancelpages = Math.ceil(cancelArray.length / productsPerPage);
   return (
@@ -518,21 +521,18 @@ const Sales = () => {
           )}
           {!isDispatch ? (
             <Pagination
-              paginationStatus={'dispatch'}
               totalPages={dispatchpages}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
             />
           ) : !isPending ? (
             <Pagination
-              paginantionStatus={'pending'}
               totalPages={pendingpages}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
             />
           ) : !isCancel ? (
             <Pagination
-              paginationStatus={'cancel'}
               totalPages={cancelpages}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}

@@ -132,7 +132,7 @@ const SalesReturn = () => {
           body: JSON.stringify({
             awb: enteredAWB,
             status,
-            date: new Date().toLocaleDateString(),
+            date: new Date().toLocaleDateString().replace(/\//g, '-'),
           }),
         }
       );
@@ -150,6 +150,7 @@ const SalesReturn = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             awb: enteredAWB,
+            date: new Date().toLocaleDateString().replace(/\//g, '-'),
           }),
         }
       );
@@ -359,7 +360,9 @@ const SalesReturn = () => {
                           <option value={'wrong'}>wrong</option>
                         </Select>
                       </Td>
-                      <Td textAlign={'center'}>{item.date}</Td>
+                      <Td textAlign={'center'}>
+                        {item['Return Received Date']}
+                      </Td>
                       <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
                       <Td textAlign={'center'}>
                         {item['Return Request Date']}
