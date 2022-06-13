@@ -246,11 +246,18 @@ const Sales = () => {
     key: 'selection',
   };
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const currentRecords = dispatchArray.slice(
+  const dispatchRecords = dispatchArray.slice(
     FirstProductIndex,
     LastProductIndex
   );
-  const pages = Math.ceil(dispatchArray.length / productsPerPage);
+  const dispatchpages = Math.ceil(dispatchArray.length / productsPerPage);
+  const pendingRecords = pendingArray.slice(
+    FirstProductIndex,
+    LastProductIndex
+  );
+  const pendingpages = Math.ceil(pendingArray.length / productsPerPage);
+  const cancelRecords = cancelArray.slice(FirstProductIndex, LastProductIndex);
+  const cancelpages = Math.ceil(cancelArray.length / productsPerPage);
   return (
     <VStack p={4} pb={20}>
       <Heading size={'lg'} pb={10}>
@@ -444,7 +451,7 @@ const Sales = () => {
 
                 <Tbody>
                   {!isDispatch ? (
-                    currentRecords.map(item => (
+                    dispatchRecords.map(item => (
                       <Tr key={item._id}>
                         <Td>{item.AWB}</Td>
                         <Td>{item.ORDER_ID}</Td>
@@ -458,7 +465,7 @@ const Sales = () => {
                       </Tr>
                     ))
                   ) : !isPending ? (
-                    pendingArray.map(item => (
+                    pendingRecords.map(item => (
                       <Tr key={item._id}>
                         <Td>{item.AWB}</Td>
                         <Td>{item.ORDER_ID}</Td>
@@ -472,7 +479,7 @@ const Sales = () => {
                       </Tr>
                     ))
                   ) : !isCancel ? (
-                    cancelArray.map(item => (
+                    cancelRecords.map(item => (
                       <Tr key={item._id}>
                         <Td>{item.AWB}</Td>
                         <Td>{item.ORDER_ID}</Td>
@@ -508,11 +515,30 @@ const Sales = () => {
               </Table>
             </TableContainer>
           )}
-          <Pagination
-            totalPages={pages}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
+          {!isDispatch ? (
+            <Pagination
+              paginationStatus={'dispatch'}
+              totalPages={dispatchpages}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          ) : !isPending ? (
+            <Pagination
+              paginantionStatus={'pending'}
+              totalPages={pendingpages}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          ) : !isCancel ? (
+            <Pagination
+              paginationStatus={'cancel'}
+              totalPages={cancelpages}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          ) : (
+            <Box>Error</Box>
+          )}
         </Box>
       )}
     </VStack>
