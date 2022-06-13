@@ -1,4 +1,4 @@
-import { Button, Icon, HStack, Text, Flex } from '@chakra-ui/react';
+import { Button, Icon, HStack, Text, Flex, Input } from '@chakra-ui/react';
 import { FcNext, FcPrevious } from 'react-icons/fc';
 import { BiLastPage, BiFirstPage } from 'react-icons/bi';
 // import { useState } from 'react';
@@ -20,7 +20,7 @@ const Pagination = ({ totalPages, currentPage, setCurrentPage }) => {
       <Flex>
         <Button
           onClick={() => {
-            setCurrentPage(parseInt(1));
+            setCurrentPage(1);
           }}
         >
           <Icon as={BiFirstPage} />
@@ -32,6 +32,18 @@ const Pagination = ({ totalPages, currentPage, setCurrentPage }) => {
       <Text variant={'outline'}>
         Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong>
       </Text>
+      <Flex>
+        <Text>Goto Page:</Text>
+        <Input
+          htmlSize={8}
+          size={'auto'}
+          id="input"
+          onChange={e => {
+            if (e.target.value.length === 0) setCurrentPage(parseInt(1));
+            setCurrentPage(e.target.value);
+          }}
+        ></Input>
+      </Flex>
       <Flex>
         <Button onClick={nextPage}>
           <Icon as={FcNext} />

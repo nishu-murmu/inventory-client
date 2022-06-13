@@ -161,7 +161,7 @@ const Sales = () => {
       }
     );
     const result = await response.json();
-    if (filter === 'dispatch') setDispatchArray(prev => [...prev, ...result]);
+    if (filter === 'dispatch') setDispatchArray(result);
     if (filter === 'pending') setPendingArray(result);
     if (filter === 'cancel') setCancelArray(result);
   };
