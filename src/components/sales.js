@@ -185,7 +185,7 @@ const Sales = () => {
   /* 
     Hooks
   */
-  // update or scan the product with dispatch
+  // update or scan the product with  dispatch
   useEffect(() => {
     const updateHandler = async () => {
       await fetch(

@@ -1,27 +1,46 @@
-import { Button, Flex } from '@chakra-ui/react';
+import { Button, Icon, HStack, Text, Flex } from '@chakra-ui/react';
+import { FcNext, FcPrevious } from 'react-icons/fc';
+import { BiLastPage, BiFirstPage } from 'react-icons/bi';
+// import { useState } from 'react';
 
 const Pagination = ({ totalPages, currentPage, setCurrentPage }) => {
-  //   const pageNumbers = [...Array(totalPages + 1).keys()].slice(1);
-
+  // const [isLast, setIsLast] = useState(false);
+  // const [isFirst, setIsFirst] = useState(false);
   const nextPage = () => {
     if (currentPage !== totalPages) setCurrentPage(currentPage + 1);
   };
   const prevPage = () => {
     if (currentPage !== 1) setCurrentPage(currentPage - 1);
   };
+  const lastPage = () => {
+    setCurrentPage(parseInt(totalPages));
+  };
   return (
-    <Flex justifyContent={'space-around'}>
-      <Button onClick={prevPage}>Previous</Button>
-      {/* {pageNumbers.map(pgNumber => (
+    <HStack justifyContent={'space-evenly'}>
+      <Flex>
         <Button
-          key={pgNumber}
-          className={`page-item ${currentPage === pgNumber ? 'active' : ''} `}
+          onClick={() => {
+            setCurrentPage(parseInt(1));
+          }}
         >
-          <Button onClick={() => setCurrentPage(pgNumber)}>{pgNumber}</Button>
+          <Icon as={BiFirstPage} />
         </Button>
-      ))} */}
-      <Button onClick={nextPage}>Next</Button>
-    </Flex>
+        <Button onClick={prevPage}>
+          <Icon as={FcPrevious} />
+        </Button>
+      </Flex>
+      <Text variant={'outline'}>
+        Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong>
+      </Text>
+      <Flex>
+        <Button onClick={nextPage}>
+          <Icon as={FcNext} />
+        </Button>
+        <Button onClick={lastPage}>
+          <Icon as={BiLastPage} />
+        </Button>
+      </Flex>
+    </HStack>
   );
 };
 
