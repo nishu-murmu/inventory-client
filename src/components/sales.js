@@ -29,6 +29,8 @@ import { DownloadIcon } from '@chakra-ui/icons';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
+//files
+import Pagination from './pagination';
 
 const Sales = () => {
   /*   
@@ -240,6 +242,11 @@ const Sales = () => {
     key: 'selection',
   };
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const currentRecords = receivedArray.slice(
+    FirstProductIndex,
+    LastProductIndex
+  );
+  const pages = Math.ceil(dispatchArray.length / productsPerPage);
   return (
     <VStack p={4} pb={20}>
       <Heading size={'lg'} pb={10}>
@@ -433,7 +440,7 @@ const Sales = () => {
 
                 <Tbody>
                   {!isDispatch ? (
-                    dispatchArray.map(item => (
+                    currentRecords.map(item => (
                       <Tr key={item._id}>
                         <Td>{item.AWB}</Td>
                         <Td>{item.ORDER_ID}</Td>
@@ -497,6 +504,11 @@ const Sales = () => {
               </Table>
             </TableContainer>
           )}
+          <Pagination
+            totalPages={pages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
         </Box>
       )}
     </VStack>
