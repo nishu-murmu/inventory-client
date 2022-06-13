@@ -132,7 +132,7 @@ const SalesReturn = () => {
           body: JSON.stringify({
             awb: enteredAWB,
             status,
-            date: new Date().toLocaleString().substring(0, 10),
+            date: new Date().toLocaleDateString(),
           }),
         }
       );

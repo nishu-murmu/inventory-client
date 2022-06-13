@@ -196,6 +196,7 @@ const Sales = () => {
           body: JSON.stringify({
             awb: enteredAWB,
             status,
+            date: new Date().toLocaleDateString(),
           }),
         }
       );
