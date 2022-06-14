@@ -344,6 +344,7 @@ const Sales = () => {
           onChange={e => {
             setEnteredAWB(e.target.value);
             setStatus('dispatch');
+            e.target.select();
           }}
           value={enteredAWB}
           placeholder="Enter AWB"

@@ -39,7 +39,9 @@ const Pagination = ({ totalPages, currentPage, setCurrentPage }) => {
           size={'auto'}
           id="input"
           onChange={e => {
-            if (e.target.value.length === 0) setCurrentPage(parseInt(1));
+            if (e.target.value.length === 0) {
+              setCurrentPage(1);
+            }
             setCurrentPage(e.target.value);
           }}
         ></Input>

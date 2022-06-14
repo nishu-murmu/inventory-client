@@ -544,7 +544,7 @@ const SalesReturn = () => {
               </TableContainer>
               <Button
                 onClick={() => {
-                  if (!isReceived) downloadFile(receivedArray, 'dispatch');
+                  if (!isReceived) downloadFile(receivedArray, 'received');
                   if (!isPartial) downloadFile(partialArray, 'pending');
                   if (!isWrong) downloadFile(wrongArray, 'cancel');
                 }}
