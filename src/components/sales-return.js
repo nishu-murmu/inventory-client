@@ -22,6 +22,7 @@ import {
 } from '@chakra-ui/react';
 import { Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalBody, ModalContent } from '@chakra-ui/react';
+import { saveAs } from 'file-saver';
 
 import { DownloadIcon } from '@chakra-ui/icons';
 import { DateRange } from 'react-date-range';
@@ -233,6 +234,20 @@ const SalesReturn = () => {
     endDate,
     key: 'selection',
   };
+  const downloadFile = (array, status) => {
+    const csv = array
+      .map(item => {
+        return JSON.stringify(item);
+      })
+      .join('\n')
+      .replace(/(^\[)|(\]$)/gm, '');
+    const blob = new Blob([csv], {
+      type: 'text/plain;charset=utf-8',
+    });
+    if (status === 'received') saveAs(blob, 'received.csv');
+    if (status === 'partial') saveAs(blob, 'partial.csv');
+    if (status === 'wrong') saveAs(blob, 'wrong.csv');
+  };
 
   return (
     <VStack p={4} pb={20}>
@@ -407,119 +422,136 @@ const SalesReturn = () => {
           </Flex>
           {isLoading && <Spinner size={'xl'} />}
           {!isLoading && (
-            <TableContainer
-              rounded={'lg'}
-              boxShadow={'lg'}
-              overflowY={'auto'}
-              overflowX={'auto'}
-              h={400}
-              w={1200}
-              mb={20}
-            >
-              <Table variant="simple">
-                <Thead
-                  position={'sticky'}
-                  top={0}
-                  backgroundColor={'lightblue'}
-                >
-                  <Tr key={'header'}>
-                    <Th textAlign={'center'}>Suborder ID</Th>
-                    <Th textAlign={'center'}>Order ID</Th>
-                    <Th textAlign={'center'}>AWB</Th>
-                    <Th textAlign={'center'}>SKU</Th>
-                    <Th textAlign={'center'}>QTY</Th>
-                    <Th textAlign={'center'}>Return Received Date</Th>
-                    <Th textAlign={'center'}>WRONG RETURN</Th>
-                    <Th textAlign={'center'}>Return Request Date</Th>
-                    <Th textAlign={'center'}>
-                      Return Delivered Date As Per Website
-                    </Th>
-                    <Th textAlign={'center'}>Portal</Th>
-                    <Th textAlign={'center'}>Return Type Web</Th>
-                    <Th textAlign={'center'}>Company</Th>
-                  </Tr>
-                </Thead>
-
-                <Tbody>
-                  {!isReceived ? (
-                    currentRecords.map(item => (
-                      <Tr key={item._id}>
-                        <Td textAlign={'center'}>{item['Suborder ID']}</Td>
-                        <Td textAlign={'center'}>{item['Order ID']}</Td>
-                        <Td textAlign={'center'}>{item['AWB NO']}</Td>
-                        <Td textAlign={'center'}>{item.SKU}</Td>
-                        <Td textAlign={'center'}>{item.QTY}</Td>
-                        <Td textAlign={'center'}>
-                          {item['Return Received Date']}
-                        </Td>
-                        <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
-                        <Td textAlign={'center'}>
-                          {item['Return Request Date']}
-                        </Td>
-                        <Td textAlign={'center'}>
-                          {item['Return Delivered Date As Per Website']}
-                        </Td>
-                        <Td textAlign={'center'}>{item.Portal}</Td>
-                        <Td textAlign={'center'}>{item['RETURN TYPE WEB']}</Td>
-                        <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
-                      </Tr>
-                    ))
-                  ) : !isPartial ? (
-                    partialArray.map(item => (
-                      <Tr key={item._id}>
-                        <Td textAlign={'center'}>{item['Suborder ID']}</Td>
-                        <Td textAlign={'center'}>{item['Order ID']}</Td>
-                        <Td textAlign={'center'}>{item['AWB NO']}</Td>
-                        <Td textAlign={'center'}>{item.SKU}</Td>
-                        <Td textAlign={'center'}>{item.QTY}</Td>
-                        <Td textAlign={'center'}>{item.status}</Td>
-                        <Td textAlign={'center'}>
-                          {item['Return Received Date']}
-                        </Td>
-                        <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
-                        <Td textAlign={'center'}>
-                          {item['Return Request Date']}
-                        </Td>
-                        <Td textAlign={'center'}>
-                          {item['Return Delivered Date As Per Website']}
-                        </Td>
-                        <Td textAlign={'center'}>{item.Portal}</Td>
-                        <Td textAlign={'center'}>{item['RETURN TYPE WEB']}</Td>
-                        <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
-                      </Tr>
-                    ))
-                  ) : !isWrong ? (
-                    wrongArray.map(item => (
-                      <Tr key={item._id}>
-                        <Td textAlign={'center'}>{item['Suborder ID']}</Td>
-                        <Td textAlign={'center'}>{item['Order ID']}</Td>
-                        <Td textAlign={'center'}>{item['AWB NO']}</Td>
-                        <Td textAlign={'center'}>{item.SKU}</Td>
-                        <Td textAlign={'center'}>{item.QTY}</Td>
-                        <Td textAlign={'center'}>{item.status}</Td>
-                        <Td textAlign={'center'}>
-                          {item['Return Received Date']}
-                        </Td>
-                        <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
-                        <Td textAlign={'center'}>
-                          {item['Return Request Date']}
-                        </Td>
-                        <Td textAlign={'center'}>
-                          {item['Return Delivered Date As Per Website']}
-                        </Td>
-                        <Td textAlign={'center'}>{item.Portal}</Td>
-                        <Td textAlign={'center'}>{item['RETURN TYPE WEB']}</Td>
-                        <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
-                      </Tr>
-                    ))
-                  ) : (
-                    <Tr>
-                      <Td>Error</Td>
+            <VStack>
+              <TableContainer
+                rounded={'lg'}
+                boxShadow={'lg'}
+                overflowY={'auto'}
+                overflowX={'auto'}
+                h={400}
+                w={1200}
+                mb={20}
+              >
+                <Table variant="simple">
+                  <Thead
+                    position={'sticky'}
+                    top={0}
+                    backgroundColor={'lightblue'}
+                  >
+                    <Tr key={'header'}>
+                      <Th textAlign={'center'}>Suborder ID</Th>
+                      <Th textAlign={'center'}>Order ID</Th>
+                      <Th textAlign={'center'}>AWB</Th>
+                      <Th textAlign={'center'}>SKU</Th>
+                      <Th textAlign={'center'}>QTY</Th>
+                      <Th textAlign={'center'}>Return Received Date</Th>
+                      <Th textAlign={'center'}>WRONG RETURN</Th>
+                      <Th textAlign={'center'}>Return Request Date</Th>
+                      <Th textAlign={'center'}>
+                        Return Delivered Date As Per Website
+                      </Th>
+                      <Th textAlign={'center'}>Portal</Th>
+                      <Th textAlign={'center'}>Return Type Web</Th>
+                      <Th textAlign={'center'}>Company</Th>
                     </Tr>
-                  )}
-                </Tbody>
-              </Table>
-            </TableContainer>
+                  </Thead>
+
+                  <Tbody>
+                    {!isReceived ? (
+                      currentRecords.map(item => (
+                        <Tr key={item._id}>
+                          <Td textAlign={'center'}>{item['Suborder ID']}</Td>
+                          <Td textAlign={'center'}>{item['Order ID']}</Td>
+                          <Td textAlign={'center'}>{item['AWB NO']}</Td>
+                          <Td textAlign={'center'}>{item.SKU}</Td>
+                          <Td textAlign={'center'}>{item.QTY}</Td>
+                          <Td textAlign={'center'}>
+                            {item['Return Received Date']}
+                          </Td>
+                          <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
+                          <Td textAlign={'center'}>
+                            {item['Return Request Date']}
+                          </Td>
+                          <Td textAlign={'center'}>
+                            {item['Return Delivered Date As Per Website']}
+                          </Td>
+                          <Td textAlign={'center'}>{item.Portal}</Td>
+                          <Td textAlign={'center'}>
+                            {item['RETURN TYPE WEB']}
+                          </Td>
+                          <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
+                        </Tr>
+                      ))
+                    ) : !isPartial ? (
+                      partialArray.map(item => (
+                        <Tr key={item._id}>
+                          <Td textAlign={'center'}>{item['Suborder ID']}</Td>
+                          <Td textAlign={'center'}>{item['Order ID']}</Td>
+                          <Td textAlign={'center'}>{item['AWB NO']}</Td>
+                          <Td textAlign={'center'}>{item.SKU}</Td>
+                          <Td textAlign={'center'}>{item.QTY}</Td>
+                          <Td textAlign={'center'}>{item.status}</Td>
+                          <Td textAlign={'center'}>
+                            {item['Return Received Date']}
+                          </Td>
+                          <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
+                          <Td textAlign={'center'}>
+                            {item['Return Request Date']}
+                          </Td>
+                          <Td textAlign={'center'}>
+                            {item['Return Delivered Date As Per Website']}
+                          </Td>
+                          <Td textAlign={'center'}>{item.Portal}</Td>
+                          <Td textAlign={'center'}>
+                            {item['RETURN TYPE WEB']}
+                          </Td>
+                          <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
+                        </Tr>
+                      ))
+                    ) : !isWrong ? (
+                      wrongArray.map(item => (
+                        <Tr key={item._id}>
+                          <Td textAlign={'center'}>{item['Suborder ID']}</Td>
+                          <Td textAlign={'center'}>{item['Order ID']}</Td>
+                          <Td textAlign={'center'}>{item['AWB NO']}</Td>
+                          <Td textAlign={'center'}>{item.SKU}</Td>
+                          <Td textAlign={'center'}>{item.QTY}</Td>
+                          <Td textAlign={'center'}>{item.status}</Td>
+                          <Td textAlign={'center'}>
+                            {item['Return Received Date']}
+                          </Td>
+                          <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
+                          <Td textAlign={'center'}>
+                            {item['Return Request Date']}
+                          </Td>
+                          <Td textAlign={'center'}>
+                            {item['Return Delivered Date As Per Website']}
+                          </Td>
+                          <Td textAlign={'center'}>{item.Portal}</Td>
+                          <Td textAlign={'center'}>
+                            {item['RETURN TYPE WEB']}
+                          </Td>
+                          <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
+                        </Tr>
+                      ))
+                    ) : (
+                      <Tr>
+                        <Td>Error</Td>
+                      </Tr>
+                    )}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+              <Button
+                onClick={() => {
+                  if (!isReceived) downloadFile(receivedArray, 'dispatch');
+                  if (!isPartial) downloadFile(partialArray, 'pending');
+                  if (!isWrong) downloadFile(wrongArray, 'cancel');
+                }}
+              >
+                Download file
+              </Button>
+            </VStack>
           )}
           <Pagination
             totalPages={pages}

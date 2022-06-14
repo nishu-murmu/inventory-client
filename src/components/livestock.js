@@ -5,12 +5,14 @@ import {
   Thead,
   Tbody,
   Tr,
+  Button,
   Th,
   Td,
   Heading,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
+import { saveAs } from 'file-saver';
 // files
 
 const LiveStock = () => {
@@ -65,11 +67,22 @@ const LiveStock = () => {
         'https://cryptic-bayou-61420.herokuapp.com/api/livestock/getAll'
       );
       const result = await response.json();
-      console.log(result);
       setMergedArray(result);
     };
     finalLiveStock();
   }, []);
+  const downloadFile = () => {
+    const csv = mergedArray
+      .map(item => {
+        return JSON.stringify(item);
+      })
+      .join('\n')
+      .replace(/(^\[)|(\]$)/gm, '');
+    const blob = new Blob([csv], {
+      type: 'text/plain;charset=utf-8',
+    });
+    saveAs(blob, 'livestock.csv');
+  };
   return (
     <Box p={4}>
       <Heading size={'lg'} pb={10}>
@@ -115,6 +128,7 @@ const LiveStock = () => {
           </Tbody>
         </Table>
       </TableContainer>
+      <Button onClick={downloadFile}>Download file</Button>
     </Box>
   );
 };

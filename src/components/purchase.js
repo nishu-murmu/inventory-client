@@ -31,6 +31,7 @@ import {
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
+import { saveAs } from 'file-saver';
 
 const Purchase = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -138,6 +139,18 @@ const Purchase = () => {
     };
     masterskuHandler();
   }, []);
+  const downloadFile = () => {
+    const csv = purchasedata
+      .map(item => {
+        return JSON.stringify(item);
+      })
+      .join('\n')
+      .replace(/(^\[)|(\]$)/gm, '');
+    const blob = new Blob([csv], {
+      type: 'text/plain;charset=utf-8',
+    });
+    saveAs(blob, 'purchase.csv');
+  };
 
   return (
     <VStack>
@@ -307,6 +320,7 @@ const Purchase = () => {
               </Tbody>
             </Table>
           </TableContainer>
+          <Button onClick={downloadFile}>Download file</Button>
         </VStack>
       </HStack>
     </VStack>

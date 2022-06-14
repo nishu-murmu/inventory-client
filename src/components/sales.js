@@ -29,8 +29,10 @@ import { DownloadIcon } from '@chakra-ui/icons';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-//files
+import { saveAs } from 'file-saver';
 import Pagination from './pagination';
+
+//files
 
 const Sales = () => {
   /*   
@@ -262,6 +264,21 @@ const Sales = () => {
 
   const cancelRecords = cancelArray.slice(FirstProductIndex, LastProductIndex);
   const cancelpages = Math.ceil(cancelArray.length / productsPerPage);
+  const downloadFile = (array, status) => {
+    const csv = array
+      .map(item => {
+        return JSON.stringify(item);
+      })
+      .join('\n')
+      .replace(/(^\[)|(\]$)/gm, '');
+    const blob = new Blob([csv], {
+      type: 'text/plain;charset=utf-8',
+    });
+    if (status === 'dispatch') saveAs(blob, 'dispatch.csv');
+    if (status === 'pending') saveAs(blob, 'pending.csv');
+    if (status === 'cancel') saveAs(blob, 'cancel.csv');
+    if (status === 'full') saveAs(blob, 'sales.csv');
+  };
   return (
     <VStack p={4} pb={20}>
       <Heading size={'lg'} pb={10}>
@@ -425,99 +442,110 @@ const Sales = () => {
 
           {isLoading && <Spinner size={'xl'} />}
           {!isLoading && (
-            <TableContainer
-              rounded={'lg'}
-              boxShadow={'lg'}
-              overflowY={'auto'}
-              overflowX={'auto'}
-              h={600}
-              w={1200}
-              mb={20}
-            >
-              <Table variant="simple">
-                <Thead
-                  position={'sticky'}
-                  top={0}
-                  backgroundColor={'lightblue'}
-                >
-                  <Tr key={'header'}>
-                    <Th textAlign={'center'}>AWB</Th>
-                    <Th textAlign={'center'}>order id</Th>
-                    <Th textAlign={'center'}>SKU</Th>
-                    <Th textAlign={'center'}>QTY</Th>
-                    <Th textAlign={'center'}>STATUS</Th>
-                    <Th textAlign={'center'}>courier</Th>
-                    <Th textAlign={'center'}>date</Th>
-                    <Th textAlign={'center'}>firm</Th>
-                    <Th textAlign={'center'}>Portal</Th>
-                  </Tr>
-                </Thead>
-
-                <Tbody>
-                  {!isDispatch ? (
-                    dispatchRecords.map(item => (
-                      <Tr key={item._id}>
-                        <Td>{item.AWB}</Td>
-                        <Td>{item.ORDER_ID}</Td>
-                        <Td>{item.SKU}</Td>
-                        <Td>{item.QTY}</Td>
-                        <Td>{item.status}</Td>
-                        <Td>{item.courier}</Td>
-                        <Td>{item.date}</Td>
-                        <Td>{item.firm}</Td>
-                        <Td>{item['PORTAL\r']}</Td>
-                      </Tr>
-                    ))
-                  ) : !isPending ? (
-                    pendingRecords.map(item => (
-                      <Tr key={item._id}>
-                        <Td>{item.AWB}</Td>
-                        <Td>{item.ORDER_ID}</Td>
-                        <Td>{item.SKU}</Td>
-                        <Td>{item.QTY}</Td>
-                        <Td>{item.status}</Td>
-                        <Td>{item.courier}</Td>
-                        <Td>{item.date}</Td>
-                        <Td>{item.firm}</Td>
-                        <Td>{item['PORTAL\r']}</Td>
-                      </Tr>
-                    ))
-                  ) : !isCancel ? (
-                    cancelRecords.map(item => (
-                      <Tr key={item._id}>
-                        <Td>{item.AWB}</Td>
-                        <Td>{item.ORDER_ID}</Td>
-                        <Td>{item.SKU}</Td>
-                        <Td>{item.QTY}</Td>
-                        <Td>{item.status}</Td>
-                        <Td>{item.courier}</Td>
-                        <Td>{item.date}</Td>
-                        <Td>{item.firm}</Td>
-                        <Td>{item['PORTAL\r']}</Td>
-                      </Tr>
-                    ))
-                  ) : !isFull ? (
-                    getAllArray.map(item => (
-                      <Tr key={item._id}>
-                        <Td>{item.AWB}</Td>
-                        <Td>{item.ORDER_ID}</Td>
-                        <Td>{item.SKU}</Td>
-                        <Td>{item.QTY}</Td>
-                        <Td>{item.status}</Td>
-                        <Td>{item.courier}</Td>
-                        <Td>{item.date}</Td>
-                        <Td>{item.firm}</Td>
-                        <Td>{item['PORTAL\r']}</Td>
-                      </Tr>
-                    ))
-                  ) : (
-                    <Tr>
-                      <Td>Error</Td>
+            <VStack mb={20}>
+              <TableContainer
+                rounded={'lg'}
+                boxShadow={'lg'}
+                overflowY={'auto'}
+                overflowX={'auto'}
+                h={600}
+                w={1200}
+              >
+                <Table variant="simple">
+                  <Thead
+                    position={'sticky'}
+                    top={0}
+                    backgroundColor={'lightblue'}
+                  >
+                    <Tr key={'header'}>
+                      <Th textAlign={'center'}>AWB</Th>
+                      <Th textAlign={'center'}>order id</Th>
+                      <Th textAlign={'center'}>SKU</Th>
+                      <Th textAlign={'center'}>QTY</Th>
+                      <Th textAlign={'center'}>STATUS</Th>
+                      <Th textAlign={'center'}>courier</Th>
+                      <Th textAlign={'center'}>date</Th>
+                      <Th textAlign={'center'}>firm</Th>
+                      <Th textAlign={'center'}>Portal</Th>
                     </Tr>
-                  )}
-                </Tbody>
-              </Table>
-            </TableContainer>
+                  </Thead>
+
+                  <Tbody>
+                    {!isDispatch ? (
+                      dispatchRecords.map(item => (
+                        <Tr key={item._id}>
+                          <Td>{item.AWB}</Td>
+                          <Td>{item.ORDER_ID}</Td>
+                          <Td>{item.SKU}</Td>
+                          <Td>{item.QTY}</Td>
+                          <Td>{item.status}</Td>
+                          <Td>{item.courier}</Td>
+                          <Td>{item.date}</Td>
+                          <Td>{item.firm}</Td>
+                          <Td>{item['PORTAL\r']}</Td>
+                        </Tr>
+                      ))
+                    ) : !isPending ? (
+                      pendingRecords.map(item => (
+                        <Tr key={item._id}>
+                          <Td>{item.AWB}</Td>
+                          <Td>{item.ORDER_ID}</Td>
+                          <Td>{item.SKU}</Td>
+                          <Td>{item.QTY}</Td>
+                          <Td>{item.status}</Td>
+                          <Td>{item.courier}</Td>
+                          <Td>{item.date}</Td>
+                          <Td>{item.firm}</Td>
+                          <Td>{item['PORTAL\r']}</Td>
+                        </Tr>
+                      ))
+                    ) : !isCancel ? (
+                      cancelRecords.map(item => (
+                        <Tr key={item._id}>
+                          <Td>{item.AWB}</Td>
+                          <Td>{item.ORDER_ID}</Td>
+                          <Td>{item.SKU}</Td>
+                          <Td>{item.QTY}</Td>
+                          <Td>{item.status}</Td>
+                          <Td>{item.courier}</Td>
+                          <Td>{item.date}</Td>
+                          <Td>{item.firm}</Td>
+                          <Td>{item['PORTAL\r']}</Td>
+                        </Tr>
+                      ))
+                    ) : !isFull ? (
+                      getAllArray.map(item => (
+                        <Tr key={item._id}>
+                          <Td>{item.AWB}</Td>
+                          <Td>{item.ORDER_ID}</Td>
+                          <Td>{item.SKU}</Td>
+                          <Td>{item.QTY}</Td>
+                          <Td>{item.status}</Td>
+                          <Td>{item.courier}</Td>
+                          <Td>{item.date}</Td>
+                          <Td>{item.firm}</Td>
+                          <Td>{item['PORTAL\r']}</Td>
+                        </Tr>
+                      ))
+                    ) : (
+                      <Tr>
+                        <Td>Error</Td>
+                      </Tr>
+                    )}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+              <Button
+                onClick={() => {
+                  if (!isDispatch) downloadFile(dispatchArray, 'dispatch');
+                  if (!isPending) downloadFile(pendingArray, 'pending');
+                  if (!isCancel) downloadFile(cancelArray, 'cancel');
+                  if (!isFull) downloadFile(getAllArray, 'full');
+                }}
+              >
+                Download file
+              </Button>
+            </VStack>
           )}
           {!isDispatch ? (
             <Pagination

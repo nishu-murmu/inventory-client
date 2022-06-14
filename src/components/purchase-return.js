@@ -33,6 +33,7 @@ import DatePicker from 'react-datepicker';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
+import { saveAs } from 'file-saver';
 
 // files
 import AnimatedPage from '../pages/AnimatedPage';
@@ -69,15 +70,18 @@ const PurchaseReturn = () => {
   const submitHandler = async e => {
     e.preventDefault();
     // e.preventDefault();
-    await fetch('https://cryptic-bayou-61420.herokuapp.com/api/purchaseReturn/create', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        mastersku: sku,
-        Date: start,
-        quantity: quantity,
-      }),
-    });
+    await fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/api/purchaseReturn/create',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mastersku: sku,
+          Date: start,
+          quantity: quantity,
+        }),
+      }
+    );
   };
 
   // get list of products
@@ -94,27 +98,33 @@ const PurchaseReturn = () => {
 
   // update product
   const updateHandler = () => {
-    fetch('https://cryptic-bayou-61420.herokuapp.com/api/purchaseReturn/update', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        mastersku: enteredsku,
-        Date: update,
-        quantity: newQuantity,
-      }),
-    });
+    fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/api/purchaseReturn/update',
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mastersku: enteredsku,
+          Date: update,
+          quantity: newQuantity,
+        }),
+      }
+    );
   };
 
   // delete product
   useEffect(() => {
     const deleteHandler = async () => {
-      await fetch('https://cryptic-bayou-61420.herokuapp.com/api/purchaseReturn/delete', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          mastersku: selectedsku,
-        }),
-      });
+      await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/api/purchaseReturn/delete',
+        {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mastersku: selectedsku,
+          }),
+        }
+      );
     };
     deleteHandler();
   }, [toggleDelete, selectedsku]);
@@ -132,6 +142,18 @@ const PurchaseReturn = () => {
     };
     masterskuHandler();
   }, []);
+  const downloadFile = () => {
+    const csv = purchaseReturndata
+      .map(item => {
+        return JSON.stringify(item);
+      })
+      .join('\n')
+      .replace(/(^\[)|(\]$)/gm, '');
+    const blob = new Blob([csv], {
+      type: 'text/plain;charset=utf-8',
+    });
+    saveAs(blob, 'purchaseReturn.csv');
+  };
 
   return (
     <VStack>
@@ -298,6 +320,7 @@ const PurchaseReturn = () => {
                 </Tbody>
               </Table>
             </TableContainer>
+            <Button onClick={downloadFile}>Download file</Button>
           </AnimatedPage>
         </VStack>
       </HStack>
