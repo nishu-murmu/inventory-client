@@ -23,21 +23,28 @@ const Login = () => {
   const nav = useNavigate();
   const submitHandler = async e => {
     e.preventDefault();
-    await fetch('https://cryptic-bayou-61420.herokuapp.com/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: enteredEmail,
-        password: enteredPassword,
-      }),
-    }).then(res => {
-      if (res.status === 200) {
-        nav('/livestock');
+    const response = await fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/api/auth/login',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: enteredEmail,
+          password: enteredPassword,
+        }),
       }
-      if (res.status === 404) {
-        nav('/_404');
-      }
-    });
+    );
+    const result = await response.json();
+    console.log(result.message);
+    if (result.message === undefined) {
+      nav('/livestock');
+    }
+    if (result.message === 'Wrong username or password') {
+      nav('/authCred', { state: { name: 'Incorrect Email or Password' } });
+    }
+    if (result.message === 'User not found!') {
+      nav('/authCred', { state: { name: 'User not found!' } });
+    }
   };
 
   const emailChange = e => {

@@ -545,8 +545,8 @@ const SalesReturn = () => {
               <Button
                 onClick={() => {
                   if (!isReceived) downloadFile(receivedArray, 'received');
-                  if (!isPartial) downloadFile(partialArray, 'pending');
-                  if (!isWrong) downloadFile(wrongArray, 'cancel');
+                  if (!isPartial) downloadFile(partialArray, 'partial');
+                  if (!isWrong) downloadFile(wrongArray, 'wrong');
                 }}
               >
                 Download file

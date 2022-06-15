@@ -5,11 +5,9 @@ import {
   Box,
   Text,
   Link,
-  Icon,
   useColorModeValue,
   Button,
 } from '@chakra-ui/react';
-import { FaHeart } from 'react-icons/fa';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 const year = new Date().getFullYear();
 
@@ -55,12 +53,6 @@ const Footer = () => {
           <Text fontSize={'16px'}>
             © {year} F3 E-Commerce Consultancy. All rights reserved
           </Text>
-        </HStack>
-        <HStack>
-          <Text fontSize={'12px'}>
-            Made by <a href={'https://github.com/nishu-murmu/'}>Nishu</a> with
-          </Text>
-          <Icon fontSize={'12px'} color={'red'} as={FaHeart} />
         </HStack>
       </VStack>
     </Box>

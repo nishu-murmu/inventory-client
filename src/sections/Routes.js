@@ -12,7 +12,7 @@ import AccountPage from '../pages/Auth/AccountPage.js';
 import MasterSKUPage from '../pages/Sku/masterSKUPage.js';
 import UnMappedPage from '../pages/Sku/unMapped.js';
 import LiveStockPage from '../pages/livestockPage.js';
-import ErrorPage from '../components/Auth/_404.js';
+import AuthCredPage from '../components/Auth/authCred.js';
 
 const AllRoutes = () => {
   const location = useLocation();
@@ -22,7 +22,7 @@ const AllRoutes = () => {
         <Route exact path="/" element={<SignUpPage />} />
         <Route exact path="/login" element={<LoginPage />} />
         <Route exact path="/account" element={<AccountPage />} />
-        <Route exact path="/_404" element={<ErrorPage />} />
+        <Route exact path="/authCred" element={<AuthCredPage />} />
         <Route exact path="/master" element={<MasterSKUPage />} />
         <Route exact path="/unmapped" element={<UnMappedPage />} />
         <Route exact path="/purchase" element={<PurchasePage />} />
