@@ -12,12 +12,23 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
+// import { useNavigate } from 'react-router-dom';
 import { saveAs } from 'file-saver';
 // files
 
 const LiveStock = () => {
+  // const nav = useNavigate();
   const [mergedArray, setMergedArray] = useState([]);
   const [livestockArray, setLiveStockArray] = useState([]);
+  // authentication
+  useEffect(() => {
+    const authentication = async () => {
+      const response = await fetch('http://localhost:3001/api/auth/checkAuth');
+      const result = response.json();
+      console.log(result);
+    };
+    authentication();
+  });
 
   // get the merged List
   useEffect(() => {
@@ -46,12 +57,6 @@ const LiveStock = () => {
               purchaseReturn: item.purchaseReturn[0].quantity,
               sales: item.sales[0].QTY,
               salesReturn: 0,
-              livestock: Math.abs(
-                parseInt(item.purchase[0].quantity) +
-                  0 -
-                  (parseInt(item.sales[0].QTY) +
-                    parseInt(item.purchaseReturn[0].quantity))
-              ),
             }),
           }
         )

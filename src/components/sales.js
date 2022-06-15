@@ -128,8 +128,9 @@ const Sales = () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(array),
+    }).then(res => {
+      console.log(res.json());
     });
-    console.log(array);
   };
   // submit csv file to function
   const onSubmitHandler = e => {
@@ -239,6 +240,7 @@ const Sales = () => {
     filterCount('cancel');
     filter('cancel');
   }, [isCancel]);
+
   // Date filter
   const handleSelect = ranges => {
     setEndDate(ranges.selection.endDate);
@@ -279,6 +281,14 @@ const Sales = () => {
     if (status === 'cancel') saveAs(blob, 'cancel.csv');
     if (status === 'full') saveAs(blob, 'sales.csv');
   };
+  useEffect(() => {
+    const remove = async () => {
+      const response = await fetch('http://localhost:3001/api/sales/remove');
+      const result = response.json();
+      console.log(result);
+    };
+    remove();
+  }, []);
   return (
     <VStack p={4} pb={20}>
       <Heading size={'lg'} pb={10}>
@@ -383,7 +393,7 @@ const Sales = () => {
                   {filterArray.map(item => (
                     <Tr key={item._id}>
                       <Td>{item.AWB}</Td>
-                      <Td>{item.ORDER_ID}</Td>
+                      <Td>{item['ORDER ID']}</Td>
                       <Td>{item.SKU}</Td>
                       <Td>{item.QTY}</Td>
                       <Td>
@@ -476,7 +486,7 @@ const Sales = () => {
                       dispatchRecords.map(item => (
                         <Tr key={item._id}>
                           <Td>{item.AWB}</Td>
-                          <Td>{item.ORDER_ID}</Td>
+                          <Td>{item['ORDER ID']}</Td>
                           <Td>{item.SKU}</Td>
                           <Td>{item.QTY}</Td>
                           <Td>{item.status}</Td>
@@ -490,7 +500,7 @@ const Sales = () => {
                       pendingRecords.map(item => (
                         <Tr key={item._id}>
                           <Td>{item.AWB}</Td>
-                          <Td>{item.ORDER_ID}</Td>
+                          <Td>{item['ORDER ID']}</Td>
                           <Td>{item.SKU}</Td>
                           <Td>{item.QTY}</Td>
                           <Td>{item.status}</Td>
@@ -504,7 +514,7 @@ const Sales = () => {
                       cancelRecords.map(item => (
                         <Tr key={item._id}>
                           <Td>{item.AWB}</Td>
-                          <Td>{item.ORDER_ID}</Td>
+                          <Td>{item['ORDER ID']}</Td>
                           <Td>{item.SKU}</Td>
                           <Td>{item.QTY}</Td>
                           <Td>{item.status}</Td>
@@ -518,7 +528,7 @@ const Sales = () => {
                       getAllArray.map(item => (
                         <Tr key={item._id}>
                           <Td>{item.AWB}</Td>
-                          <Td>{item.ORDER_ID}</Td>
+                          <Td>{item['ORDER ID']}</Td>
                           <Td>{item.SKU}</Td>
                           <Td>{item.QTY}</Td>
                           <Td>{item.status}</Td>

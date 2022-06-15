@@ -42,7 +42,7 @@ const Pagination = ({ totalPages, currentPage, setCurrentPage }) => {
             if (e.target.value.length === 0) {
               setCurrentPage(1);
             }
-            setCurrentPage(e.target.value);
+            setCurrentPage(parseInt(e.target.value));
           }}
         ></Input>
       </Flex>
