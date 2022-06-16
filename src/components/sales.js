@@ -128,8 +128,6 @@ const Sales = () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(array),
-    }).then(res => {
-      console.log(res.json());
     });
   };
   // submit csv file to function
@@ -283,9 +281,9 @@ const Sales = () => {
   };
   useEffect(() => {
     const remove = async () => {
-      const response = await fetch('http://localhost:3001/api/sales/remove');
-      const result = response.json();
-      console.log(result);
+      await fetch('http://localhost:3001/api/sales/remove')
+        .then(res => res.json())
+        .then(data => console.log(data));
     };
     remove();
   }, []);
@@ -440,15 +438,20 @@ const Sales = () => {
                 ? 'Full List'
                 : ''}
             </Heading>
-            <Button>
-              {!isDispatch
-                ? `${dispatchcount}`
-                : !isPending
-                ? `${pendingcount}`
-                : !isCancel
-                ? `${cancelcount}`
-                : '0'}
-            </Button>
+            <Flex>
+              <Text pt={1}>
+                <strong>Total:</strong>
+              </Text>
+              <Button>
+                {!isDispatch
+                  ? `${dispatchcount}`
+                  : !isPending
+                  ? `${pendingcount}`
+                  : !isCancel
+                  ? `${cancelcount}`
+                  : '0'}
+              </Button>
+            </Flex>
           </Flex>
 
           {isLoading && <Spinner size={'xl'} />}

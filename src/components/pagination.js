@@ -1,4 +1,11 @@
-import { Button, Icon, HStack, Text, Flex, Input } from '@chakra-ui/react';
+import { Button, Icon, HStack, Text, Flex } from '@chakra-ui/react';
+import {
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+} from '@chakra-ui/react';
 import { FcNext, FcPrevious } from 'react-icons/fc';
 import { BiLastPage, BiFirstPage } from 'react-icons/bi';
 // import { useState } from 'react';
@@ -30,21 +37,25 @@ const Pagination = ({ totalPages, currentPage, setCurrentPage }) => {
         </Button>
       </Flex>
       <Text variant={'outline'}>
-        Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong>
+        Page
+        <strong>{isNaN(currentPage) ? '1' : currentPage.toString()}</strong>
+        of
+        <strong>{totalPages}</strong>
       </Text>
       <Flex>
         <Text>Goto Page:</Text>
-        <Input
-          htmlSize={8}
-          size={'auto'}
-          id="input"
-          onChange={e => {
-            if (e.target.value.length === 0) {
-              setCurrentPage(1);
-            }
-            setCurrentPage(parseInt(e.target.value));
-          }}
-        ></Input>
+        <NumberInput defaultValue={1} maxW={20} min={0} max={totalPages}>
+          <NumberInputField
+            onChange={e => {
+              if (e.target.value.length === 0) setCurrentPage(1);
+              setCurrentPage(parseInt(e.target.value));
+            }}
+          />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
       </Flex>
       <Flex>
         <Button onClick={nextPage}>

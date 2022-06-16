@@ -44,19 +44,6 @@ const Mapped = () => {
   const toggleChange = () => {
     setIsChange(!isChange);
   };
-  const submitArrayHandler = () => {
-    fetch('https://cryptic-bayou-61420.herokuapp.com/api/master/store', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        grand_parent: grandParent,
-        parent,
-        child,
-        mastersku: [grandParent, parent, child].join('_'),
-        combo: combo,
-      }),
-    });
-  };
 
   const getListHandler = async () => {
     setIsLoading(true);
@@ -70,7 +57,22 @@ const Mapped = () => {
 
   useEffect(() => {
     getListHandler();
-  }, [isChange]);
+    const submitArrayHandler = e => {
+      e.preventDefault();
+      fetch('https://cryptic-bayou-61420.herokuapp.com/api/master/store', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          grand_parent: grandParent,
+          parent,
+          child,
+          mastersku: [grandParent, parent, child].join('_'),
+          combo: combo,
+        }),
+      });
+    };
+    submitArrayHandler();
+  }, [isChange, grandParent, parent, child, combo]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -98,9 +100,8 @@ const Mapped = () => {
       {isSingle && (
         <AnimatedPage>
           <form
-            onSubmit={e => {
-              submitArrayHandler(e);
-              toggleChange(e);
+            onSubmit={() => {
+              toggleChange();
             }}
             py={4}
           >
@@ -146,9 +147,8 @@ const Mapped = () => {
       {!isSingle && (
         <AnimatedPage>
           <form
-            onSubmit={e => {
-              submitArrayHandler(e);
-              toggleChange(e);
+            onSubmit={() => {
+              toggleChange();
             }}
             py={4}
           >
