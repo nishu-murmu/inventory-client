@@ -28,7 +28,7 @@ const LiveStock = () => {
       console.log(result);
     };
     authentication();
-  });
+  }, []);
 
   // get the merged List
   useEffect(() => {
@@ -53,10 +53,10 @@ const LiveStock = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               mastersku: item.mastersku,
-              purchase: item.purchase[0].quantity,
-              purchaseReturn: item.purchaseReturn[0].quantity,
-              sales: item.sales[0].QTY,
-              salesReturn: 0,
+              purchase: 2,
+              purchaseReturn: 5,
+              sales: 1,
+              salesReturn: 6,
             }),
           }
         )

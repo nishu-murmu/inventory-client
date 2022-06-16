@@ -19,7 +19,7 @@ const AllRoutes = () => {
   return (
     <AnimatePresence exitBeforeEnter>
       <Routes location={location} key={location.pathname}>
-        <Route exact path="/" element={<SignUpPage />} />
+        <Route index path="/" element={<SignUpPage />} />
         <Route exact path="/login" element={<LoginPage />} />
         <Route exact path="/account" element={<AccountPage />} />
         <Route exact path="/authCred" element={<AuthCredPage />} />
