@@ -60,13 +60,11 @@ const Sales = () => {
   const [pendingArray, setPendingArray] = useState([]);
   const [cancelArray, setCancelArray] = useState([]);
   const [filterArray, setFilterArray] = useState([]);
-  const [getAllArray, setGetAllArray] = useState([]);
 
   const [isScan, setIsScan] = useState(false);
   const [isPending, setIsPending] = useState(true);
   const [isCancel, setIsCancel] = useState(true);
   const [isDispatch, setIsDispatch] = useState(true);
-  const [isFull, setIsFull] = useState(true);
   /*
     Event Handlers 
    */
@@ -78,39 +76,25 @@ const Sales = () => {
     if (isDispatch === false) setIsDispatch(true);
     if (isCancel === false) setIsCancel(true);
     if (isPending === false) setIsPending(true);
-    if (isFull === false) setIsFull(true);
   };
   const switchDispatchHandler = () => {
     if (isScan === false) setIsScan(true);
     if (isDispatch === true) setIsDispatch(false);
     if (isCancel === false) setIsCancel(true);
     if (isPending === false) setIsPending(true);
-    if (isFull === false) setIsFull(true);
   };
   const switchPendingHandler = () => {
     if (isScan === false) setIsScan(true);
     if (isPending === true) setIsPending(false);
     if (isDispatch === false) setIsDispatch(true);
     if (isCancel === false) setIsCancel(true);
-    if (isFull === false) setIsFull(true);
   };
   const switchCancelHandler = () => {
     if (isScan === false) setIsScan(true);
     if (isDispatch === false) setIsDispatch(true);
     if (isPending === false) setIsPending(true);
     if (isCancel === true) setIsCancel(false);
-    if (isFull === false) setIsFull(true);
   };
-  const switchFullHandler = () => {
-    if (isScan === false) setIsScan(true);
-    if (isDispatch === false) setIsDispatch(true);
-    if (isPending === false) setIsPending(true);
-    if (isCancel === false) setIsCancel(true);
-    if (isFull === true) setIsFull(false);
-  };
-  /* 
-    API Action Handlers
-  */
   // csv to array conversion
   const csvFileToArray = string => {
     const csvHeader = string.slice(0, string.indexOf('\n')).split(',');
@@ -140,14 +124,6 @@ const Sales = () => {
       };
       fileReader.readAsText(file);
     }
-  };
-  // full list
-  const getAll = async () => {
-    const response = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/sales/getAll'
-    );
-    const result = await response.json();
-    setGetAllArray(result);
   };
   // universal filter
   const filter = async filter => {
@@ -183,10 +159,7 @@ const Sales = () => {
     if (status === 'pending') setPendingCount(count);
     if (status === 'cancel') setCancelCount(count);
   };
-  /* 
-    Hooks
-  */
-  // update or scan the product with  dispatch
+  // update the product with dispatch
   useEffect(() => {
     const updateHandler = async () => {
       await fetch(
@@ -224,9 +197,6 @@ const Sales = () => {
     filterHandler();
   }, [enteredAWB]);
   useEffect(() => {
-    getAll();
-  }, [isFull]);
-  useEffect(() => {
     filterCount('dispatch');
     filter('dispatch');
   }, [isDispatch]);
@@ -240,28 +210,27 @@ const Sales = () => {
   }, [isCancel]);
 
   // Date filter
-  const handleSelect = ranges => {
-    setEndDate(ranges.selection.endDate);
-    setStartDate(ranges.selection.startDate);
-  };
   const SelectionRange = {
     startDate: startDate,
     endDate: endDate,
     key: 'selection',
   };
+  const handleSelect = ranges => {
+    setEndDate(ranges.selection.endDate);
+    setStartDate(ranges.selection.startDate);
+  };
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatchRecords = dispatchArray.slice(
     FirstProductIndex,
     LastProductIndex
   );
   const dispatchpages = Math.ceil(dispatchArray.length / productsPerPage);
-
   const pendingRecords = pendingArray.slice(
     FirstProductIndex,
     LastProductIndex
   );
   const pendingpages = Math.ceil(pendingArray.length / productsPerPage);
-
   const cancelRecords = cancelArray.slice(FirstProductIndex, LastProductIndex);
   const cancelpages = Math.ceil(cancelArray.length / productsPerPage);
   const downloadFile = (array, status) => {
@@ -277,7 +246,6 @@ const Sales = () => {
     if (status === 'dispatch') saveAs(blob, 'dispatch.csv');
     if (status === 'pending') saveAs(blob, 'pending.csv');
     if (status === 'cancel') saveAs(blob, 'cancel.csv');
-    if (status === 'full') saveAs(blob, 'sales.csv');
   };
   return (
     <VStack p={4} pb={20}>
@@ -321,7 +289,12 @@ const Sales = () => {
           <ModalOverlay />
           <ModalContent>
             <ModalBody>
-              <DateRange ranges={[SelectionRange]} onChange={handleSelect} />
+              <DateRange
+                ranges={[SelectionRange]}
+                onChange={handleSelect}
+                moveRangeOnFirstSelection
+                retainEndDateOnFirstSelection
+              />
             </ModalBody>
           </ModalContent>
         </Modal>
@@ -333,7 +306,6 @@ const Sales = () => {
               <MenuItem onClick={switchDispatchHandler}>Dispatch List</MenuItem>
               <MenuItem onClick={switchPendingHandler}>Pending List</MenuItem>
               <MenuItem onClick={switchCancelHandler}>Cancel List</MenuItem>
-              <MenuItem onClick={switchFullHandler}>Full List</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
@@ -426,8 +398,6 @@ const Sales = () => {
                 ? 'Pending Table'
                 : !isCancel
                 ? 'Cancel Table'
-                : !isFull
-                ? 'Full List'
                 : ''}
             </Heading>
             <Flex>
@@ -519,20 +489,6 @@ const Sales = () => {
                           <Td>{item['PORTAL\r']}</Td>
                         </Tr>
                       ))
-                    ) : !isFull ? (
-                      getAllArray.map(item => (
-                        <Tr key={item._id}>
-                          <Td>{item.AWB}</Td>
-                          <Td>{item['ORDER ID']}</Td>
-                          <Td>{item.SKU}</Td>
-                          <Td>{item.QTY}</Td>
-                          <Td>{item.status}</Td>
-                          <Td>{item.courier}</Td>
-                          <Td>{item.date}</Td>
-                          <Td>{item.firm}</Td>
-                          <Td>{item['PORTAL\r']}</Td>
-                        </Tr>
-                      ))
                     ) : (
                       <Tr>
                         <Td>Error</Td>
@@ -546,7 +502,6 @@ const Sales = () => {
                   if (!isDispatch) downloadFile(dispatchArray, 'dispatch');
                   if (!isPending) downloadFile(pendingArray, 'pending');
                   if (!isCancel) downloadFile(cancelArray, 'cancel');
-                  if (!isFull) downloadFile(getAllArray, 'full');
                 }}
               >
                 Download file

@@ -21,19 +21,17 @@ const Login = () => {
   const [enteredEmail, setEnteredEmail] = useState('');
   const [enteredPassword, setEnteredPassword] = useState('');
   const nav = useNavigate();
+
   const submitHandler = async e => {
     e.preventDefault();
-    const response = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/auth/login',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: enteredEmail,
-          password: enteredPassword,
-        }),
-      }
-    );
+    const response = await fetch('http://localhost:3001/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: enteredEmail,
+        password: enteredPassword,
+      }),
+    });
     const result = await response.json();
     if (result.message === undefined) {
       nav('/livestock');
