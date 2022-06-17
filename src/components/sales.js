@@ -279,14 +279,6 @@ const Sales = () => {
     if (status === 'cancel') saveAs(blob, 'cancel.csv');
     if (status === 'full') saveAs(blob, 'sales.csv');
   };
-  useEffect(() => {
-    const remove = async () => {
-      await fetch('http://localhost:3001/api/sales/remove')
-        .then(res => res.json())
-        .then(data => console.log(data));
-    };
-    remove();
-  }, []);
   return (
     <VStack p={4} pb={20}>
       <Heading size={'lg'} pb={10}>

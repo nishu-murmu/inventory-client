@@ -20,15 +20,6 @@ const LiveStock = () => {
   // const nav = useNavigate();
   const [mergedArray, setMergedArray] = useState([]);
   const [livestockArray, setLiveStockArray] = useState([]);
-  // authentication
-  useEffect(() => {
-    const authentication = async () => {
-      const response = await fetch('http://localhost:3001/api/auth/checkAuth');
-      const result = response.json();
-      console.log(result);
-    };
-    authentication();
-  }, []);
 
   // get the merged List
   useEffect(() => {
@@ -53,10 +44,15 @@ const LiveStock = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               mastersku: item.mastersku,
-              purchase: 2,
-              purchaseReturn: 5,
-              sales: 1,
-              salesReturn: 6,
+              purchase:
+                item.purchase.length === 0 ? 0 : item.purchase[0].quantity,
+              purchaseReturn:
+                item.purchaseReturn.length === 0
+                  ? 0
+                  : item.purchaseReturn[0].quantity,
+              sales: item.sales.length === 0 ? 0 : item.sales[0].QTY,
+              salesReturn:
+                item.salesreturn.length === 0 ? 0 : item.salesReturn[0].QTY,
             }),
           }
         )
@@ -108,8 +104,7 @@ const LiveStock = () => {
         <Table variant="simple">
           <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
             <Tr>
-              <Th textAlign={'center'}>SKU</Th>
-              <Th textAlign={'center'}>Master SKU</Th>
+              <Th textAlign="center">Master SKU</Th>
               <Th textAlign="center">Opening Stock</Th>
               <Th textAlign="center">Purchase</Th>
               <Th textAlign="center">Sales</Th>

@@ -13,9 +13,20 @@ import MasterSKUPage from '../pages/Sku/masterSKUPage.js';
 import UnMappedPage from '../pages/Sku/unMapped.js';
 import LiveStockPage from '../pages/livestockPage.js';
 import AuthCredPage from '../components/Auth/authCred.js';
+import { useEffect } from 'react';
 
 const AllRoutes = () => {
   const location = useLocation();
+  useEffect(() => {
+    const authentication = async () => {
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/api/auth/checkAuth'
+      );
+      const result = response.json();
+      console.log(result);
+    };
+    authentication();
+  }, []);
   return (
     <AnimatePresence exitBeforeEnter>
       <Routes location={location} key={location.pathname}>
