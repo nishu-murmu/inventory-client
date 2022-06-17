@@ -34,41 +34,36 @@ const LiveStock = () => {
   }, []);
 
   // perform calculations and store it in backend
-  useEffect(() => {
-    const sendMergedArray = async () => {
-      livestockArray.map(item =>
-        fetch(
-          'https://cryptic-bayou-61420.herokuapp.com/api/livestock/create',
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              mastersku: item.mastersku,
-              purchase:
-                item.purchase.length === 0 ? 0 : item.purchase[0].quantity,
-              purchaseReturn:
-                item.purchaseReturn.length === 0
-                  ? 0
-                  : item.purchaseReturn[0].quantity,
-              sales: item.sales.length === 0 ? 0 : item.sales[0].QTY,
-              salesReturn:
-                item.salesreturn.length === 0 ? 0 : item.salesReturn[0].QTY,
-            }),
-          }
-        )
-      );
-    };
-    sendMergedArray();
-  }, [livestockArray]);
+  const sendMergedArray = async () => {
+    livestockArray.map(item =>
+      fetch('https://cryptic-bayou-61420.herokuapp.com/api/livestock/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mastersku: item.mastersku,
+          purchase: item.purchase.length === 0 ? 0 : item.purchase[0].quantity,
+          purchaseReturn:
+            item.purchaseReturn.length === 0
+              ? 0
+              : item.purchaseReturn[0].quantity,
+          sales: item.sales.length === 0 ? 0 : item.sales[0].QTY,
+          salesReturn:
+            item.salesreturn.length === 0 ? 0 : item.salesReturn[0].QTY,
+        }),
+      })
+    );
+  };
+  sendMergedArray();
 
   // receive final livestock after calculations
   useEffect(() => {
     const finalLiveStock = async () => {
       const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/livestock/getAll'
+        'https://cryptic-bayou-61420.herokuapp.com/livestock/getAll'
       );
       const result = await response.json();
       setMergedArray(result);
+      console.log(result);
     };
     finalLiveStock();
   }, []);
@@ -117,7 +112,7 @@ const LiveStock = () => {
             {mergedArray.map(item => (
               <Tr key={item._id}>
                 <Td textAlign="center">{item.mastersku}</Td>
-                <Td textAlign="center"> {item.opening_stock}</Td>
+                <Td textAlign="center"> {0}</Td>
                 <Td textAlign="center"> {item.purchase}</Td>
                 <Td textAlign="center"> {item.sales}</Td>
                 <Td textAlign="center">{item.salesReturn}</Td>
