@@ -182,6 +182,8 @@ const SalesReturn = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             filter: filter,
+            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
+            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
           }),
         }
       );
@@ -197,6 +199,8 @@ const SalesReturn = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             status: status,
+            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
+            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
           }),
         }
       );
@@ -205,7 +209,7 @@ const SalesReturn = () => {
     };
     filterCount('received');
     filter('received');
-  }, [isReceived]);
+  }, [isReceived, startDate, endDate]);
   useEffect(() => {
     const filter = async filter => {
       const response = await fetch(
@@ -215,6 +219,8 @@ const SalesReturn = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             filter: filter,
+            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
+            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
           }),
         }
       );
@@ -229,6 +235,8 @@ const SalesReturn = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             status: status,
+            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
+            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
           }),
         }
       );
@@ -237,7 +245,7 @@ const SalesReturn = () => {
     };
     filterCount('wrong');
     filter('wrong');
-  }, [isWrong]);
+  }, [isWrong, endDate, startDate]);
   useEffect(() => {
     const filter = async filter => {
       const response = await fetch(
@@ -247,6 +255,8 @@ const SalesReturn = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             filter: filter,
+            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
+            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
           }),
         }
       );
@@ -261,6 +271,8 @@ const SalesReturn = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             status: status,
+            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
+            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
           }),
         }
       );
@@ -269,7 +281,7 @@ const SalesReturn = () => {
     };
     filterCount('partial');
     filter('partial');
-  }, [isPartial]);
+  }, [isPartial, endDate, startDate]);
 
   const currentRecords = receivedArray.slice(
     FirstProductIndex,
