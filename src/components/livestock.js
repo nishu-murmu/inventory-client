@@ -40,7 +40,6 @@ const LiveStock = () => {
         method: 'DELETE',
       }
     );
-    console.log('deleted');
   };
   const sendMergedArray = async () => {
     livestockArray.map(item =>
@@ -69,7 +68,6 @@ const LiveStock = () => {
       );
       const result = await response.json();
       setMergedArray(result);
-      console.log(result);
     };
     finalLiveStock();
   }, []);

@@ -121,7 +121,6 @@ const SalesReturn = () => {
       fileReader.readAsText(file);
     }
   };
-
   // update the status
   useEffect(() => {
     const updateHandler = async () => {
@@ -140,7 +139,6 @@ const SalesReturn = () => {
     };
     updateHandler();
   }, [status, enteredAWB]);
-
   // filter the product according to AWB
   useEffect(() => {
     const filterHandler = async () => {
@@ -161,23 +159,8 @@ const SalesReturn = () => {
     filterHandler();
   }, [enteredAWB]);
   // universal filter
-  const filter = async filter => {
-    const response = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filter',
-      {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          filter: filter,
-        }),
-      }
-    );
-    const result = await response.json();
-    if (filter === 'received') setIsReceivedArray(prev => [...prev, ...result]);
-    if (filter === 'partial') setIsPartialArray(result);
-    if (filter === 'wrong') setIsWrongArray(result);
-  };
-  // received date filter
+
+  // received data filter
   useEffect(() => {
     const receivedData = async () => {
       const response = await fetch(
@@ -189,35 +172,101 @@ const SalesReturn = () => {
     receivedData();
   }, []);
   // Filter Count
-  const filterCount = async status => {
-    const response = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filterCount',
-      {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          status: status,
-        }),
-      }
-    );
-    const count = await response.json();
-    if (status === 'received') setReceivedCount(count);
-    if (status === 'wrong') setWrongCount(count);
-    if (status === 'partial') setPartialCount(count);
-  };
 
-  /* 
-    Hooks
-  */
   useEffect(() => {
+    const filter = async filter => {
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filter',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filter: filter,
+          }),
+        }
+      );
+      const result = await response.json();
+      if (filter === 'received')
+        setIsReceivedArray(prev => [...prev, ...result]);
+    };
+    const filterCount = async status => {
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filterCount',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            status: status,
+          }),
+        }
+      );
+      const count = await response.json();
+      if (status === 'received') setReceivedCount(count);
+    };
     filterCount('received');
     filter('received');
   }, [isReceived]);
   useEffect(() => {
+    const filter = async filter => {
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filter',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filter: filter,
+          }),
+        }
+      );
+      const result = await response.json();
+      if (filter === 'wrong') setIsWrongArray(result);
+    };
+    const filterCount = async status => {
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filterCount',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            status: status,
+          }),
+        }
+      );
+      const count = await response.json();
+      if (status === 'wrong') setWrongCount(count);
+    };
     filterCount('wrong');
     filter('wrong');
   }, [isWrong]);
   useEffect(() => {
+    const filter = async filter => {
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filter',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filter: filter,
+          }),
+        }
+      );
+      const result = await response.json();
+      if (filter === 'partial') setIsPartialArray(result);
+    };
+    const filterCount = async status => {
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filterCount',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            status: status,
+          }),
+        }
+      );
+      const count = await response.json();
+      if (status === 'partial') setPartialCount(count);
+    };
     filterCount('partial');
     filter('partial');
   }, [isPartial]);

@@ -125,40 +125,6 @@ const Sales = () => {
       fileReader.readAsText(file);
     }
   };
-  // universal filter
-  const filter = async filter => {
-    const response = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/sales/filter',
-      {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          filter: filter,
-        }),
-      }
-    );
-    const result = await response.json();
-    if (filter === 'dispatch') setDispatchArray(result);
-    if (filter === 'pending') setPendingArray(result);
-    if (filter === 'cancel') setCancelArray(result);
-  };
-  // filter Count
-  const filterCount = async status => {
-    const response = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/sales/filterCount',
-      {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          status: status,
-        }),
-      }
-    );
-    const count = await response.json();
-    if (status === 'dispatch') setDispatchCount(count);
-    if (status === 'pending') setPendingCount(count);
-    if (status === 'cancel') setCancelCount(count);
-  };
   // update the product with dispatch
   useEffect(() => {
     const updateHandler = async () => {
@@ -197,17 +163,114 @@ const Sales = () => {
     filterHandler();
   }, [enteredAWB]);
   useEffect(() => {
-    filterCount('dispatch');
+    const filter = async filter => {
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/sales/filter',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filter: filter,
+            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
+            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
+          }),
+        }
+      );
+      const result = await response.json();
+      setDispatchArray(result);
+    };
+    const filterCount = async status => {
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/sales/filterCount',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            status: status,
+            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
+            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
+          }),
+        }
+      );
+      const count = await response.json();
+      console.log(count);
+      setDispatchCount(count);
+    };
     filter('dispatch');
-  }, [isDispatch]);
+    filterCount('dispatch');
+  }, [startDate, endDate]);
   useEffect(() => {
-    filterCount('pending');
+    const filter = async filter => {
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/sales/filter',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filter: filter,
+            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
+            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
+          }),
+        }
+      );
+      const result = await response.json();
+      setPendingArray(result);
+    };
+    const filterCount = async status => {
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/sales/filterCount',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            status: status,
+            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
+            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
+          }),
+        }
+      );
+      const count = await response.json();
+      setPendingCount(count);
+    };
     filter('pending');
-  }, [isPending]);
+    filterCount('pending');
+  }, [startDate, endDate]);
   useEffect(() => {
-    filterCount('cancel');
+    const filter = async filter => {
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/api/sales/filter',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filter: filter,
+            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
+            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
+          }),
+        }
+      );
+      const result = await response.json();
+      setCancelArray(result);
+    };
+    const filterCount = async status => {
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/sales/filterCount',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            status: status,
+            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
+            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
+          }),
+        }
+      );
+      const count = await response.json();
+      setCancelCount(count);
+    };
     filter('cancel');
-  }, [isCancel]);
+    filterCount('cancel');
+  }, [startDate, endDate]);
 
   // Date filter
   const SelectionRange = {
