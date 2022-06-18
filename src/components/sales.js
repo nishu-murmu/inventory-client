@@ -165,7 +165,7 @@ const Sales = () => {
   useEffect(() => {
     const filter = async filter => {
       const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/sales/filter',
+        'https://cryptic-bayou-61420.herokuapp.com/api/sales/filter',
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -181,7 +181,7 @@ const Sales = () => {
     };
     const filterCount = async status => {
       const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/sales/filterCount',
+        'https://cryptic-bayou-61420.herokuapp.com/api/sales/filterCount',
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -202,7 +202,7 @@ const Sales = () => {
   useEffect(() => {
     const filter = async filter => {
       const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/sales/filter',
+        'https://cryptic-bayou-61420.herokuapp.com/api/sales/filter',
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -218,7 +218,7 @@ const Sales = () => {
     };
     const filterCount = async status => {
       const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/sales/filterCount',
+        'https://cryptic-bayou-61420.herokuapp.com/api/sales/filterCount',
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -254,7 +254,7 @@ const Sales = () => {
     };
     const filterCount = async status => {
       const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/sales/filterCount',
+        'https://cryptic-bayou-61420.herokuapp.com/api/sales/filterCount',
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
