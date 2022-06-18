@@ -41,10 +41,12 @@ const Mapped = () => {
 
   const [isChange, setIsChange] = useState(false);
 
-  const toggleChange = () => {
+  const toggleChange = e => {
+    e.preventDefault();
     setIsChange(!isChange);
   };
-  const submitArrayHandler = () => {
+  const submitArrayHandler = e => {
+    e.preventDefault();
     fetch('https://cryptic-bayou-61420.herokuapp.com/api/master/store', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -52,7 +54,12 @@ const Mapped = () => {
         grand_parent: grandParent,
         parent,
         child,
-        mastersku: [grandParent, parent, child].join('_'),
+        mastersku:
+          parent === '' && child === ''
+            ? grandParent
+            : child === ''
+            ? [grandParent, parent].join('_')
+            : [grandParent, parent, child].join('_'),
         combo: combo,
       }),
     });
@@ -122,7 +129,6 @@ const Mapped = () => {
                       setParent(e.target.value);
                     }}
                     placeholder="parent"
-                    required
                   />
                   <Input
                     textAlign={'center'}
@@ -130,7 +136,6 @@ const Mapped = () => {
                       setChild(e.target.value);
                     }}
                     placeholder="child"
-                    required
                   />
                 </Flex>
                 <Button type={'submit'} w={'100%'} px={10} my={5}>
@@ -170,7 +175,6 @@ const Mapped = () => {
                       setParent(e.target.value);
                     }}
                     placeholder="parent"
-                    required
                   />
                   <Input
                     textAlign={'center'}
@@ -178,7 +182,6 @@ const Mapped = () => {
                       setChild(e.target.value);
                     }}
                     placeholder="child"
-                    required
                   />
                 </Flex>
                 <Button

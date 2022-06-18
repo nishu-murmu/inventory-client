@@ -34,14 +34,17 @@ const LiveStock = () => {
   }, []);
   // perform calculations and store it in backend
   const deleteList = async () => {
-    await fetch('http://localhost:3001/api/livestock/delete', {
-      method: 'DELETE',
-    });
+    await fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/api/livestock/delete',
+      {
+        method: 'DELETE',
+      }
+    );
     console.log('deleted');
   };
   const sendMergedArray = async () => {
     livestockArray.map(item =>
-      fetch('http://localhost:3001/api/livestock/create', {
+      fetch('https://cryptic-bayou-61420.herokuapp.com/api/livestock/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -62,7 +65,7 @@ const LiveStock = () => {
   useEffect(() => {
     const finalLiveStock = async () => {
       const response = await fetch(
-        'http://localhost:3001/api/livestock/getAll'
+        'https://cryptic-bayou-61420.herokuapp.com/api/livestock/getAll'
       );
       const result = await response.json();
       setMergedArray(result);
