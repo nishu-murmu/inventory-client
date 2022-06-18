@@ -47,7 +47,7 @@ const Mapped = () => {
   };
   const submitArrayHandler = e => {
     e.preventDefault();
-    fetch('https://cryptic-bayou-61420.herokuapp.com/api/master/store', {
+    fetch('https://cryptic-bayou-61420.herokuapp.com/api/master/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -71,6 +71,7 @@ const Mapped = () => {
       'https://cryptic-bayou-61420.herokuapp.com/api/master/getAll'
     );
     const result = await response.json();
+    console.log(result);
     setIsLoading(false);
     setArray(result);
   };
@@ -105,9 +106,9 @@ const Mapped = () => {
       {isSingle && (
         <AnimatedPage>
           <form
-            onSubmit={() => {
-              submitArrayHandler();
-              toggleChange();
+            onSubmit={e => {
+              submitArrayHandler(e);
+              toggleChange(e);
             }}
             py={4}
           >
@@ -151,9 +152,9 @@ const Mapped = () => {
       {!isSingle && (
         <AnimatedPage>
           <form
-            onSubmit={() => {
-              submitArrayHandler();
-              toggleChange();
+            onSubmit={e => {
+              submitArrayHandler(e);
+              toggleChange(e);
             }}
             py={4}
           >
