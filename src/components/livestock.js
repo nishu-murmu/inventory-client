@@ -10,6 +10,7 @@ import {
   Td,
   Heading,
   useColorModeValue,
+  HStack,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
@@ -20,7 +21,6 @@ const LiveStock = () => {
   // const nav = useNavigate();
   const [mergedArray, setMergedArray] = useState([]);
   const [livestockArray, setLiveStockArray] = useState([]);
-
   // get the merged List
   useEffect(() => {
     const mergedData = async () => {
@@ -32,11 +32,16 @@ const LiveStock = () => {
     };
     mergedData();
   }, []);
-
   // perform calculations and store it in backend
+  const deleteList = async () => {
+    await fetch('http://localhost:3001/api/livestock/delete', {
+      method: 'DELETE',
+    });
+    console.log('deleted');
+  };
   const sendMergedArray = async () => {
     livestockArray.map(item =>
-      fetch('https://cryptic-bayou-61420.herokuapp.com/api/livestock/create', {
+      fetch('http://localhost:3001/api/livestock/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -53,13 +58,11 @@ const LiveStock = () => {
       })
     );
   };
-  sendMergedArray();
-
   // receive final livestock after calculations
   useEffect(() => {
     const finalLiveStock = async () => {
       const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/livestock/getAll'
+        'http://localhost:3001/api/livestock/getAll'
       );
       const result = await response.json();
       setMergedArray(result);
@@ -123,7 +126,11 @@ const LiveStock = () => {
           </Tbody>
         </Table>
       </TableContainer>
-      <Button onClick={downloadFile}>Download file</Button>
+      <HStack pt={6} justifyContent={'center'}>
+        <Button onClick={downloadFile}>Download file</Button>
+        <Button onClick={deleteList}>Delete</Button>
+        <Button onClick={sendMergedArray}>Update</Button>
+      </HStack>
     </Box>
   );
 };

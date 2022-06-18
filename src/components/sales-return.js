@@ -313,6 +313,7 @@ const SalesReturn = () => {
           onChange={e => {
             setEnteredAWB(e.target.value);
             setStatus('received');
+            e.target.select();
           }}
           value={enteredAWB}
           placeholder="Enter AWB"
