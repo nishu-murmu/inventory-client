@@ -30,44 +30,40 @@ import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { saveAs } from 'file-saver';
+// files
 import Pagination from './pagination';
 
-//files
-
 const Sales = () => {
-  /*   
-    States
- */
+  // states
   const [file, setFile] = useState();
   const fileReader = new FileReader();
   const [isLoading, setIsLoading] = useState(false);
+  // pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(50);
   const LastProductIndex = currentPage * productsPerPage;
   const FirstProductIndex = LastProductIndex - productsPerPage;
-
+  // scanning states
   const [status, setStatus] = useState('dispatch');
   const [enteredAWB, setEnteredAWB] = useState('');
-
+  // date filter states
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-
+  // filter states
   const [dispatchcount, setDispatchCount] = useState(0);
   const [pendingcount, setPendingCount] = useState(0);
   const [cancelcount, setCancelCount] = useState(0);
-
+  // arrays to store filter data
   const [dispatchArray, setDispatchArray] = useState([]);
   const [pendingArray, setPendingArray] = useState([]);
   const [cancelArray, setCancelArray] = useState([]);
   const [filterArray, setFilterArray] = useState([]);
-
+  // condition states
   const [isScan, setIsScan] = useState(false);
   const [isPending, setIsPending] = useState(true);
   const [isCancel, setIsCancel] = useState(true);
   const [isDispatch, setIsDispatch] = useState(true);
-  /*
-    Event Handlers 
-   */
+  // Event Handlers
   const onChangeHandler = e => {
     setFile(e.target.files[0]);
   };
@@ -271,7 +267,6 @@ const Sales = () => {
     filter('cancel');
     filterCount('cancel');
   }, [startDate, endDate]);
-
   // Date filter
   const SelectionRange = {
     startDate: startDate,
@@ -282,7 +277,7 @@ const Sales = () => {
     setEndDate(ranges.selection.endDate);
     setStartDate(ranges.selection.startDate);
   };
-
+  // pagination
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatchRecords = dispatchArray.slice(
     FirstProductIndex,
@@ -406,6 +401,7 @@ const Sales = () => {
                     <Th textAlign={'center'}>AWB</Th>
                     <Th textAlign={'center'}>order id</Th>
                     <Th textAlign={'center'}>SKU</Th>
+                    <Th textAlign={'center'}>Master SKU</Th>
                     <Th textAlign={'center'}>QTY</Th>
                     <Th textAlign={'center'}>Status</Th>
                     <Th textAlign={'center'}>courier</Th>
@@ -420,6 +416,7 @@ const Sales = () => {
                       <Td>{item.AWB}</Td>
                       <Td>{item['ORDER ID']}</Td>
                       <Td>{item.SKU}</Td>
+                      <Td>Master SKU</Td>
                       <Td>{item.QTY}</Td>
                       <Td>
                         <Select
@@ -500,6 +497,7 @@ const Sales = () => {
                       <Th textAlign={'center'}>AWB</Th>
                       <Th textAlign={'center'}>order id</Th>
                       <Th textAlign={'center'}>SKU</Th>
+                      <Th textAlign={'center'}>Master SKU</Th>
                       <Th textAlign={'center'}>QTY</Th>
                       <Th textAlign={'center'}>STATUS</Th>
                       <Th textAlign={'center'}>courier</Th>
@@ -516,6 +514,7 @@ const Sales = () => {
                           <Td>{item.AWB}</Td>
                           <Td>{item['ORDER ID']}</Td>
                           <Td>{item.SKU}</Td>
+                          <Td>{item.mastersku}</Td>
                           <Td>{item.QTY}</Td>
                           <Td>{item.status}</Td>
                           <Td>{item.courier}</Td>
@@ -530,6 +529,7 @@ const Sales = () => {
                           <Td>{item.AWB}</Td>
                           <Td>{item['ORDER ID']}</Td>
                           <Td>{item.SKU}</Td>
+                          <Td>{item.mastersku}</Td>
                           <Td>{item.QTY}</Td>
                           <Td>{item.status}</Td>
                           <Td>{item.courier}</Td>
@@ -544,6 +544,7 @@ const Sales = () => {
                           <Td>{item.AWB}</Td>
                           <Td>{item['ORDER ID']}</Td>
                           <Td>{item.SKU}</Td>
+                          <Td>{item.mastersku}</Td>
                           <Td>{item.QTY}</Td>
                           <Td>{item.status}</Td>
                           <Td>{item.courier}</Td>

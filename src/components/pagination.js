@@ -43,7 +43,7 @@ const Pagination = ({ totalPages, currentPage, setCurrentPage }) => {
         <strong>{totalPages}</strong>
       </Text>
       <Flex>
-        <Text>Goto Page:</Text>
+        <Text pt={1}>Goto Page:</Text>
         <NumberInput defaultValue={1} maxW={20} min={0} max={totalPages}>
           <NumberInputField
             onChange={e => {

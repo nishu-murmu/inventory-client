@@ -10,65 +10,88 @@ import {
   Th,
   Td,
   useColorModeValue,
-  Flex,
   Box,
-  FormLabel,
-  Text,
+  // FormLabel,
+  // Text,
   Input,
   Button,
+  // Button,
 } from '@chakra-ui/react';
-import { DownloadIcon } from '@chakra-ui/icons';
+// import { DownloadIcon } from '@chakra-ui/icons';
+// files
+import Pagination from '../pagination';
 
 const UnMapped = () => {
-  const [file, setFile] = useState();
-  const [mappedArray, setMappedArray] = useState([]);
-  const [unMappedArray, setUnMappedArray] = useState([]);
-  const fileReader = new FileReader();
+  // const [file, setFile] = useState();
+  const [masterskuArray, setmasterskuArray] = useState([]);
+  const [mastersku, setmastersku] = useState('unmapped');
+  const [unmappedArray, setUnMappedArray] = useState([]);
+  // pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [skuPerPage] = useState(50);
+  const LastSKUIndex = currentPage * skuPerPage;
+  const FirstSKUIndex = LastSKUIndex - skuPerPage;
 
-  const onChangeHandler = e => {
-    setFile(e.target.files[0]);
+  // const fileReader = new FileReader();
+  // const onChangeHandler = e => {
+  //   setFile(e.target.files[0]);
+  // };
+  // const csvFileToArray = string => {
+  //   const csvHeader = string.slice(0, string.indexOf('\n')).split(',');
+  //   const csvRows = string.slice(string.indexOf('\n') + 1).split('\n');
+
+  //   const array = csvRows.map(i => {
+  //     const values = i.split(',');
+  //     const obj = csvHeader.reduce((object, header, index) => {
+  //       object[header] = values[index];
+  //       return object;
+  //     }, {});
+  //     return obj;
+  //   });
+
+  //   fetch('https://cryptic-bayou-61420.herokuapp.com/api/unmapped/create', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify(array),
+  //   });
+  // };
+  // const onSubmitHandler = e => {
+  //   if (file) {
+  //     fileReader.onload = function (e) {
+  //       const csvOutput = e.target.result;
+  //       csvFileToArray(csvOutput);
+  //     };
+  //     fileReader.readAsText(file);
+  //   }
+  // };
+  // get unmapped skus from sales and sales return
+  useEffect(() => {
+    const getUnMapped = async () => {
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/api/sales/getall'
+      );
+      const result = await response.json();
+      setUnMappedArray(result);
+    };
+    getUnMapped();
+  }, []);
+  // get mapped skus with master sku
+  const updateUnMappedHandler = async (id, mastersku) => {
+    const response = await fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/api/sales/updatemapped',
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: id,
+          mastersku: mastersku,
+        }),
+      }
+    );
+    const result = await response.json();
+    console.log(result);
   };
-
-  const csvFileToArray = string => {
-    const csvHeader = string.slice(0, string.indexOf('\n')).split(',');
-    const csvRows = string.slice(string.indexOf('\n') + 1).split('\n');
-
-    const array = csvRows.map(i => {
-      const values = i.split(',');
-      const obj = csvHeader.reduce((object, header, index) => {
-        object[header] = values[index];
-        return object;
-      }, {});
-      return obj;
-    });
-
-    fetch('https://cryptic-bayou-61420.herokuapp.com/api/unmapped/create', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(array),
-    });
-  };
-
-  const onSubmitHandler = e => {
-    if (file) {
-      fileReader.onload = function (e) {
-        const csvOutput = e.target.result;
-        csvFileToArray(csvOutput);
-      };
-      fileReader.readAsText(file);
-    }
-  };
-
-  const getArrayHandler = async () => {
-    await fetch('https://cryptic-bayou-61420.herokuapp.com/api/unmapped/getAll')
-      .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        setUnMappedArray(data);
-      });
-  };
-
+  // get master skus
   useEffect(() => {
     const masterskuHandler = async () => {
       await fetch('https://cryptic-bayou-61420.herokuapp.com/api/master/getAll')
@@ -76,19 +99,28 @@ const UnMapped = () => {
           return res.json();
         })
         .then(data => {
-          setMappedArray(data);
+          setmasterskuArray(data);
         });
     };
     masterskuHandler();
-    getArrayHandler();
+    const getSalesList = async () => {
+      await fetch('https://cryptic-bayou-61420.herokuapp.com/api/sales/getall')
+        .then(res => {
+          return res.json();
+        })
+        .then(data => console.log(data));
+    };
+    getSalesList();
   }, []);
-
+  // pagination
+  const skuRecords = unmappedArray.slice(FirstSKUIndex, LastSKUIndex);
+  const skuPages = Math.ceil(unmappedArray.length / skuPerPage);
   return (
     <VStack p={4} pb={120}>
       <Heading size={'lg'} pb={10}>
         Unmapped SKU Section
       </Heading>
-      <Box textAlign={'center'} width={80}>
+      {/* <Box textAlign={'center'} width={80}>
         <FormLabel
           width={'100%'}
           htmlFor={'csvInput'}
@@ -119,56 +151,70 @@ const UnMapped = () => {
         >
           Import
         </Button>
-      </Box>
+      </Box> */}
 
-      <Flex gridColumnGap={20}>
-        {/* UnMapped SKU Table */}
-
-        <Box>
-          <Heading size={'md'} pt={20} pb={4}>
-            UnMapped SKU Table
-          </Heading>
-          <TableContainer
-            rounded={'lg'}
-            boxShadow={'lg'}
-            overflowY={'auto'}
-            overflowX={'auto'}
-            h={400}
-            w={600}
-            bg={useColorModeValue('gray.100', 'gray.700')}
-          >
-            <Table variant="simple">
-              <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
-                <Tr>
-                  <Th textAlign={'center'}>UnMapped SKUs</Th>
-                  <Th textAlign={'center'}>Master SKU</Th>
+      {/* UnMapped SKU Table */}
+      <Box>
+        <Heading size={'md'} pt={20} pb={4}>
+          UnMapped SKU Table
+        </Heading>
+        <TableContainer
+          rounded={'lg'}
+          boxShadow={'lg'}
+          overflowY={'auto'}
+          overflowX={'auto'}
+          h={500}
+          w={900}
+          bg={useColorModeValue('gray.100', 'gray.700')}
+        >
+          <Table variant="simple">
+            <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
+              <Tr>
+                <Th textAlign={'center'}>UnMapped SKUs</Th>
+                <Th textAlign={'center'}>Master SKU</Th>
+                <Th textAlign={'center'}>Submit</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {skuRecords.map(item => (
+                <Tr key={item._id}>
+                  <Td textAlign={'center'}>{item.SKU}</Td>
+                  <Td>
+                    <Input
+                      list={'mastersku'}
+                      onChange={e => setmastersku(e.target.value)}
+                    />
+                    <datalist id={'mastersku'}>
+                      {masterskuArray.map(item => (
+                        <option key={item._id} value={item.mastersku}>
+                          {item.mastersku}
+                        </option>
+                      ))}
+                    </datalist>
+                  </Td>
+                  <Td>
+                    <Button
+                      onClick={() => {
+                        updateUnMappedHandler(item._id, mastersku);
+                      }}
+                    >
+                      submit
+                    </Button>
+                  </Td>
                 </Tr>
-              </Thead>
-              <Tbody>
-                {unMappedArray.map(item => (
-                  <Tr key={item._id}>
-                    <Td textAlign={'center'}>{item['STYLE ID']}</Td>
-                    {/* <Td textAlign={'center'}>{item['CATALOG ID']}</Td> */}
-                    <Td>
-                      <Input list={'mastersku'} autoFocus />
-                      <datalist id={'mastersku'}>
-                        {mappedArray.map(item => (
-                          <option key={item._id}>{item.mastersku}</option>
-                        ))}
-                      </datalist>
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
-          <Button my={10} width={'100%'}>
-            Submit
-          </Button>
-        </Box>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      </Box>
+      <Pagination
+        totalPages={skuPages}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
 
-        {/* Mapped SKU Table */}
-        {/* <Box>
+      {/* Mapped SKU Table */}
+      {/* <Box>
           <Heading size={'md'} pt={20} pb={4}>
             Mapped SKU Table
           </Heading>
@@ -196,7 +242,6 @@ const UnMapped = () => {
             </Table>
           </TableContainer>
         </Box> */}
-      </Flex>
     </VStack>
   );
 };

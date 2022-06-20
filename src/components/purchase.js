@@ -179,7 +179,7 @@ const Purchase = () => {
                 autoComplete={'off'}
                 textAlign={'center'}
                 placeholder={'Enter SKU'}
-              ></Input>
+              />
               <datalist id={'mastersku'}>
                 {mappedArray.map(item => (
                   <option key={item._id} value={item.mastersku}>
