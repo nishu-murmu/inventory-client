@@ -27,7 +27,8 @@ import {
   ModalBody,
   ModalCloseButton,
 } from '@chakra-ui/react';
-
+import { MdDelete } from 'react-icons/md';
+import { FiEdit } from 'react-icons/fi';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
@@ -246,7 +247,7 @@ const Purchase = () => {
                     <Td textAlign={'center'}>{val.quantity}</Td>
                     <Td>
                       <Button colorScheme="teal" onClick={onOpen}>
-                        Edit
+                        <FiEdit />
                       </Button>
                       <Modal isCentered isOpen={isOpen} onClose={onClose}>
                         <ModalOverlay />
@@ -310,9 +311,10 @@ const Purchase = () => {
                           setSelectedsku(val.mastersku);
                           toggleRemove();
                         }}
+                        color={'red.800'}
                         colorScheme={'red'}
                       >
-                        Delete
+                        <MdDelete />
                       </Button>
                     </Td>
                   </Tr>
