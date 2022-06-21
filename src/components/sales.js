@@ -352,6 +352,7 @@ const Sales = () => {
                 onChange={handleSelect}
                 moveRangeOnFirstSelection
                 retainEndDateOnFirstSelection
+                maxDate={new Date()}
               />
             </ModalBody>
           </ModalContent>

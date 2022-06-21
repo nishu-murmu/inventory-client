@@ -31,8 +31,11 @@ import {
 import { MdDelete } from 'react-icons/md';
 import { FiEdit } from 'react-icons/fi';
 import DatePicker from 'react-datepicker';
+import { DateRange } from 'react-date-range';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
 import { saveAs } from 'file-saver';
 
 // files
@@ -40,17 +43,27 @@ import AnimatedPage from '../pages/AnimatedPage';
 
 const PurchaseReturn = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const {
+    isOpen: isDateRangeOpen,
+    onOpen: onDateRangeOpen,
+    onClose: onDateRangeClose,
+  } = useDisclosure();
   const [sku, setSku] = useState('');
   const [start, setStart] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toLocaleDateString().replace(/\//g, '-')
+  );
   const [quantity, setQuantity] = useState('');
   const [purchaseReturndata, setPurchaseReturnData] = useState([]);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [mappedArray, setMappedArray] = useState([]);
   const [selectedsku, setSelectedsku] = useState('');
   const [toggleSubmit, setToggleSubmit] = useState(false);
   const [toggleDelete, setToggleDelete] = useState(false);
   const [enteredsku, setEnteredSku] = useState('');
   const [update, setUpdate] = useState(new Date());
+  const [updateDate, setUpdateDate] = useState('');
   const [newQuantity, setNewQuantity] = useState('');
   const newQuantityChange = e => {
     setNewQuantity(e.target.value);
@@ -77,7 +90,7 @@ const PurchaseReturn = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           mastersku: sku,
-          Date: start,
+          Date: selectedDate,
           quantity: quantity,
         }),
       }
@@ -105,7 +118,7 @@ const PurchaseReturn = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           mastersku: enteredsku,
-          Date: update,
+          Date: updateDate,
           quantity: newQuantity,
         }),
       }
@@ -195,7 +208,12 @@ const PurchaseReturn = () => {
                 </datalist>
                 <DatePicker
                   selected={start}
-                  onSelect={date => setStart(date)}
+                  onSelect={date => {
+                    setStart(date);
+                    setSelectedDate(
+                      new Date(date).toLocaleDateString().replace(/\//g, '-')
+                    );
+                  }}
                   value={start}
                   withPortal
                   peekNextMonth
@@ -220,8 +238,40 @@ const PurchaseReturn = () => {
                   </MenuButton>
                   <MenuList>
                     <MenuItem>SKU</MenuItem>
-                    <MenuItem>Date</MenuItem>
                     <MenuItem>Quantity</MenuItem>
+                    <MenuItem onClick={onDateRangeOpen}>
+                      Date
+                      <Modal
+                        size={'sm'}
+                        isOpen={isDateRangeOpen}
+                        onClose={onDateRangeClose}
+                      >
+                        <ModalOverlay />
+                        <ModalContent>
+                          <ModalBody>
+                            <DateRange
+                              onChange={ranges => {
+                                setEndDate(ranges.selection.endDate);
+                                setStartDate(ranges.selection.startDate);
+                              }}
+                              staticRanges={undefined}
+                              inputRanges={undefined}
+                              ranges={[
+                                {
+                                  startDate: startDate,
+                                  endDate: endDate,
+                                  key: 'selection',
+                                },
+                              ]}
+                              maxDate={new Date()}
+                              showMonthAndYearPickers={true}
+                              moveRangeOnFirstSelection={false}
+                              showDateDisplay={false}
+                            />
+                          </ModalBody>
+                        </ModalContent>
+                      </Modal>
+                    </MenuItem>
                   </MenuList>
                 </Menu>
               </form>
@@ -287,9 +337,17 @@ const PurchaseReturn = () => {
                                 ))}
                               </Select>
                               <DatePicker
-                                selected={start}
-                                onChange={date => setUpdate(date)}
+                                selected={update}
+                                onSelect={date => {
+                                  setUpdate(date);
+                                  setUpdateDate(
+                                    new Date(date)
+                                      .toLocaleDateString()
+                                      .replace(/\//g, '-')
+                                  );
+                                }}
                                 peekNextMonth
+                                value={update}
                                 showMonthDropdown
                                 showYearDropdown
                                 dateFormat="dd-MM-yyyy"
