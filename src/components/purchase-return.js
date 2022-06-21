@@ -195,8 +195,16 @@ const PurchaseReturn = () => {
                 </datalist>
                 <DatePicker
                   selected={start}
-                  onChange={date => setStart(date)}
-                ></DatePicker>
+                  onSelect={date => setStart(date)}
+                  value={start}
+                  withPortal
+                  peekNextMonth
+                  showMonthDropdown
+                  showYearDropdown
+                  dateFormat="dd-MM-yyyy"
+                  placeholderText={'Select Date'}
+                  fixedHeight
+                />
                 <Input
                   placeholder="Enter Quantity"
                   onChange={quantityChange}
@@ -263,7 +271,7 @@ const PurchaseReturn = () => {
                         </Button>
                         <Modal isCentered isOpen={isOpen} onClose={onClose}>
                           <ModalOverlay />
-                          <ModalContent>
+                          <ModalContent width={80}>
                             <ModalHeader>Edit Purchase Product</ModalHeader>
                             <ModalCloseButton />
                             <ModalBody>
@@ -281,7 +289,13 @@ const PurchaseReturn = () => {
                               <DatePicker
                                 selected={start}
                                 onChange={date => setUpdate(date)}
-                              ></DatePicker>
+                                peekNextMonth
+                                showMonthDropdown
+                                showYearDropdown
+                                dateFormat="dd-MM-yyyy"
+                                placeholderText={'Select Date'}
+                                fixedHeight
+                              />
                               <Input
                                 placeholder="Enter Quantity"
                                 onChange={newQuantityChange}

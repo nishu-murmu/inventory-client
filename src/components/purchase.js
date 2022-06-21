@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import styled from '@emotion/styled';
 import {
   VStack,
   HStack,
@@ -33,10 +34,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import { saveAs } from 'file-saver';
-
 const Purchase = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const [sku, setSku] = useState('');
   const [start, setStart] = useState(new Date());
   const [quantity, setQuantity] = useState('');
@@ -189,10 +188,17 @@ const Purchase = () => {
                 ))}
               </datalist>
               <DatePicker
+                onSelect={date => setStart(date)}
+                value={start}
+                withPortal
+                peekNextMonth
+                showMonthDropdown
+                showYearDropdown
+                dateFormat="dd-MM-yyyy"
                 selected={start}
                 placeholderText={'Select Date'}
-                onChange={date => setStart(date)}
-              ></DatePicker>
+                fixedHeight
+              />
               <Input
                 placeholder="Enter Quantity"
                 onChange={quantityChange}
@@ -280,8 +286,13 @@ const Purchase = () => {
                               <DatePicker
                                 selected={start}
                                 onChange={date => setUpdate(date)}
-                                placeholderText={'Select Date to Update'}
-                              ></DatePicker>
+                                peekNextMonth
+                                showMonthDropdown
+                                showYearDropdown
+                                dateFormat="dd-MM-yyyy"
+                                placeholderText={'Select Date'}
+                                fixedHeight
+                              />
                               <Input
                                 placeholder="Enter Quantity"
                                 onChange={newQuantityChange}
