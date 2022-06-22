@@ -40,7 +40,7 @@ const Sales = () => {
   const [isLoading, setIsLoading] = useState(false);
   // pagination states
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(50);
+  const [productsPerPage] = useState(10);
   const LastProductIndex = currentPage * productsPerPage;
   const FirstProductIndex = LastProductIndex - productsPerPage;
   // scanning states
@@ -189,7 +189,6 @@ const Sales = () => {
         }
       );
       const count = await response.json();
-      console.log(count);
       setDispatchCount(count);
     };
     filter('dispatch');
@@ -277,6 +276,21 @@ const Sales = () => {
     setEndDate(ranges.selection.endDate);
     setStartDate(ranges.selection.startDate);
   };
+  // check
+
+  // useEffect(() => {
+  //   const groupedList = async () => {
+  //     const response = await fetch('http://localhost:3001/api/sales/grouped');
+  //     const result = await response.json();
+  //     console.log(result);
+  //   };
+  //   groupedList();
+  //   const getAll = async () => {
+  //     const response = await fetch('http://localhost:3001/api/sales/getall');
+  //     await response.json();
+  //   };
+  //   getAll();
+  // }, []);
   // pagination
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatchRecords = dispatchArray.slice(
@@ -417,7 +431,7 @@ const Sales = () => {
                       <Td>{item.AWB}</Td>
                       <Td>{item['ORDER ID']}</Td>
                       <Td>{item.SKU}</Td>
-                      <Td>Master SKU</Td>
+                      <Td>{item.mastersku}</Td>
                       <Td>{item.QTY}</Td>
                       <Td>
                         <Select

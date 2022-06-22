@@ -70,6 +70,13 @@ const LiveStock = () => {
       setMergedArray(result);
     };
     finalLiveStock();
+    // check
+    // const getAll = async () => {
+    //   const response = await fetch('http://localhost:3001/api/sales/getall');
+    //   const result = await response.json();
+    //   console.log(result);
+    // };
+    // getAll();
   }, []);
   const downloadFile = () => {
     const csv = mergedArray

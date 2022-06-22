@@ -35,7 +35,7 @@ const SalesReturn = () => {
   const fileReader = new FileReader();
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(50);
+  const [productsPerPage] = useState(10);
   const LastProductIndex = currentPage * productsPerPage;
   const FirstProductIndex = LastProductIndex - productsPerPage;
 

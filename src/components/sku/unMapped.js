@@ -28,7 +28,7 @@ const UnMapped = () => {
   const [unmappedArray, setUnMappedArray] = useState([]);
   // pagination states
   const [currentPage, setCurrentPage] = useState(1);
-  const [skuPerPage] = useState(20);
+  const [skuPerPage] = useState(10);
   const LastSKUIndex = currentPage * skuPerPage;
   const FirstSKUIndex = LastSKUIndex - skuPerPage;
 
