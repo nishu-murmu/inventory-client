@@ -278,19 +278,16 @@ const Sales = () => {
   };
   // check
 
-  // useEffect(() => {
-  //   const groupedList = async () => {
-  //     const response = await fetch('http://localhost:3001/api/sales/grouped');
-  //     const result = await response.json();
-  //     console.log(result);
-  //   };
-  //   groupedList();
-  //   const getAll = async () => {
-  //     const response = await fetch('http://localhost:3001/api/sales/getall');
-  //     await response.json();
-  //   };
-  //   getAll();
-  // }, []);
+  const grouped = async () => {
+    const response2 = await fetch('http://localhost:3001/api/sales/grouped');
+    const result2 = await response2.json();
+    console.log(result2);
+  };
+  const getall = async () => {
+    const response2 = await fetch('http://localhost:3001/api/sales/getall');
+    const result2 = await response2.json();
+    console.log(result2);
+  };
   // pagination
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatchRecords = dispatchArray.slice(
@@ -353,6 +350,8 @@ const Sales = () => {
           >
             Import
           </Button>
+          <Button onClick={grouped}>Update</Button>
+          <Button onClick={getall}>Get All</Button>
         </FormControl>
         <Button mt={4} width={'100%'} onClick={onOpen}>
           Date Filter
