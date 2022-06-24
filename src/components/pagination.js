@@ -26,13 +26,14 @@ const Pagination = ({ totalPages, currentPage, setCurrentPage }) => {
     <HStack justifyContent={'space-evenly'}>
       <Flex>
         <Button
+          size={'sm'}
           onClick={() => {
             setCurrentPage(1);
           }}
         >
           <Icon as={BiFirstPage} />
         </Button>
-        <Button onClick={prevPage}>
+        <Button size={'sm'} onClick={prevPage}>
           <Icon as={FcPrevious} />
         </Button>
       </Flex>
@@ -43,8 +44,14 @@ const Pagination = ({ totalPages, currentPage, setCurrentPage }) => {
         <strong>{totalPages}</strong>
       </Text>
       <Flex>
-        <Text pt={1}>Goto Page:</Text>
-        <NumberInput defaultValue={1} maxW={20} min={0} max={totalPages}>
+        <Text px={2}>Goto Page:</Text>
+        <NumberInput
+          size={'sm'}
+          defaultValue={1}
+          maxW={20}
+          min={0}
+          max={totalPages}
+        >
           <NumberInputField
             onChange={e => {
               if (e.target.value.length === 0) setCurrentPage(1);
@@ -58,10 +65,10 @@ const Pagination = ({ totalPages, currentPage, setCurrentPage }) => {
         </NumberInput>
       </Flex>
       <Flex>
-        <Button onClick={nextPage}>
+        <Button size={'sm'} onClick={nextPage}>
           <Icon as={FcNext} />
         </Button>
-        <Button onClick={lastPage}>
+        <Button size={'sm'} onClick={lastPage}>
           <Icon as={BiLastPage} />
         </Button>
       </Flex>

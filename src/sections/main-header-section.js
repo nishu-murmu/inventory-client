@@ -28,7 +28,6 @@ const MainHeader = () => {
         'rgba(74, 85, 104, .3)'
       )}
       px={20}
-      py={2}
       spacing={80}
       // bg={useColorModeValue('#cdf7f4', '#056159')}
       css={{ backdropFilter: 'blur(10px)' }}

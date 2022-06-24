@@ -1,7 +1,6 @@
 import {
-  VStack,
   HStack,
-  Stack,
+  Flex,
   Box,
   Text,
   Link,
@@ -14,47 +13,50 @@ const year = new Date().getFullYear();
 const Footer = () => {
   return (
     <Box
-      px={16}
-      borderTopWidth={1}
+      borderTopWidth={2}
+      bottom={0}
+      position={'fixed'}
+      width={'96%'}
       borderStyle={'solid'}
       className={'footer'}
       borderColor={useColorModeValue('gray.200', 'gray.700')}
     >
-      <VStack
-        as={Stack}
-        maxW={'6xl'}
-        py={4}
+      <HStack
         direction={{ base: 'column', md: 'row' }}
         spacing={4}
         justify={{ md: 'space-between' }}
         align={{ md: 'center' }}
       >
-        <Stack direction={'row'} spacing={6} pt={2}>
+        <Flex direction={'row'} spacing={6} pt={2}>
           <Link href="https://www.linkedin.com/company/f3-e-commerce-consultancy-llp/mycompany/">
-            <Button variant={'ghost'}>
+            <Button variant={'ghost'} size={'sm'}>
               LinkedIn
               <ExternalLinkIcon w={5} h={4} pl={1} />
             </Button>
           </Link>
           <Link href="https://www.facebook.com/f3ecommerceconsultancyllp/">
-            <Button variant={'ghost'}>
+            <Button variant={'ghost'} size={'sm'}>
               FaceBook
               <ExternalLinkIcon w={5} h={4} pl={1} />
             </Button>
           </Link>
           <Link href="https://instagram.com/f3ecommerceconsultancyllp?utm_medium=copy_link">
-            <Button variant={'ghost'}>
+            <Button variant={'ghost'} size={'sm'}>
               Instagram
               <ExternalLinkIcon w={5} h={4} pl={1} />
             </Button>
           </Link>
-        </Stack>
-        <HStack>
-          <Text fontSize={'16px'}>
-            © {year} F3 E-Commerce Consultancy. All rights reserved
+        </Flex>
+        <HStack justifyContent={'space-between'}>
+          <Text fontSize={'16px'} pt={2}>
+            {year} ©{' '}
+            <Link href={'https://www.facebook.com/f3ecommerceconsultancyllp/'}>
+              F3 E-Commerce Consultancy.
+            </Link>{' '}
+            All rights reserved.
           </Text>
         </HStack>
-      </VStack>
+      </HStack>
     </Box>
   );
 };

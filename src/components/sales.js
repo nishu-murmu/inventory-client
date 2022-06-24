@@ -11,9 +11,8 @@ import {
   Heading,
   FormLabel,
   Button,
-  Text,
   Spinner,
-  FormControl,
+  HStack,
   VStack,
   Box,
   Flex,
@@ -21,6 +20,7 @@ import {
   Select,
   useDisclosure,
   InputRightAddon,
+  FormControl,
 } from '@chakra-ui/react';
 import { Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalBody, ModalContent } from '@chakra-ui/react';
@@ -277,7 +277,6 @@ const Sales = () => {
     setStartDate(ranges.selection.startDate);
   };
   // check
-
   const grouped = async () => {
     const response2 = await fetch('http://localhost:3001/api/sales/grouped');
     const result2 = await response2.json();
@@ -317,191 +316,249 @@ const Sales = () => {
     if (status === 'cancel') saveAs(blob, 'cancel.csv');
   };
   return (
-    <VStack p={4} pb={20}>
-      <Heading size={'lg'} pb={10}>
+    <VStack>
+      <Heading as={'h2'} size={'md'}>
         Sales Section
       </Heading>
-      <Box textAlign={'center'}>
-        <FormControl>
-          <FormLabel
-            w={'100%'}
-            htmlFor={'csvInput'}
-            padding={'7px 0px'}
-            border={'1px solid grey'}
-            _hover={{ cursor: 'pointer' }}
-            borderRadius={'5px'}
-          >
-            <Text textAlign={'center'}>
-              Select csv <DownloadIcon />
-            </Text>
-          </FormLabel>
-          <Input
-            display={'none'}
-            type={'file'}
-            id={'csvInput'}
-            accept={'.csv'}
-            onChange={onChangeHandler}
-          />
-          <Button
-            type={'button'}
-            w={'100%'}
-            onClick={onSubmitHandler}
-            variant={'outline'}
-          >
-            Import
-          </Button>
-          <Button onClick={grouped}>Update</Button>
-          <Button onClick={getall}>Get All</Button>
-        </FormControl>
-        <Button mt={4} width={'100%'} onClick={onOpen}>
-          Date Filter
-        </Button>
-        <Modal size={'sm'} isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalBody>
-              <DateRange
-                ranges={[SelectionRange]}
-                onChange={handleSelect}
-                moveRangeOnFirstSelection
-                retainEndDateOnFirstSelection
-                maxDate={new Date()}
+      <HStack spacing={20}>
+        {/* VStack 1 */}
+        <VStack mt={2}>
+          <InputGroup size={'sm'}>
+            <FormLabel
+              width={'100%'}
+              htmlFor={'csvInput'}
+              _hover={{ cursor: 'pointer' }}
+              textAlign={'center'}
+            >
+              Upload File
+            </FormLabel>
+            <Input
+              display={'none'}
+              type={'file'}
+              id={'csvInput'}
+              accept={'.csv'}
+              onChange={onChangeHandler}
+            />
+            <InputRightAddon
+              type={'button'}
+              variant={'outline'}
+              children={'Select csv'}
+              _hover={{ cursor: 'pointer' }}
+              onClick={onSubmitHandler}
+            >
+              Import
+              <DownloadIcon ml={1} mt={1} />
+            </InputRightAddon>
+          </InputGroup>
+          <InputGroup size={'sm'}>
+            <FormControl>
+              <FormLabel
+                htmlFor="bulk"
+                width={'100%'}
+                _hover={{ cursor: 'pointer' }}
+                textAlign="center"
+                borderRadius={'5px'}
+              >
+                Upload for Bulk Scan
+              </FormLabel>
+              <Input
+                id={'bulk'}
+                accept={'. csv'}
+                display="none"
+                type={'file'}
               />
-            </ModalBody>
-          </ModalContent>
-        </Modal>
-        <Flex py={2}>
-          <Button onClick={switchScanHandler}>Scan Products</Button>
-          <Menu>
-            <MenuButton as={Button}>List Products</MenuButton>
-            <MenuList>
-              <MenuItem onClick={switchDispatchHandler}>Dispatch List</MenuItem>
-              <MenuItem onClick={switchPendingHandler}>Pending List</MenuItem>
-              <MenuItem onClick={switchCancelHandler}>Cancel List</MenuItem>
-            </MenuList>
-          </Menu>
-        </Flex>
-        <Input
-          type={'text'}
-          mt={5}
-          textAlign={'center'}
-          onChange={e => {
-            setEnteredAWB(e.target.value);
-            setStatus('dispatch');
-            e.target.select();
-          }}
-          value={enteredAWB}
-          placeholder="Enter AWB"
-          autoFocus
-          autoCapitalize="true"
-        />
-      </Box>
+            </FormControl>
+            <InputRightAddon
+              type={'button'}
+              _hover={{ cursor: 'pointer' }}
+              variant={'outline'}
+              children={'Select csv'}
+            >
+              Import <DownloadIcon ml={1} mt={1} />
+            </InputRightAddon>
+          </InputGroup>
+        </VStack>
+        {/* VStack 2 */}
+        <VStack>
+          <HStack spacing={2}>
+            <Button size={'sm'} onClick={switchScanHandler}>
+              Scan Products
+            </Button>
+            <Menu size={'sm'}>
+              <MenuButton size={'sm'} as={Button}>
+                List Products
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={switchDispatchHandler}>
+                  Dispatch List
+                </MenuItem>
+                <MenuItem onClick={switchPendingHandler}>Pending List</MenuItem>
+                <MenuItem onClick={switchCancelHandler}>Cancel List</MenuItem>
+              </MenuList>
+            </Menu>
+          </HStack>
+          <Input
+            size={'sm'}
+            type={'text'}
+            mt={5}
+            textAlign={'center'}
+            onChange={e => {
+              setEnteredAWB(e.target.value);
+              setStatus('dispatch');
+              e.target.select();
+            }}
+            value={enteredAWB}
+            placeholder="Enter AWB"
+            autoFocus
+            autoCapitalize="true"
+          />
+        </VStack>
+        {/* VStack 3 */}
+        <VStack>
+          <Button width={'100%'} size={'sm'} onClick={onOpen}>
+            Date Filter
+          </Button>
+          <Modal size={'sm'} isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalBody>
+                <DateRange
+                  ranges={[SelectionRange]}
+                  onChange={handleSelect}
+                  moveRangeOnFirstSelection
+                  retainEndDateOnFirstSelection
+                  maxDate={new Date()}
+                />
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+          {!isScan ? (
+            <Button
+              isDisabled
+              size={'sm'}
+              onClick={() => {
+                if (!isDispatch) downloadFile(dispatchArray, 'dispatch');
+                if (!isPending) downloadFile(pendingArray, 'pending');
+                if (!isCancel) downloadFile(cancelArray, 'cancel');
+              }}
+            >
+              Download file
+            </Button>
+          ) : (
+            <Button
+              size={'sm'}
+              onClick={() => {
+                if (!isDispatch) downloadFile(dispatchArray, 'dispatch');
+                if (!isPending) downloadFile(pendingArray, 'pending');
+                if (!isCancel) downloadFile(cancelArray, 'cancel');
+              }}
+            >
+              Download file
+            </Button>
+          )}
+        </VStack>
+        {/* VStack 4 */}
+        <VStack>
+          <Input
+            size={'sm'}
+            type={'text'}
+            textAlign={'center'}
+            placeholder={'Enter sku'}
+          />
+          <Button size={'sm'} width={'100%'} px={20} variant={'outline'}>
+            {!isDispatch
+              ? `${dispatchcount}`
+              : !isPending
+              ? `${pendingcount}`
+              : !isCancel
+              ? `${cancelcount}`
+              : '0'}
+          </Button>
+        </VStack>
+      </HStack>
       {/* Scan Section */}
       {!isScan && (
         <Box width={'auto'}>
-          {enteredAWB.trim().length !== 0 && (
-            <TableContainer
-              pt={10}
-              rounded={'lg'}
-              boxShadow={'lg'}
-              h={400}
-              w={1200}
-              overflowY={'auto'}
-              overflowX={'scroll'}
-            >
-              <Table variant={'simple'}>
-                <Thead>
-                  <Tr key={'header'}>
-                    <Th textAlign={'center'}>AWB</Th>
-                    <Th textAlign={'center'}>order id</Th>
-                    <Th textAlign={'center'}>SKU</Th>
-                    <Th textAlign={'center'}>Master SKU</Th>
-                    <Th textAlign={'center'}>QTY</Th>
-                    <Th textAlign={'center'}>Status</Th>
-                    <Th textAlign={'center'}>courier</Th>
-                    <Th textAlign={'center'}>date</Th>
-                    <Th textAlign={'center'}>firm</Th>
-                    <Th textAlign={'center'}>Portal</Th>
+          <TableContainer
+            rounded={'lg'}
+            boxShadow={'lg'}
+            h={260}
+            w={1200}
+            overflowY={'auto'}
+            overflowX={'scroll'}
+          >
+            <Table variant={'simple'} size={'sm'}>
+              <Thead>
+                <Tr key={'header'}>
+                  <Th textAlign={'center'}>AWB</Th>
+                  <Th textAlign={'center'}>order id</Th>
+                  <Th textAlign={'center'}>SKU</Th>
+                  <Th textAlign={'center'}>Master SKU</Th>
+                  <Th textAlign={'center'}>QTY</Th>
+                  <Th textAlign={'center'}>Status</Th>
+                  <Th textAlign={'center'}>courier</Th>
+                  <Th textAlign={'center'}>date</Th>
+                  <Th textAlign={'center'}>firm</Th>
+                  <Th textAlign={'center'}>Portal</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {filterArray.map(item => (
+                  <Tr key={item._id}>
+                    <Td>{item.AWB}</Td>
+                    <Td>{item['ORDER ID']}</Td>
+                    <Td>{item.SKU}</Td>
+                    <Td>{item.mastersku}</Td>
+                    <Td>{item.QTY}</Td>
+                    <Td>
+                      <Select
+                        onChange={e => {
+                          setStatus(e.target.value);
+                        }}
+                        value={status}
+                        mx={8}
+                      >
+                        <option value={'dispatch'}>dispatch</option>
+                        <option value={'pending'}>pending</option>
+                        <option value={'cancel'}>cancel</option>
+                      </Select>
+                    </Td>
+                    <Td>{item.courier}</Td>
+                    <Td>{item.date}</Td>
+                    <Td>{item.firm}</Td>
+                    <Td>{item['PORTAL\r']}</Td>
                   </Tr>
-                </Thead>
-                <Tbody>
-                  {filterArray.map(item => (
-                    <Tr key={item._id}>
-                      <Td>{item.AWB}</Td>
-                      <Td>{item['ORDER ID']}</Td>
-                      <Td>{item.SKU}</Td>
-                      <Td>{item.mastersku}</Td>
-                      <Td>{item.QTY}</Td>
-                      <Td>
-                        <Select
-                          onChange={e => {
-                            setStatus(e.target.value);
-                          }}
-                          value={status}
-                          mx={8}
-                        >
-                          <option value={'dispatch'}>dispatch</option>
-                          <option value={'pending'}>pending</option>
-                          <option value={'cancel'}>cancel</option>
-                        </Select>
-                      </Td>
-                      <Td>{item.courier}</Td>
-                      <Td>{item.date}</Td>
-                      <Td>{item.firm}</Td>
-                      <Td>{item['PORTAL\r']}</Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-            </TableContainer>
-          )}
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
         </Box>
       )}
       {/* Filters Section */}
       {isScan && (
         <Box>
-          <Flex py={8} justifyContent={'space-between'}>
-            <InputGroup width={'auto'} htmlsize={6}>
-              <Input type={'text'} placeholder={'Enter sku'} />
-              <InputRightAddon as={Button} children={'Filter'} />
-            </InputGroup>
-            <Heading mt={2} pr={'220px'} size={'md'}>
-              {!isDispatch
-                ? 'Dispatch Table'
-                : !isPending
-                ? 'Pending Table'
-                : !isCancel
-                ? 'Cancel Table'
-                : ''}
-            </Heading>
-            <Flex>
-              <Text pt={1}>
-                <strong>Total:</strong>
-              </Text>
-              <Button>
-                {!isDispatch
-                  ? `${dispatchcount}`
-                  : !isPending
-                  ? `${pendingcount}`
-                  : !isCancel
-                  ? `${cancelcount}`
-                  : '0'}
-              </Button>
-            </Flex>
-          </Flex>
+          <Heading size={'md'} py={2}>
+            {!isDispatch
+              ? 'Dispatch Table'
+              : !isPending
+              ? 'Pending Table'
+              : !isCancel
+              ? 'Cancel Table'
+              : ''}
+          </Heading>
 
           {isLoading && <Spinner size={'xl'} />}
           {!isLoading && (
-            <VStack mb={20}>
+            <VStack mb={2}>
               <TableContainer
                 rounded={'lg'}
                 boxShadow={'lg'}
                 overflowY={'auto'}
                 overflowX={'auto'}
-                h={600}
+                h={260}
                 w={1200}
               >
-                <Table variant="simple">
+                <Table variant="simple" size={'sm'}>
                   <Thead
                     position={'sticky'}
                     top={0}
@@ -575,15 +632,6 @@ const Sales = () => {
                   </Tbody>
                 </Table>
               </TableContainer>
-              <Button
-                onClick={() => {
-                  if (!isDispatch) downloadFile(dispatchArray, 'dispatch');
-                  if (!isPending) downloadFile(pendingArray, 'pending');
-                  if (!isCancel) downloadFile(cancelArray, 'cancel');
-                }}
-              >
-                Download file
-              </Button>
             </VStack>
           )}
           {!isDispatch ? (

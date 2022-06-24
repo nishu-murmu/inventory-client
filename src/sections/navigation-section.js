@@ -12,14 +12,16 @@ import { FaHome } from 'react-icons/fa';
 
 const Navigation = () => {
   return (
-    <Flex spacing={10} pt={20} pb={10} gridColumnGap={4} className="app-nav">
+    <Flex spacing={10} pt={12} gridColumnGap={4} className="app-nav">
       <Link to="/livestock">
-        <Button _hover={{ color: 'green' }}>
+        <Button size={'sm'} _hover={{ color: 'green' }}>
           <FaHome />
         </Button>
       </Link>
-      <Menu>
-        <MenuButton as={Button}>Display SKUs</MenuButton>
+      <Menu size={'sm'} pt={2}>
+        <MenuButton size={'sm'} as={Button}>
+          Display SKUs
+        </MenuButton>
         <MenuList>
           <Link to="/master">
             <MenuItem>Master SKUs</MenuItem>
@@ -30,16 +32,16 @@ const Navigation = () => {
         </MenuList>
       </Menu>
       <Link to="/purchase">
-        <Button>Purchase</Button>
+        <Button size={'sm'}>Purchase</Button>
       </Link>
       <Link to="/purchaseReturn">
-        <Button>Purchase Return</Button>
+        <Button size={'sm'}>Purchase Return</Button>
       </Link>
       <Link to="/sales">
-        <Button>Sales</Button>
+        <Button size={'sm'}>Sales</Button>
       </Link>
       <Link to="/salesReturn">
-        <Button>Sales Return</Button>
+        <Button size={'sm'}>Sales Return</Button>
       </Link>
     </Flex>
   );
