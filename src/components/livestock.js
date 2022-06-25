@@ -70,13 +70,6 @@ const LiveStock = () => {
       setMergedArray(result);
     };
     finalLiveStock();
-    // check
-    // const getAll = async () => {
-    //   const response = await fetch('http://localhost:3001/api/sales/getall');
-    //   const result = await response.json();
-    //   console.log(result);
-    // };
-    // getAll();
   }, []);
   const downloadFile = () => {
     const csv = mergedArray
@@ -101,16 +94,17 @@ const LiveStock = () => {
       <TableContainer
         rounded={'lg'}
         boxShadow={'lg'}
-        h={400}
+        h={240}
         w={1200}
         overflowY={'auto'}
         overflowX={'scroll'}
         bg={useColorModeValue('gray.100', 'gray.700')}
       >
-        <Table variant="simple">
+        <Table variant="simple" size={'sm'}>
           <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
             <Tr>
               <Th textAlign="center">Master SKU</Th>
+              <Th textAlign="center">SKU</Th>
               <Th textAlign="center">Opening Stock</Th>
               <Th textAlign="center">Purchase</Th>
               <Th textAlign="center">Sales</Th>
@@ -123,6 +117,7 @@ const LiveStock = () => {
             {mergedArray.map(item => (
               <Tr key={item._id}>
                 <Td textAlign="center">{item.mastersku}</Td>
+                <Td textAlign="center"> SKU</Td>
                 <Td textAlign="center"> {0}</Td>
                 <Td textAlign="center"> {item.purchase}</Td>
                 <Td textAlign="center"> {item.sales}</Td>
@@ -135,9 +130,15 @@ const LiveStock = () => {
         </Table>
       </TableContainer>
       <HStack pt={6} justifyContent={'center'}>
-        <Button onClick={downloadFile}>Download file</Button>
-        <Button onClick={deleteList}>Delete</Button>
-        <Button onClick={sendMergedArray}>Update</Button>
+        <Button size={'sm'} onClick={downloadFile}>
+          Download file
+        </Button>
+        <Button size={'sm'} onClick={deleteList}>
+          Delete
+        </Button>
+        <Button size={'sm'} onClick={sendMergedArray}>
+          Update
+        </Button>
       </HStack>
     </Box>
   );

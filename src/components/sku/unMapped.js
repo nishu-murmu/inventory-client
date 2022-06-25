@@ -116,8 +116,8 @@ const UnMapped = () => {
   const skuRecords = unmappedArray.slice(FirstSKUIndex, LastSKUIndex);
   const skuPages = Math.ceil(unmappedArray.length / skuPerPage);
   return (
-    <VStack p={4} pb={120}>
-      <Heading size={'lg'} pb={10}>
+    <VStack>
+      <Heading size={'md'} pt={8}>
         Unmapped SKU Section
       </Heading>
       {/* <Box textAlign={'center'} width={80}>
@@ -155,7 +155,7 @@ const UnMapped = () => {
 
       {/* UnMapped SKU Table */}
       <Box>
-        <Heading size={'md'} pt={20} pb={4}>
+        <Heading size={'sm'} pb={2}>
           UnMapped SKU Table
         </Heading>
         <TableContainer
@@ -163,16 +163,16 @@ const UnMapped = () => {
           boxShadow={'lg'}
           overflowY={'auto'}
           overflowX={'auto'}
-          h={500}
+          h={280}
           w={900}
           bg={useColorModeValue('gray.100', 'gray.700')}
         >
-          <Table variant="simple">
+          <Table variant="simple" size={'sm'}>
             <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
               <Tr>
-                <Th textAlign={'center'}>UnMapped SKUs</Th>
-                <Th textAlign={'center'}>Master SKU</Th>
-                <Th textAlign={'center'}>Submit</Th>
+                <Th>UnMapped SKUs</Th>
+                <Th>Master SKU</Th>
+                <Th>Submit</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -181,6 +181,8 @@ const UnMapped = () => {
                   <Td textAlign={'center'}>{item.SKU}</Td>
                   <Td>
                     <Input
+                      htmlSize={18}
+                      width="auto"
                       list={'mastersku'}
                       onChange={e => setmastersku(e.target.value)}
                     />
@@ -194,6 +196,8 @@ const UnMapped = () => {
                   </Td>
                   <Td>
                     <Button
+                      size={'sm'}
+                      variant={'outline'}
                       onClick={() => {
                         updateUnMappedHandler(item._id, mastersku);
                       }}

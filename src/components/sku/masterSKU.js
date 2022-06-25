@@ -21,6 +21,7 @@ import {
   FormLabel,
   useDisclosure,
   Checkbox,
+  HStack,
 } from '@chakra-ui/react';
 import { Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalBody, ModalContent } from '@chakra-ui/react';
@@ -83,171 +84,192 @@ const Mapped = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <VStack p={4}>
+    <VStack p={2}>
       <AnimatedPage>
-        <Heading size={'lg'} pb={10}>
-          Master SKU Section
-        </Heading>
-      </AnimatedPage>
-      <AnimatedPage>
-        <RadioGroup defaultChecked={'1'} width={'40%'}>
-          <Flex justifyContent={'space-between'}>
-            <Radio px={4} onChange={() => setIsSingle(true)} value={'1'}>
-              Single
-            </Radio>
-            <Radio px={4} onChange={() => setIsSingle(false)} value={'2'}>
-              Combo
-            </Radio>
-          </Flex>
-        </RadioGroup>
+        <Heading size={'md'}>Master SKU Section</Heading>
       </AnimatedPage>
 
       {/* Single Master SKU */}
       {isSingle && (
         <AnimatedPage>
-          <form
-            onSubmit={e => {
-              submitArrayHandler(e);
-              toggleChange(e);
-            }}
-            py={4}
-          >
-            <FormControl pt={6}>
-              <FormLabel htmlFor="single">Create Single Master SKU</FormLabel>
-              <VStack id={'single'}>
-                <Flex>
-                  <Input
-                    textAlign={'center'}
-                    onChange={e => {
-                      setGrandParent(e.target.value);
-                    }}
-                    placeholder="grand-parent"
-                    required
-                  />
-                  <Input
-                    textAlign={'center'}
-                    onChange={e => {
-                      setParent(e.target.value);
-                    }}
-                    placeholder="parent"
-                  />
-                  <Input
-                    textAlign={'center'}
-                    onChange={e => {
-                      setChild(e.target.value);
-                    }}
-                    placeholder="child"
-                  />
-                </Flex>
-                <Button type={'submit'} w={'100%'} px={10} my={5}>
-                  Submit
-                </Button>
-              </VStack>
-            </FormControl>
-          </form>
+          <HStack>
+            <RadioGroup defaultChecked={'1'}>
+              <Flex justifyContent={'space-between'}>
+                <Radio px={2} onChange={() => setIsSingle(true)} value={'1'}>
+                  Single
+                </Radio>
+                <Radio px={2} onChange={() => setIsSingle(false)} value={'2'}>
+                  Combo
+                </Radio>
+              </Flex>
+            </RadioGroup>
+            <form
+              onSubmit={e => {
+                submitArrayHandler(e);
+                toggleChange(e);
+              }}
+              py={4}
+            >
+              <FormControl>
+                <FormLabel htmlFor="single">Create Single Master SKU</FormLabel>
+                <VStack id={'single'}>
+                  <HStack>
+                    <Input
+                      borderRadius={6}
+                      size={'sm'}
+                      textAlign={'center'}
+                      onChange={e => {
+                        setGrandParent(e.target.value);
+                      }}
+                      placeholder="grand-parent"
+                      required
+                    />
+                    <Input
+                      borderRadius={6}
+                      size={'sm'}
+                      textAlign={'center'}
+                      onChange={e => {
+                        setParent(e.target.value);
+                      }}
+                      placeholder="parent"
+                    />
+                    <Input
+                      borderRadius={6}
+                      size={'sm'}
+                      textAlign={'center'}
+                      onChange={e => {
+                        setChild(e.target.value);
+                      }}
+                      placeholder="child"
+                    />
+                  </HStack>
+                  <Button size={'sm'} type={'submit'} w={'100%'}>
+                    Submit
+                  </Button>
+                </VStack>
+              </FormControl>
+            </form>
+          </HStack>
         </AnimatedPage>
       )}
 
       {/* Combo master SKU */}
       {!isSingle && (
         <AnimatedPage>
-          <form
-            onSubmit={e => {
-              submitArrayHandler(e);
-              toggleChange(e);
-            }}
-            py={4}
-          >
-            <FormControl pt={6}>
-              <FormLabel htmlFor="single">Create Combo Master SKU</FormLabel>
-              <VStack id={'single'}>
-                <Flex>
-                  <Input
-                    textAlign={'center'}
-                    onChange={e => {
-                      setGrandParent(e.target.value);
-                    }}
-                    placeholder="grand-parent"
-                    required
-                  />
-                  <Input
-                    textAlign={'center'}
-                    onChange={e => {
-                      setParent(e.target.value);
-                    }}
-                    placeholder="parent"
-                  />
-                  <Input
-                    textAlign={'center'}
-                    onChange={e => {
-                      setChild(e.target.value);
-                    }}
-                    placeholder="child"
-                  />
-                </Flex>
-                <Button
-                  as={'button'}
-                  w={'100%'}
-                  onClick={onOpen}
-                  px={10}
-                  my={5}
-                >
-                  Select single master SKUs
-                </Button>
-                <Modal isOpen={isOpen} onClose={onClose}>
-                  <ModalOverlay />
-                  <ModalContent>
-                    <ModalBody>
-                      <Wrap spacing={4}>
-                        {array.map(item => (
-                          <WrapItem key={item._id}>
-                            <Checkbox
-                              type={'checkbox'}
-                              onChange={e => {
-                                if (e.target.checked)
-                                  setCombo(prevCombo => [
-                                    ...prevCombo,
-                                    `${item.mastersku}`,
-                                  ]);
-                                else {
-                                  combo.pop();
-                                }
-                              }}
-                            >
-                              {item.mastersku}
-                            </Checkbox>
-                          </WrapItem>
-                        ))}
-                      </Wrap>
-                    </ModalBody>
-                  </ModalContent>
-                </Modal>
-                <Button type={'submit'} w={'100%'} px={10} my={5}>
-                  Submit
-                </Button>
-              </VStack>
-            </FormControl>
-          </form>
+          <HStack>
+            <RadioGroup defaultChecked={'1'}>
+              <Flex justifyContent={'space-between'}>
+                <Radio px={2} onChange={() => setIsSingle(true)} value={'1'}>
+                  Single
+                </Radio>
+                <Radio px={2} onChange={() => setIsSingle(false)} value={'2'}>
+                  Combo
+                </Radio>
+              </Flex>
+            </RadioGroup>
+            <form
+              onSubmit={e => {
+                submitArrayHandler(e);
+                toggleChange(e);
+              }}
+            >
+              <FormControl>
+                <FormLabel htmlFor="single">Create Combo Master SKU</FormLabel>
+                <VStack id={'single'} width={'90%'}>
+                  <HStack>
+                    <Input
+                      borderRadius={6}
+                      size={'sm'}
+                      textAlign={'center'}
+                      onChange={e => {
+                        setGrandParent(e.target.value);
+                      }}
+                      placeholder="grand-parent"
+                      required
+                    />
+                    <Input
+                      borderRadius={6}
+                      size={'sm'}
+                      textAlign={'center'}
+                      onChange={e => {
+                        setParent(e.target.value);
+                      }}
+                      placeholder="parent"
+                    />
+                    <Input
+                      borderRadius={6}
+                      size={'sm'}
+                      textAlign={'center'}
+                      onChange={e => {
+                        setChild(e.target.value);
+                      }}
+                      placeholder="child"
+                    />
+                    <Button
+                      as={'button'}
+                      size={'sm'}
+                      w={'100%'}
+                      onClick={onOpen}
+                      px={10}
+                      my={5}
+                    >
+                      Select master SKUs
+                    </Button>
+                    <Modal isOpen={isOpen} onClose={onClose}>
+                      <ModalOverlay />
+                      <ModalContent>
+                        <ModalBody>
+                          <Wrap spacing={4}>
+                            {array.map(item => (
+                              <WrapItem key={item._id}>
+                                <Checkbox
+                                  type={'checkbox'}
+                                  onChange={e => {
+                                    if (e.target.checked)
+                                      setCombo(prevCombo => [
+                                        ...prevCombo,
+                                        `${item.mastersku}`,
+                                      ]);
+                                    else {
+                                      combo.pop();
+                                    }
+                                  }}
+                                >
+                                  {item.mastersku}
+                                </Checkbox>
+                              </WrapItem>
+                            ))}
+                          </Wrap>
+                        </ModalBody>
+                      </ModalContent>
+                    </Modal>
+                  </HStack>
+
+                  <Button size={'sm'} type={'submit'} w={'100%'} px={10} my={5}>
+                    Submit
+                  </Button>
+                </VStack>
+              </FormControl>
+            </form>
+          </HStack>
         </AnimatedPage>
       )}
 
       {isLoading && <Spinner size={'xl'} />}
       {!isLoading && (
         <AnimatedPage>
-          <VStack>
-            <Heading size={'md'} pt={20} pb={4}>
-              Master SKU Table
-            </Heading>
+          <VStack mt={2}>
+            <Heading size={'sm'}>Master SKU Table</Heading>
             <TableContainer
               rounded={'lg'}
               boxShadow={'lg'}
               overflowY={'auto'}
               overflowX={'auto'}
-              h={400}
+              h={240}
               w={800}
               mb={20}
             >
-              <Table variant="simple">
+              <Table variant="simple" size={'sm'}>
                 <Thead
                   position={'sticky'}
                   top={0}
@@ -280,7 +302,9 @@ const Mapped = () => {
                             </MenuList>
                           </Menu>
                         ) : (
-                          <Button>Single</Button>
+                          <Button size={'sm'} variant={'outline'}>
+                            Single
+                          </Button>
                         )}
                       </Td>
                     </Tr>

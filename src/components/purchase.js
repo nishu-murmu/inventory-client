@@ -166,12 +166,12 @@ const Purchase = () => {
   };
   return (
     <VStack>
-      <Heading as={'h1'} size={'lg'}>
+      <Heading as={'h1'} size={'md'}>
         Purchase Section
       </Heading>
-      <HStack px={10} spacing={20}>
+      <HStack px={10}>
         <VStack p={5}>
-          <Heading className="purchase-heading" size={'md'} pb={10}>
+          <Heading className="purchase-heading" size={'sm'}>
             Input Products Details
           </Heading>
           <VStack width={60}>
@@ -183,6 +183,8 @@ const Purchase = () => {
               style={{ margin: '20px' }}
             >
               <Input
+                size={'sm'}
+                borderRadius={6}
                 list={'mastersku'}
                 onChange={e => {
                   setSku(e.target.value);
@@ -200,6 +202,8 @@ const Purchase = () => {
                 ))}
               </datalist>
               <DatePicker
+                borderRadius={6}
+                size={'sm'}
                 onSelect={date => {
                   setStart(date);
                   setDate(
@@ -217,16 +221,28 @@ const Purchase = () => {
                 fixedHeight
               />
               <Input
+                borderRadius={6}
+                size={'sm'}
                 placeholder="Enter Quantity"
                 onChange={quantityChange}
                 required
                 textAlign="center"
               />
-              <Button type={'submit'} variant={'outline'} w={'100%'}>
+              <Button
+                size={'sm'}
+                type={'submit'}
+                variant={'outline'}
+                w={'100%'}
+              >
                 Submit
               </Button>
               <Menu>
-                <MenuButton w={'100%'} variant={'outline'} as={Button}>
+                <MenuButton
+                  size={'sm'}
+                  w={'100%'}
+                  variant={'outline'}
+                  as={Button}
+                >
                   Filter
                 </MenuButton>
                 <MenuList>
@@ -271,7 +287,7 @@ const Purchase = () => {
           </VStack>
         </VStack>
         <VStack>
-          <Heading pb={5} size={'md'}>
+          <Heading pb={2} size={'sm'}>
             Purchase Table
           </Heading>
 
@@ -282,7 +298,7 @@ const Purchase = () => {
             overflowY={'auto'}
             overflowX={'hidden'}
           >
-            <Table variant="simple">
+            <Table variant="simple" size={'sm'}>
               <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
                 <Tr>
                   <Th textAlign="center">SKU</Th>
@@ -301,7 +317,7 @@ const Purchase = () => {
                     </Td>
                     <Td textAlign={'center'}>{val.quantity}</Td>
                     <Td>
-                      <Button colorScheme="teal" onClick={onOpen}>
+                      <Button colorScheme="teal" size={'sm'} onClick={onOpen}>
                         <FiEdit />
                       </Button>
                       <Modal isCentered isOpen={isOpen} onClose={onClose}>
@@ -351,6 +367,7 @@ const Purchase = () => {
                                 fixedHeight
                               />
                               <Input
+                                size={'sm'}
                                 placeholder="Enter Quantity"
                                 onChange={newQuantityChange}
                                 required
@@ -359,13 +376,18 @@ const Purchase = () => {
                             </ModalBody>
                             <ModalFooter>
                               <Button
+                                size={'sm'}
                                 colorScheme="blue"
                                 mr={3}
                                 onClick={onClose}
                               >
                                 Close
                               </Button>
-                              <Button type="submit" variant="outline">
+                              <Button
+                                size={'sm'}
+                                type="submit"
+                                variant="outline"
+                              >
                                 Submit
                               </Button>
                             </ModalFooter>
@@ -375,6 +397,7 @@ const Purchase = () => {
                     </Td>
                     <Td textAlign={'center'}>
                       <Button
+                        size={'sm'}
                         onClick={() => {
                           setSelectedsku(val.mastersku);
                           toggleRemove();
@@ -390,7 +413,9 @@ const Purchase = () => {
               </Tbody>
             </Table>
           </TableContainer>
-          <Button onClick={downloadFile}>Download file</Button>
+          <Button size={'sm'} mt={2} onClick={downloadFile}>
+            Download file
+          </Button>
         </VStack>
       </HStack>
     </VStack>

@@ -15,7 +15,6 @@ import {
   HStack,
   VStack,
   Box,
-  Flex,
   InputGroup,
   Select,
   useDisclosure,
@@ -92,7 +91,7 @@ const Sales = () => {
     if (isCancel === true) setIsCancel(false);
   };
   // csv to array conversion
-  const csvFileToArray = string => {
+  const csvFileToArray = async string => {
     const csvHeader = string.slice(0, string.indexOf('\n')).split(',');
     const csvRows = string.slice(string.indexOf('\n') + 1).split('\n');
 
@@ -104,11 +103,12 @@ const Sales = () => {
       }, {});
       return obj;
     });
-    fetch('https://cryptic-bayou-61420.herokuapp.com/api/sales/create', {
+    await fetch('https://cryptic-bayou-61420.herokuapp.com/api/sales/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(array),
     });
+    console.log(array);
   };
   // submit csv file to function
   const onSubmitHandler = e => {
@@ -120,6 +120,15 @@ const Sales = () => {
       };
       fileReader.readAsText(file);
     }
+  };
+  const submitBulkHandler = async () => {
+    const response = await fetch('http://localhost:3001/api/sales/bulkupdate', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(),
+    });
+    const result = await response.json();
+    console.log(result);
   };
   // update the product with dispatch
   useEffect(() => {
@@ -209,6 +218,7 @@ const Sales = () => {
         }
       );
       const result = await response.json();
+      console.log(result.length);
       setPendingArray(result);
     };
     const filterCount = async status => {
@@ -276,16 +286,11 @@ const Sales = () => {
     setEndDate(ranges.selection.endDate);
     setStartDate(ranges.selection.startDate);
   };
-  // check
-  const grouped = async () => {
-    const response2 = await fetch('http://localhost:3001/api/sales/grouped');
-    const result2 = await response2.json();
-    console.log(result2);
-  };
-  const getall = async () => {
-    const response2 = await fetch('http://localhost:3001/api/sales/getall');
-    const result2 = await response2.json();
-    console.log(result2);
+  // testing
+  const removeDups = async () => {
+    const response = await fetch('http://localhost:3001/api/sales/grouped');
+    const result = await response.json();
+    console.log(result);
   };
   // pagination
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -317,165 +322,191 @@ const Sales = () => {
   };
   return (
     <VStack>
-      <Heading as={'h2'} size={'md'}>
+      <Heading as={'h2'} size={'md'} mt={4}>
         Sales Section
       </Heading>
-      <HStack spacing={20}>
-        {/* VStack 1 */}
-        <VStack mt={2}>
-          <InputGroup size={'sm'}>
-            <FormLabel
-              width={'100%'}
-              htmlFor={'csvInput'}
-              _hover={{ cursor: 'pointer' }}
-              textAlign={'center'}
-            >
-              Upload File
-            </FormLabel>
+      {!isScan && (
+        <HStack spacing={80}>
+          {/* VStack 2 */}
+          <VStack>
+            <HStack spacing={2}>
+              <Button size={'sm'} onClick={switchScanHandler}>
+                Scan Products
+              </Button>
+              <Menu size={'sm'}>
+                <MenuButton size={'sm'} as={Button}>
+                  List Products
+                </MenuButton>
+                <MenuList>
+                  <MenuItem onClick={switchDispatchHandler}>
+                    Dispatch List
+                  </MenuItem>
+                  <MenuItem onClick={switchPendingHandler}>
+                    Pending List
+                  </MenuItem>
+                  <MenuItem onClick={switchCancelHandler}>Cancel List</MenuItem>
+                </MenuList>
+              </Menu>
+            </HStack>
             <Input
-              display={'none'}
-              type={'file'}
-              id={'csvInput'}
-              accept={'.csv'}
-              onChange={onChangeHandler}
+              size={'sm'}
+              borderRadius={6}
+              type={'text'}
+              mt={5}
+              textAlign={'center'}
+              onChange={e => {
+                setEnteredAWB(e.target.value);
+                setStatus('dispatch');
+                e.target.select();
+              }}
+              value={enteredAWB}
+              placeholder="Enter AWB"
+              autoFocus
+              autoCapitalize="true"
             />
-            <InputRightAddon
-              type={'button'}
-              variant={'outline'}
-              children={'Select csv'}
-              _hover={{ cursor: 'pointer' }}
-              onClick={onSubmitHandler}
-            >
-              Import
-              <DownloadIcon ml={1} mt={1} />
-            </InputRightAddon>
-          </InputGroup>
-          <InputGroup size={'sm'}>
-            <FormControl>
+          </VStack>
+          {/* VStack 1 */}
+          <VStack>
+            <InputGroup size={'sm'}>
               <FormLabel
-                htmlFor="bulk"
                 width={'100%'}
+                htmlFor={'csvInput'}
                 _hover={{ cursor: 'pointer' }}
-                textAlign="center"
-                borderRadius={'5px'}
+                textAlign={'center'}
               >
-                Upload for Bulk Scan
+                Upload File
               </FormLabel>
               <Input
-                id={'bulk'}
-                accept={'. csv'}
-                display="none"
+                display={'none'}
                 type={'file'}
+                id={'csvInput'}
+                accept={'.csv'}
+                onChange={onChangeHandler}
               />
-            </FormControl>
-            <InputRightAddon
-              type={'button'}
-              _hover={{ cursor: 'pointer' }}
-              variant={'outline'}
-              children={'Select csv'}
-            >
-              Import <DownloadIcon ml={1} mt={1} />
-            </InputRightAddon>
-          </InputGroup>
-        </VStack>
-        {/* VStack 2 */}
-        <VStack>
-          <HStack spacing={2}>
-            <Button size={'sm'} onClick={switchScanHandler}>
-              Scan Products
-            </Button>
-            <Menu size={'sm'}>
-              <MenuButton size={'sm'} as={Button}>
-                List Products
-              </MenuButton>
-              <MenuList>
-                <MenuItem onClick={switchDispatchHandler}>
-                  Dispatch List
-                </MenuItem>
-                <MenuItem onClick={switchPendingHandler}>Pending List</MenuItem>
-                <MenuItem onClick={switchCancelHandler}>Cancel List</MenuItem>
-              </MenuList>
-            </Menu>
-          </HStack>
-          <Input
-            size={'sm'}
-            type={'text'}
-            mt={5}
-            textAlign={'center'}
-            onChange={e => {
-              setEnteredAWB(e.target.value);
-              setStatus('dispatch');
-              e.target.select();
-            }}
-            value={enteredAWB}
-            placeholder="Enter AWB"
-            autoFocus
-            autoCapitalize="true"
-          />
-        </VStack>
-        {/* VStack 3 */}
-        <VStack>
-          <Button width={'100%'} size={'sm'} onClick={onOpen}>
-            Date Filter
-          </Button>
-          <Modal size={'sm'} isOpen={isOpen} onClose={onClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalBody>
-                <DateRange
-                  ranges={[SelectionRange]}
-                  onChange={handleSelect}
-                  moveRangeOnFirstSelection
-                  retainEndDateOnFirstSelection
-                  maxDate={new Date()}
+              <InputRightAddon
+                type={'button'}
+                variant={'outline'}
+                children={'Select csv'}
+                _hover={{ cursor: 'pointer' }}
+                onClick={onSubmitHandler}
+              >
+                Import
+                <DownloadIcon ml={1} mt={1} />
+              </InputRightAddon>
+            </InputGroup>
+            <InputGroup size={'sm'}>
+              <FormControl>
+                <FormLabel
+                  htmlFor="bulk"
+                  width={'100%'}
+                  _hover={{ cursor: 'pointer' }}
+                  textAlign="center"
+                  borderRadius={'5px'}
+                >
+                  Upload for Bulk Scan
+                </FormLabel>
+                <Input
+                  borderRadius={6}
+                  id={'bulk'}
+                  accept={'. csv'}
+                  display="none"
+                  type={'file'}
                 />
-              </ModalBody>
-            </ModalContent>
-          </Modal>
-          {!isScan ? (
-            <Button
-              isDisabled
-              size={'sm'}
-              onClick={() => {
-                if (!isDispatch) downloadFile(dispatchArray, 'dispatch');
-                if (!isPending) downloadFile(pendingArray, 'pending');
-                if (!isCancel) downloadFile(cancelArray, 'cancel');
-              }}
-            >
-              Download file
+              </FormControl>
+              <InputRightAddon
+                type={'button'}
+                _hover={{ cursor: 'pointer' }}
+                variant={'outline'}
+                children={'Select csv'}
+                onClick={submitBulkHandler}
+              >
+                Import <DownloadIcon ml={1} mt={1} />
+              </InputRightAddon>
+            </InputGroup>
+          </VStack>
+        </HStack>
+      )}
+      {isScan && (
+        <HStack spacing={40}>
+          {/* VStack 2 */}
+          <VStack>
+            <HStack spacing={2}>
+              <Button size={'sm'} onClick={switchScanHandler}>
+                Scan Products
+              </Button>
+              <Menu size={'sm'}>
+                <MenuButton size={'sm'} as={Button}>
+                  List Products
+                </MenuButton>
+                <MenuList>
+                  <MenuItem onClick={switchDispatchHandler}>
+                    Dispatch List
+                  </MenuItem>
+                  <MenuItem onClick={switchPendingHandler}>
+                    Pending List
+                  </MenuItem>
+                  <MenuItem onClick={switchCancelHandler}>Cancel List</MenuItem>
+                </MenuList>
+              </Menu>
+            </HStack>
+            {isScan && (
+              <Button
+                width={'100%'}
+                size={'sm'}
+                onClick={() => {
+                  if (!isDispatch) downloadFile(dispatchArray, 'dispatch');
+                  if (!isPending) downloadFile(pendingArray, 'pending');
+                  if (!isCancel) downloadFile(cancelArray, 'cancel');
+                }}
+              >
+                Download file
+              </Button>
+            )}
+          </VStack>
+          {/* VStack 3 */}
+          <VStack>
+            <Button width={'100%'} size={'sm'} onClick={onOpen}>
+              Date Filter
             </Button>
-          ) : (
-            <Button
-              size={'sm'}
-              onClick={() => {
-                if (!isDispatch) downloadFile(dispatchArray, 'dispatch');
-                if (!isPending) downloadFile(pendingArray, 'pending');
-                if (!isCancel) downloadFile(cancelArray, 'cancel');
-              }}
-            >
-              Download file
+            <Button width={'100%'} size={'sm'} onClick={removeDups}>
+              Remove
             </Button>
-          )}
-        </VStack>
-        {/* VStack 4 */}
-        <VStack>
-          <Input
-            size={'sm'}
-            type={'text'}
-            textAlign={'center'}
-            placeholder={'Enter sku'}
-          />
-          <Button size={'sm'} width={'100%'} px={20} variant={'outline'}>
-            {!isDispatch
-              ? `${dispatchcount}`
-              : !isPending
-              ? `${pendingcount}`
-              : !isCancel
-              ? `${cancelcount}`
-              : '0'}
-          </Button>
-        </VStack>
-      </HStack>
+            <Modal size={'sm'} isOpen={isOpen} onClose={onClose}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalBody>
+                  <DateRange
+                    ranges={[SelectionRange]}
+                    onChange={handleSelect}
+                    moveRangeOnFirstSelection
+                    retainEndDateOnFirstSelection
+                    maxDate={new Date()}
+                  />
+                </ModalBody>
+              </ModalContent>
+            </Modal>
+          </VStack>
+          {/* VStack 4 */}
+          <VStack>
+            <Input
+              borderRadius={6}
+              size={'sm'}
+              type={'text'}
+              textAlign={'center'}
+              placeholder={'Enter sku'}
+            />
+            <Button size={'sm'} width={'100%'} px={20} variant={'outline'}>
+              {!isDispatch
+                ? `${dispatchcount}`
+                : !isPending
+                ? `${pendingcount}`
+                : !isCancel
+                ? `${cancelcount}`
+                : '0'}
+            </Button>
+          </VStack>
+        </HStack>
+      )}
       {/* Scan Section */}
       {!isScan && (
         <Box width={'auto'}>
@@ -537,7 +568,7 @@ const Sales = () => {
       {/* Filters Section */}
       {isScan && (
         <Box>
-          <Heading size={'md'} py={2}>
+          <Heading size={'sm'} py={2}>
             {!isDispatch
               ? 'Dispatch Table'
               : !isPending

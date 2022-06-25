@@ -171,14 +171,14 @@ const PurchaseReturn = () => {
   return (
     <VStack>
       <AnimatedPage>
-        <Heading as={'h1'} size={'lg'}>
+        <Heading as={'h1'} size={'md'}>
           Purchase Return Section
         </Heading>
       </AnimatedPage>
-      <HStack px={10} spacing={20}>
+      <HStack px={10}>
         <VStack p={5}>
           <AnimatedPage>
-            <Heading className="purchase-return-heading" size={'md'} pb={10}>
+            <Heading className="purchase-return-heading" size={'sm'}>
               Input Products Details
             </Heading>
           </AnimatedPage>
@@ -192,6 +192,7 @@ const PurchaseReturn = () => {
                 style={{ margin: '20px' }}
               >
                 <Input
+                  size={'sm'}
                   list="sku"
                   onChange={e => {
                     setSku(e.target.value);
@@ -207,6 +208,7 @@ const PurchaseReturn = () => {
                   ))}
                 </datalist>
                 <DatePicker
+                  size={'sm'}
                   selected={start}
                   onSelect={date => {
                     setStart(date);
@@ -224,16 +226,17 @@ const PurchaseReturn = () => {
                   fixedHeight
                 />
                 <Input
+                  size={'sm'}
                   placeholder="Enter Quantity"
                   onChange={quantityChange}
                   required
                   textAlign="center"
                 />
-                <Button type={'submit'} w={'100%'}>
+                <Button size={'sm'} type={'submit'} w={'100%'}>
                   Submit
                 </Button>
                 <Menu>
-                  <MenuButton w={'100%'} as={Button}>
+                  <MenuButton size={'sm'} w={'100%'} as={Button}>
                     Filter
                   </MenuButton>
                   <MenuList>
@@ -280,7 +283,7 @@ const PurchaseReturn = () => {
         </VStack>
         <VStack>
           <AnimatedPage>
-            <Heading pb={5} size={'md'}>
+            <Heading pb={5} size={'sm'}>
               Purchase Return Table
             </Heading>
           </AnimatedPage>
@@ -293,7 +296,7 @@ const PurchaseReturn = () => {
               overflowY={'auto'}
               overflowX={'hidden'}
             >
-              <Table variant="simple">
+              <Table variant="simple" size={'sm'}>
                 <Thead
                   position={'sticky'}
                   top={0}
@@ -316,7 +319,7 @@ const PurchaseReturn = () => {
                       </Td>
                       <Td textAlign={'center'}>{val.quantity}</Td>
                       <Td>
-                        <Button colorScheme="teal" onClick={onOpen}>
+                        <Button size={'sm'} colorScheme="teal" onClick={onOpen}>
                           <FiEdit />
                         </Button>
                         <Modal isCentered isOpen={isOpen} onClose={onClose}>
@@ -337,6 +340,7 @@ const PurchaseReturn = () => {
                                 ))}
                               </Select>
                               <DatePicker
+                                size={'sm'}
                                 selected={update}
                                 onSelect={date => {
                                   setUpdate(date);
@@ -355,6 +359,7 @@ const PurchaseReturn = () => {
                                 fixedHeight
                               />
                               <Input
+                                size={'sm'}
                                 placeholder="Enter Quantity"
                                 onChange={newQuantityChange}
                                 required
@@ -363,6 +368,7 @@ const PurchaseReturn = () => {
                             </ModalBody>
                             <ModalFooter>
                               <Button
+                                size={'sm'}
                                 colorScheme="blue"
                                 mr={3}
                                 onClick={onClose}
@@ -378,6 +384,7 @@ const PurchaseReturn = () => {
                       </Td>
                       <Td textAlign={'center'}>
                         <Button
+                          size={'sm'}
                           onClick={() => {
                             setSelectedsku(val.mastersku);
                             toggleRemove();
@@ -392,7 +399,9 @@ const PurchaseReturn = () => {
                 </Tbody>
               </Table>
             </TableContainer>
-            <Button onClick={downloadFile}>Download file</Button>
+            <Button size={'sm'} mt={2} onClick={downloadFile}>
+              Download file
+            </Button>
           </AnimatedPage>
         </VStack>
       </HStack>

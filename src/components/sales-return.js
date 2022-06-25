@@ -312,7 +312,7 @@ const SalesReturn = () => {
 
   return (
     <VStack p={4} pb={20}>
-      <Heading size={'lg'} pb={10}>
+      <Heading size={'md'} pb={10}>
         Sales Return Section
       </Heading>
       <Box textAlign={'center'}>
@@ -330,6 +330,8 @@ const SalesReturn = () => {
             </Text>
           </FormLabel>
           <Input
+            size={'sm'}
+            borderRadius={6}
             display={'none'}
             type={'file'}
             id={'csvInput'}
@@ -337,6 +339,7 @@ const SalesReturn = () => {
             onChange={onChangeHandler}
           />
           <Button
+            size={'sm'}
             type={'button'}
             w={'100%'}
             onClick={onSubmitHandler}
@@ -345,7 +348,7 @@ const SalesReturn = () => {
             Import
           </Button>
         </FormControl>
-        <Button mt={4} width={'100%'} onClick={onOpen}>
+        <Button size={'sm'} mt={4} width={'100%'} onClick={onOpen}>
           Date Filter
         </Button>
         <Modal size={'sm'} isOpen={isOpen} onClose={onClose}>
@@ -357,9 +360,13 @@ const SalesReturn = () => {
           </ModalContent>
         </Modal>
         <Flex py={2}>
-          <Button onClick={switchScanHandler}>Scan Products</Button>
+          <Button size={'sm'} onClick={switchScanHandler}>
+            Scan Products
+          </Button>
           <Menu>
-            <MenuButton as={Button}>List Products</MenuButton>
+            <MenuButton size={'sm'} as={Button}>
+              List Products
+            </MenuButton>
             <MenuList>
               <MenuItem onClick={switchReceivedHandler}>Received List</MenuItem>
               <MenuItem onClick={switchPartialHandler}>Partial List</MenuItem>
@@ -368,6 +375,7 @@ const SalesReturn = () => {
           </Menu>
         </Flex>
         <Input
+          size={'sm'}
           type={'text'}
           mt={5}
           textAlign={'center'}
@@ -391,12 +399,12 @@ const SalesReturn = () => {
               pt={10}
               rounded={'lg'}
               boxShadow={'lg'}
-              h={400}
+              h={260}
               w={1200}
               overflowY={'auto'}
               overflowX={'scroll'}
             >
-              <Table variant={'simple'}>
+              <Table variant={'simple'} size={'sm'}>
                 <Thead>
                   <Tr key={'header'}>
                     <Th textAlign={'center'}>Suborder ID</Th>
@@ -463,7 +471,7 @@ const SalesReturn = () => {
       {isScan && (
         <Box>
           <Flex py={8} justifyContent={'space-between'}>
-            <Heading mt={2} size={'md'}>
+            <Heading mt={2} size={'sm'}>
               {!isReceived
                 ? 'Received Table'
                 : !isPartial
@@ -472,7 +480,7 @@ const SalesReturn = () => {
                 ? 'Wrong Table'
                 : ''}
             </Heading>
-            <Button>
+            <Button size={'sm'}>
               {!isReceived
                 ? `${receivedCount}`
                 : !isPartial
@@ -490,11 +498,11 @@ const SalesReturn = () => {
                 boxShadow={'lg'}
                 overflowY={'auto'}
                 overflowX={'auto'}
-                h={400}
+                h={260}
                 w={1200}
                 mb={20}
               >
-                <Table variant="simple">
+                <Table variant="simple" size={'sm'}>
                   <Thead
                     position={'sticky'}
                     top={0}
@@ -605,6 +613,7 @@ const SalesReturn = () => {
                 </Table>
               </TableContainer>
               <Button
+                size={'sm'}
                 onClick={() => {
                   if (!isReceived) downloadFile(receivedArray, 'received');
                   if (!isPartial) downloadFile(partialArray, 'partial');

@@ -21,6 +21,7 @@ const MainHeader = () => {
       className="app-header"
       position={'fixed'}
       top={0}
+      py={1}
       width={'100%'}
       boxShadow={'0px 0px 15px 0px rgb(0,0,0,.2)'}
       backgroundColor={useColorModeValue(
@@ -34,13 +35,13 @@ const MainHeader = () => {
       zIndex={1}
     >
       <Link to="/">
-        <HStack padding={'5px 0px'}>
+        <HStack>
           <Image
             h={6}
             w={6}
             src="https://static.wixstatic.com/media/e8b152_208521582452447ba04576ebbef28ac2~mv2.png/v1/fill/w_48,h_51,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e8b152_208521582452447ba04576ebbef28ac2~mv2.png"
           />
-          <Heading as={'h2'} size={'lg'}>
+          <Heading as={'h1'} size={'md'}>
             Inventory Management
           </Heading>
         </HStack>
@@ -48,13 +49,16 @@ const MainHeader = () => {
       <Spacer />
       <Flex spacing={5} gridColumnGap={4}>
         <a href={'https://github.com/nishu-murmu/inventory-client'}>
-          <Button>
-            <Icon as={FaGithub} />
-          </Button>
+          <Icon as={FaGithub} />
         </a>
         <ColorModeSwitcher justifySelf="flex-end" />
         <Menu>
-          <MenuButton as={Button} cursor={'pointer'} variant={'ghost'}>
+          <MenuButton
+            size={'sm'}
+            as={Button}
+            cursor={'pointer'}
+            variant={'ghost'}
+          >
             <Icon as={FaUser} />
           </MenuButton>
           <MenuList>
