@@ -94,7 +94,6 @@ const Sales = () => {
   const csvFileToArray = async string => {
     const csvHeader = string.slice(0, string.indexOf('\n')).split(',');
     const csvRows = string.slice(string.indexOf('\n') + 1).split('\n');
-
     const array = csvRows.map(i => {
       const values = i.split(',') || i.split(' ');
       const obj = csvHeader.reduce((object, header, index) => {
@@ -108,7 +107,12 @@ const Sales = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(array),
     });
-    console.log(array);
+    // await fetch('http://localhost:3001/api/sales/bulkupdate', {
+    //   method: 'PUT',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(array),
+    // });
+    // console.log(array);
   };
   // submit csv file to function
   const onSubmitHandler = e => {
@@ -121,29 +125,24 @@ const Sales = () => {
       fileReader.readAsText(file);
     }
   };
-  const submitBulkHandler = async () => {
-    const response = await fetch('http://localhost:3001/api/sales/bulkupdate', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(),
-    });
-    const result = await response.json();
-    console.log(result);
-  };
   // update product using AWB to dispatch
   useEffect(() => {
     const updateHandler = async () => {
-      const response = await fetch('http://localhost:3001/api/sales/update', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          awb: enteredAWB,
-          status,
-          date: new Date().toLocaleDateString().replace(/\//g, '-'),
-        }),
-      });
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/api/sales/update',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            awb: enteredAWB,
+            status,
+            date: new Date().toLocaleDateString().replace(/\//g, '-'),
+          }),
+        }
+      );
       const result = await response.json();
-      setFilterArray(result.allSales);
+      console.log(result);
+      setFilterArray(result);
     };
     updateHandler();
   }, [status, enteredAWB]);
@@ -214,11 +213,30 @@ const Sales = () => {
     setEndDate(ranges.selection.endDate);
     setStartDate(ranges.selection.startDate);
   };
+  // Searching filter
+  const onSearch = async status => {
+    const response = await fetch(
+      'httphttps://cryptic-bayou-61420.herokuapp.com/api/sales/filter',
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          enteredAWB,
+          status,
+        }),
+      }
+    );
+    const result = await response.json();
+    if (status === 'dispatch') setDispatchArray(result.searchfilterList);
+    if (status === 'pending') setPendingArray(result.searchfilterList);
+    if (status === 'cancel') setCancelArray(result.searchfilterList);
+  };
   // removing duplicates
   const removeDups = async () => {
-    const response = await fetch('http://localhost:3001/api/sales/grouped');
-    const result = await response.json();
-    console.log(result);
+    const response = await fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/api/sales/grouped'
+    );
+    await response.json();
   };
   // pagination
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -339,6 +357,7 @@ const Sales = () => {
                   accept={'. csv'}
                   display="none"
                   type={'file'}
+                  onChange={onChangeHandler}
                 />
               </FormControl>
               <InputRightAddon
@@ -346,7 +365,7 @@ const Sales = () => {
                 _hover={{ cursor: 'pointer' }}
                 variant={'outline'}
                 children={'Select csv'}
-                onClick={submitBulkHandler}
+                onClick={onSubmitHandler}
               >
                 Import <DownloadIcon ml={1} mt={1} />
               </InputRightAddon>
@@ -416,13 +435,53 @@ const Sales = () => {
           </VStack>
           {/* VStack 4 */}
           <VStack>
-            <Input
-              borderRadius={6}
-              size={'sm'}
-              type={'text'}
-              textAlign={'center'}
-              placeholder={'Enter sku'}
-            />
+            <InputGroup size={'sm'}>
+              <Input
+                borderRadius={6}
+                size={'sm'}
+                type={'text'}
+                textAlign={'center'}
+                placeholder={'Enter SKU'}
+                value={enteredAWB}
+                autoFocus
+                onChange={e => {
+                  setEnteredAWB(e.target.value);
+                }}
+              />
+              {!isDispatch ? (
+                <InputRightAddon
+                  onClick={() => {
+                    onSearch('dispatch');
+                  }}
+                  borderRadius={6}
+                  as={Button}
+                >
+                  Search
+                </InputRightAddon>
+              ) : !isPending ? (
+                <InputRightAddon
+                  onClick={() => {
+                    onSearch('pending');
+                  }}
+                  borderRadius={6}
+                  as={Button}
+                >
+                  Search
+                </InputRightAddon>
+              ) : !isCancel ? (
+                <InputRightAddon
+                  onClick={() => {
+                    onSearch('cancel');
+                  }}
+                  borderRadius={6}
+                  as={Button}
+                >
+                  Search
+                </InputRightAddon>
+              ) : (
+                alert('something wrong')
+              )}
+            </InputGroup>
             <Button size={'sm'} width={'100%'} px={20} variant={'outline'}>
               {!isDispatch
                 ? `${dispatchcount}`
