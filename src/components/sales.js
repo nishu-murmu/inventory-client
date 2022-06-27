@@ -216,7 +216,7 @@ const Sales = () => {
   // Searching filter
   const onSearch = async status => {
     const response = await fetch(
-      'httphttps://cryptic-bayou-61420.herokuapp.com/api/sales/filter',
+      'https://cryptic-bayou-61420.herokuapp.com/api/sales/filter',
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
