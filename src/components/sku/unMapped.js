@@ -11,10 +11,13 @@ import {
   Td,
   useColorModeValue,
   Box,
+  HStack,
   // FormLabel,
   // Text,
   Input,
   Button,
+  Radio,
+  RadioGroup,
   // Button,
 } from '@chakra-ui/react';
 // import { DownloadIcon } from '@chakra-ui/icons';
@@ -26,6 +29,7 @@ const UnMapped = () => {
   const [masterskuArray, setmasterskuArray] = useState([]);
   const [mastersku, setmastersku] = useState('unmapped');
   const [unmappedArray, setUnMappedArray] = useState([]);
+  const [isUnmapped, setIsUnMapped] = useState(false);
   // pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [skuPerPage] = useState(10);
@@ -117,9 +121,30 @@ const UnMapped = () => {
   const skuPages = Math.ceil(unmappedArray.length / skuPerPage);
   return (
     <VStack>
-      <Heading size={'md'} pt={8}>
+      <Heading size={'md'} pt={2}>
         Unmapped SKU Section
       </Heading>
+      <RadioGroup pt={4} defaultChecked={'1'}>
+        <HStack spacing={4}>
+          <Radio
+            onChange={() => {
+              setIsUnMapped(false);
+            }}
+            value={'1'}
+          >
+            UnMapped
+          </Radio>
+          <Radio
+            onChange={() => {
+              setIsUnMapped(true);
+            }}
+            value={'2'}
+          >
+            Mapped
+          </Radio>
+        </HStack>
+      </RadioGroup>
+
       {/* <Box textAlign={'center'} width={80}>
         <FormLabel
           width={'100%'}
@@ -154,98 +179,119 @@ const UnMapped = () => {
       </Box> */}
 
       {/* UnMapped SKU Table */}
-      <Box>
-        <Heading size={'sm'} pb={2}>
-          UnMapped SKU Table
-        </Heading>
-        <TableContainer
-          rounded={'lg'}
-          boxShadow={'lg'}
-          overflowY={'auto'}
-          overflowX={'auto'}
-          h={280}
-          w={900}
-          bg={useColorModeValue('gray.100', 'gray.700')}
-        >
-          <Table variant="simple" size={'sm'}>
-            <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
-              <Tr>
-                <Th>UnMapped SKUs</Th>
-                <Th>Master SKU</Th>
-                <Th>Submit</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {skuRecords.map(item => (
-                <Tr key={item._id}>
-                  <Td textAlign={'center'}>{item.SKU}</Td>
-                  <Td>
-                    <Input
-                      htmlSize={18}
-                      width="auto"
-                      list={'mastersku'}
-                      onChange={e => setmastersku(e.target.value)}
-                    />
-                    <datalist id={'mastersku'}>
-                      {masterskuArray.map(item => (
-                        <option key={item._id} value={item.mastersku}>
-                          {item.mastersku}
-                        </option>
-                      ))}
-                    </datalist>
-                  </Td>
-                  <Td>
-                    <Button
-                      size={'sm'}
-                      variant={'outline'}
-                      onClick={() => {
-                        updateUnMappedHandler(item._id, mastersku);
-                      }}
-                    >
-                      submit
-                    </Button>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
-      </Box>
-      <Pagination
-        totalPages={skuPages}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-      />
-
-      {/* Mapped SKU Table */}
-      {/* <Box>
-          <Heading size={'md'} pt={20} pb={4}>
-            Mapped SKU Table
-          </Heading>
-          <TableContainer
-            rounded={'lg'}
-            boxShadow={'lg'}
-            overflowY={'auto'}
-            overflowX={'auto'}
-            h={400}
-            bg={useColorModeValue('gray.100', 'gray.700')}
-          >
-            <Table variant="simple" w={'50%'}>
-              <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
-                <Tr>
-                  <Th textAlign={'center'}>Mapped SKUs</Th>
-                  <Th textAlign={'center'}>Master SKUs</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                <Tr>
-                  <Td textAlign={'center'}>test</Td>
-                  <Td textAlign={'center'}>test</Td>
-                </Tr>
-              </Tbody>
-            </Table>
-          </TableContainer>
-        </Box> */}
+      {!isUnmapped ? (
+        <Box pt={6}>
+          <Box>
+            <Heading size={'sm'} pb={2}>
+              UnMapped SKU Table
+            </Heading>
+            <TableContainer
+              rounded={'lg'}
+              boxShadow={'lg'}
+              overflowY={'auto'}
+              overflowX={'auto'}
+              h={280}
+              w={900}
+              // bg={useColorModeValue('gray.100', 'gray.700')}
+            >
+              <Table variant="simple" size={'sm'}>
+                <Thead
+                  position={'sticky'}
+                  top={0}
+                  backgroundColor={'lightblue'}
+                >
+                  <Tr>
+                    <Th>UnMapped SKUs</Th>
+                    <Th>Master SKU</Th>
+                    <Th>Submit</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {skuRecords.map(item => (
+                    <Tr key={item._id}>
+                      <Td textAlign={'center'}>{item.SKU}</Td>
+                      <Td>
+                        <Input
+                          htmlSize={18}
+                          width="auto"
+                          list={'mastersku'}
+                          onChange={e => setmastersku(e.target.value)}
+                        />
+                        <datalist id={'mastersku'}>
+                          {masterskuArray.map(item => (
+                            <option key={item._id} value={item.mastersku}>
+                              {item.mastersku}
+                            </option>
+                          ))}
+                        </datalist>
+                      </Td>
+                      <Td>
+                        <Button
+                          size={'sm'}
+                          variant={'outline'}
+                          onClick={() => {
+                            updateUnMappedHandler(item._id, mastersku);
+                          }}
+                        >
+                          submit
+                        </Button>
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </Box>
+          <Pagination
+            totalPages={skuPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        </Box>
+      ) : (
+        {
+          /* Mapped SKU Table */
+        }(
+          <Box pt={6}>
+            <Heading size={'sm'} pb={2}>
+              Mapped SKU Table
+            </Heading>
+            <TableContainer
+              rounded={'lg'}
+              boxShadow={'lg'}
+              overflowY={'auto'}
+              overflowX={'auto'}
+              h={260}
+              width={600}
+              // bg={useColorModeValue('gray.100', 'gray.700')}
+            >
+              <Table variant="simple" size={'sm'}>
+                <Thead
+                  position={'sticky'}
+                  top={0}
+                  backgroundColor={'lightblue'}
+                >
+                  <Tr>
+                    <Th textAlign={'center'}>Mapped SKUs</Th>
+                    <Th textAlign={'center'}>Master SKUs</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  <Tr>
+                    <Td textAlign={'center'}>test</Td>
+                    <Td textAlign={'center'}>test</Td>
+                  </Tr>
+                </Tbody>
+              </Table>
+            </TableContainer>
+            <Pagination
+              totalPages={skuPages}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          </Box>
+        )
+      )}
     </VStack>
   );
 };

@@ -56,7 +56,7 @@ const SignUp = () => {
   };
 
   return (
-    <Stack spacing={8} mx={'auto'} pt={20} pb={36}>
+    <Stack spacing={8} mx={'auto'} pt={20}>
       <Heading fontSize={'4xl'}>User Sign Up</Heading>
       <Box
         rounded={'lg'}
@@ -70,6 +70,8 @@ const SignUp = () => {
               <FormControl isRequired>
                 <FormLabel htmlFor="first-name">First Name</FormLabel>
                 <Input
+                  borderRadius={6}
+                  size={'sm'}
                   id="first-name"
                   onChange={firstNameChange}
                   type="text"
@@ -79,6 +81,8 @@ const SignUp = () => {
               <FormControl isRequired>
                 <FormLabel htmlFor="last-name">Last Name</FormLabel>
                 <Input
+                  borderRadius={6}
+                  size={'sm'}
                   id="last-name"
                   onChange={lastNameChange}
                   type="text"
@@ -88,18 +92,27 @@ const SignUp = () => {
             </HStack>
             <FormControl isRequired>
               <FormLabel htmlFor="email">Enter Email:</FormLabel>
-              <Input id="email" type="email" onChange={emailChange} required />
+              <Input
+                borderRadius={6}
+                size={'sm'}
+                id="email"
+                type="email"
+                onChange={emailChange}
+                required
+              />
             </FormControl>
             <FormControl isRequired>
               <FormLabel htmlFor="password">Enter Password:</FormLabel>
               <InputGroup>
                 <Input
+                  borderRadius={6}
+                  size={'sm'}
                   id="password"
                   type={show ? 'text' : 'password'}
                   onChange={passwordChange}
                   required
                 />
-                <InputRightElement onClick={handleClick}>
+                <InputRightElement pb={1.5} onClick={handleClick}>
                   {show ? <ViewOffIcon /> : <ViewIcon />}
                 </InputRightElement>
               </InputGroup>
@@ -111,12 +124,16 @@ const SignUp = () => {
                 pt={5}
                 justify="space-between"
               >
-                <Text>Already a user?</Text>
+                <Text size={'sm'}>Already a user?</Text>
                 <Link to="/login">
-                  <Text color={'blue.200'}>Login</Text>
+                  <Text size={'sm'} color={'blue.200'}>
+                    Login
+                  </Text>
                 </Link>
               </Stack>
               <Button
+                borderRadius={6}
+                size={'sm'}
                 bg={'blue.400'}
                 color={'white'}
                 _hover={{ color: 'blue.500' }}

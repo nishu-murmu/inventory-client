@@ -57,7 +57,7 @@ const Login = () => {
 
   const handleClick = () => setShow(!show);
   return (
-    <Stack spacing={8} mx={'auto'} pt={40} pb={20}>
+    <Stack spacing={8} mx={'auto'} pt={20}>
       <Heading>User Login</Heading>
       <Box
         rounded={'lg'}
@@ -69,18 +69,27 @@ const Login = () => {
           <Stack spacing={4}>
             <FormControl isRequired>
               <FormLabel htmlFor="email">Enter Email:</FormLabel>
-              <Input id="email" type="email" onChange={emailChange} required />
+              <Input
+                size={'sm'}
+                borderRadius={6}
+                id="email"
+                type="email"
+                onChange={emailChange}
+                required
+              />
             </FormControl>
             <FormControl isRequired>
               <FormLabel htmlFor="password">Enter Password:</FormLabel>
               <InputGroup>
                 <Input
+                  borderRadius={6}
+                  size={'sm'}
                   id="password"
                   type={show ? 'text' : 'password'}
                   onChange={passwordChange}
                   required
                 />
-                <InputRightElement onClick={handleClick}>
+                <InputRightElement pb={1.5} onClick={handleClick}>
                   {show ? <ViewOffIcon /> : <ViewIcon />}
                 </InputRightElement>
               </InputGroup>
@@ -98,6 +107,8 @@ const Login = () => {
                 </Text>
               </Stack>
               <Button
+                borderRadius={6}
+                size={'sm'}
                 w={'100%'}
                 type={'submit'}
                 bg={'blue.400'}
