@@ -158,8 +158,6 @@ const SalesReturn = () => {
     };
     filterHandler();
   }, [enteredAWB]);
-  // universal filter
-
   // received data filter
   useEffect(() => {
     const receivedData = async () => {
@@ -172,7 +170,6 @@ const SalesReturn = () => {
     receivedData();
   }, []);
   // Filter Count
-
   useEffect(() => {
     const filter = async filter => {
       const response = await fetch(

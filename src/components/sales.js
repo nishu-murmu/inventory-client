@@ -130,45 +130,26 @@ const Sales = () => {
     const result = await response.json();
     console.log(result);
   };
-  // update the product with dispatch
+  // update product using AWB to dispatch
   useEffect(() => {
     const updateHandler = async () => {
-      await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/sales/update',
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            awb: enteredAWB,
-            status,
-            date: new Date().toLocaleDateString().replace(/\//g, '-'),
-          }),
-        }
-      );
+      const response = await fetch('http://localhost:3001/api/sales/update', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          awb: enteredAWB,
+          status,
+          date: new Date().toLocaleDateString().replace(/\//g, '-'),
+        }),
+      });
+      const result = await response.json();
+      setFilterArray(result.allSales);
     };
     updateHandler();
   }, [status, enteredAWB]);
-  // filter the product according to AWB
+  // universal filters
   useEffect(() => {
-    const filterHandler = async () => {
-      const receivedList = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/sales/awbfilter',
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            awb: enteredAWB,
-            date: new Date().toLocaleDateString().replace(/\//g, '-'),
-          }),
-        }
-      );
-      const result = await receivedList.json();
-      setFilterArray(result);
-    };
-    filterHandler();
-  }, [enteredAWB]);
-  useEffect(() => {
-    const filter = async filter => {
+    const dispatchfilter = async filter => {
       const response = await fetch(
         'https://cryptic-bayou-61420.herokuapp.com/api/sales/filter',
         {
@@ -182,29 +163,11 @@ const Sales = () => {
         }
       );
       const result = await response.json();
+      setDispatchCount(result.length);
       setDispatchArray(result);
     };
-    const filterCount = async status => {
-      const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/sales/filterCount',
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            status: status,
-            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
-            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
-          }),
-        }
-      );
-      const count = await response.json();
-      setDispatchCount(count);
-    };
-    filter('dispatch');
-    filterCount('dispatch');
-  }, [startDate, endDate]);
-  useEffect(() => {
-    const filter = async filter => {
+    dispatchfilter('dispatch');
+    const pendingfilter = async filter => {
       const response = await fetch(
         'https://cryptic-bayou-61420.herokuapp.com/api/sales/filter',
         {
@@ -218,30 +181,11 @@ const Sales = () => {
         }
       );
       const result = await response.json();
-      console.log(result.length);
+      setPendingCount(result.length);
       setPendingArray(result);
     };
-    const filterCount = async status => {
-      const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/sales/filterCount',
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            status: status,
-            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
-            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
-          }),
-        }
-      );
-      const count = await response.json();
-      setPendingCount(count);
-    };
-    filter('pending');
-    filterCount('pending');
-  }, [startDate, endDate]);
-  useEffect(() => {
-    const filter = async filter => {
+    pendingfilter('pending');
+    const cancelfilter = async filter => {
       const response = await fetch(
         'https://cryptic-bayou-61420.herokuapp.com/api/sales/filter',
         {
@@ -255,26 +199,10 @@ const Sales = () => {
         }
       );
       const result = await response.json();
+      setCancelCount(result.length);
       setCancelArray(result);
     };
-    const filterCount = async status => {
-      const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/sales/filterCount',
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            status: status,
-            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
-            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
-          }),
-        }
-      );
-      const count = await response.json();
-      setCancelCount(count);
-    };
-    filter('cancel');
-    filterCount('cancel');
+    cancelfilter('cancel');
   }, [startDate, endDate]);
   // Date filter
   const SelectionRange = {
@@ -286,7 +214,7 @@ const Sales = () => {
     setEndDate(ranges.selection.endDate);
     setStartDate(ranges.selection.startDate);
   };
-  // testing
+  // removing duplicates
   const removeDups = async () => {
     const response = await fetch('http://localhost:3001/api/sales/grouped');
     const result = await response.json();
@@ -510,59 +438,66 @@ const Sales = () => {
       {/* Scan Section */}
       {!isScan && (
         <Box width={'auto'}>
-          <TableContainer
-            rounded={'lg'}
-            boxShadow={'lg'}
-            h={260}
-            w={1200}
-            overflowY={'auto'}
-            overflowX={'scroll'}
-          >
-            <Table variant={'simple'} size={'sm'}>
-              <Thead>
-                <Tr key={'header'}>
-                  <Th textAlign={'center'}>AWB</Th>
-                  <Th textAlign={'center'}>order id</Th>
-                  <Th textAlign={'center'}>SKU</Th>
-                  <Th textAlign={'center'}>Master SKU</Th>
-                  <Th textAlign={'center'}>QTY</Th>
-                  <Th textAlign={'center'}>Status</Th>
-                  <Th textAlign={'center'}>courier</Th>
-                  <Th textAlign={'center'}>date</Th>
-                  <Th textAlign={'center'}>firm</Th>
-                  <Th textAlign={'center'}>Portal</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {filterArray.map(item => (
-                  <Tr key={item._id}>
-                    <Td>{item.AWB}</Td>
-                    <Td>{item['ORDER ID']}</Td>
-                    <Td>{item.SKU}</Td>
-                    <Td>{item.mastersku}</Td>
-                    <Td>{item.QTY}</Td>
-                    <Td>
-                      <Select
-                        onChange={e => {
-                          setStatus(e.target.value);
-                        }}
-                        value={status}
-                        mx={8}
-                      >
-                        <option value={'dispatch'}>dispatch</option>
-                        <option value={'pending'}>pending</option>
-                        <option value={'cancel'}>cancel</option>
-                      </Select>
-                    </Td>
-                    <Td>{item.courier}</Td>
-                    <Td>{item.date}</Td>
-                    <Td>{item.firm}</Td>
-                    <Td>{item['PORTAL\r']}</Td>
+          {filterArray === null ? (
+            <Box mt={20}>Enter AWB for scan</Box>
+          ) : (
+            <TableContainer
+              rounded={'lg'}
+              boxShadow={'lg'}
+              h={260}
+              w={1200}
+              overflowY={'auto'}
+              overflowX={'scroll'}
+            >
+              <Table variant={'simple'} size={'sm'}>
+                <Thead>
+                  <Tr key={'header'}>
+                    <Th textAlign={'center'}>AWB</Th>
+                    <Th textAlign={'center'}>order id</Th>
+                    <Th textAlign={'center'}>SKU</Th>
+                    <Th textAlign={'center'}>Master SKU</Th>
+                    <Th textAlign={'center'}>QTY</Th>
+                    <Th textAlign={'center'}>Status</Th>
+                    <Th textAlign={'center'}>courier</Th>
+                    <Th textAlign={'center'}>date</Th>
+                    <Th textAlign={'center'}>firm</Th>
+                    <Th textAlign={'center'}>Portal</Th>
                   </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+                </Thead>
+                <Tbody>
+                  {
+                    <Tr key={filterArray.AWB}>
+                      <Td>{filterArray.AWB}</Td>
+                      <Td>{filterArray['ORDER ID']}</Td>
+                      <Td>{filterArray.SKU}</Td>
+                      <Td>{filterArray.mastersku}</Td>
+                      <Td>{filterArray.QTY}</Td>
+                      <Td>
+                        <Select
+                          size={'sm'}
+                          borderRadius={6}
+                          width="auto"
+                          onChange={e => {
+                            setStatus(e.target.value);
+                          }}
+                          value={status}
+                          mx={8}
+                        >
+                          <option value={'dispatch'}>dispatch</option>
+                          <option value={'pending'}>pending</option>
+                          <option value={'cancel'}>cancel</option>
+                        </Select>
+                      </Td>
+                      <Td>{filterArray.courier}</Td>
+                      <Td>{filterArray.date}</Td>
+                      <Td>{filterArray.firm}</Td>
+                      <Td>{filterArray['PORTAL\r']}</Td>
+                    </Tr>
+                  }
+                </Tbody>
+              </Table>
+            </TableContainer>
+          )}
         </Box>
       )}
       {/* Filters Section */}
