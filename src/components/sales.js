@@ -163,7 +163,7 @@ const Sales = () => {
       );
       const result = await response.json();
       setDispatchCount(result.length);
-      setDispatchArray(result);
+      setDispatchArray(result.filterList);
     };
     dispatchfilter('dispatch');
     const pendingfilter = async filter => {
@@ -181,7 +181,7 @@ const Sales = () => {
       );
       const result = await response.json();
       setPendingCount(result.length);
-      setPendingArray(result);
+      setPendingArray(result.filterList);
     };
     pendingfilter('pending');
     const cancelfilter = async filter => {
@@ -199,7 +199,7 @@ const Sales = () => {
       );
       const result = await response.json();
       setCancelCount(result.length);
-      setCancelArray(result);
+      setCancelArray(result.filterList);
     };
     cancelfilter('cancel');
   }, [startDate, endDate]);
