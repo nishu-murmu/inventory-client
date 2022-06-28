@@ -107,7 +107,7 @@ const Sales = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(array),
     });
-    // await fetch('http://localhost:3001/api/sales/bulkupdate', {
+    // await fetch('https://cryptic-bayou-61420.herokuapp.com/api/sales/bulkupdate', {
     //   method: 'PUT',
     //   headers: { 'Content-Type': 'application/json' },
     //   body: JSON.stringify(array),

@@ -18,7 +18,7 @@ const Navigation = () => {
           <FaHome />
         </Button>
       </Link>
-      <Menu size={'sm'} pt={2}>
+      <Menu>
         <MenuButton size={'sm'} as={Button}>
           Display SKUs
         </MenuButton>

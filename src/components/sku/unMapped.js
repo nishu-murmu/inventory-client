@@ -9,7 +9,6 @@ import {
   Tr,
   Th,
   Td,
-  useColorModeValue,
   Box,
   HStack,
   // FormLabel,
@@ -18,6 +17,8 @@ import {
   Button,
   Radio,
   RadioGroup,
+  InputGroup,
+  InputRightAddon,
   // Button,
 } from '@chakra-ui/react';
 // import { DownloadIcon } from '@chakra-ui/icons';
@@ -30,6 +31,7 @@ const UnMapped = () => {
   const [mastersku, setmastersku] = useState('unmapped');
   const [unmappedArray, setUnMappedArray] = useState([]);
   const [isUnmapped, setIsUnMapped] = useState(false);
+  const [sku, setSku] = useState('');
   // pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [skuPerPage] = useState(10);
@@ -71,29 +73,54 @@ const UnMapped = () => {
   // get unmapped skus from sales and sales return
   useEffect(() => {
     const getUnMapped = async () => {
-      const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/sales/getall'
-      );
-      const result = await response.json();
-      setUnMappedArray(result);
-    };
-    getUnMapped();
-  }, []);
-  // get mapped skus with master sku
-  const updateUnMappedHandler = async (id, mastersku) => {
-    const response = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/sales/updatemapped',
-      {
+      const response = await fetch('http://localhost:3001/api/sales/dispatch', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: id,
-          mastersku: mastersku,
-        }),
-      }
-    );
+      });
+      const result = await response.json();
+      setUnMappedArray(result.getList);
+    };
+    getUnMapped();
+  }, [sku]);
+  const onSearch = async () => {
+    const response = await fetch('http://localhost:3001/api/sales/dispatch', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sku }),
+    });
     const result = await response.json();
-    console.log(result);
+    setUnMappedArray(result.searchfilterList);
+  };
+  // get mapped skus with master sku
+  const updateUnMappedHandler = async (sku, mastersku) => {
+    // await fetch(
+    //   'https://cryptic-bayou-61420.herokuapp.com/api/sales/updatemapped',
+    //   {
+    //     method: 'PUT',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({
+    //       mastersku: mastersku,
+    //     }),
+    //   }
+    // );
+    console.log(mastersku);
+    await fetch('http://localhost:3001/api/sales/dispatch', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mastersku, sku }),
+    })
+      .then(res => {
+        return res.json();
+      })
+      .then(data => console.log(data));
+    await fetch('http://localhost:3001/api/master/groupedmaster', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mastersku,
+        sku,
+      }),
+    });
   };
   // get master skus
   useEffect(() => {
@@ -107,14 +134,14 @@ const UnMapped = () => {
         });
     };
     masterskuHandler();
-    const getSalesList = async () => {
-      await fetch('https://cryptic-bayou-61420.herokuapp.com/api/sales/getall')
-        .then(res => {
-          return res.json();
-        })
-        .then(data => console.log(data));
-    };
-    getSalesList();
+    // const getSalesList = async () => {
+    //   await fetch('https://cryptic-bayou-61420.herokuapp.com/api/sales/getall')
+    //     .then(res => {
+    //       return res.json();
+    //     })
+    //     .then(data => console.log(data));
+    // };
+    // getSalesList();
   }, []);
   // pagination
   const skuRecords = unmappedArray.slice(FirstSKUIndex, LastSKUIndex);
@@ -124,26 +151,42 @@ const UnMapped = () => {
       <Heading size={'md'} pt={2}>
         Unmapped SKU Section
       </Heading>
-      <RadioGroup pt={4} defaultChecked={'1'}>
-        <HStack spacing={4}>
-          <Radio
-            onChange={() => {
-              setIsUnMapped(false);
+      <HStack spacing={40} pt={4}>
+        <RadioGroup defaultChecked={'1'}>
+          <HStack spacing={4}>
+            <Radio
+              onChange={() => {
+                setIsUnMapped(false);
+              }}
+              value={'1'}
+            >
+              UnMapped
+            </Radio>
+            <Radio
+              onChange={() => {
+                setIsUnMapped(true);
+              }}
+              value={'2'}
+            >
+              Mapped
+            </Radio>
+          </HStack>
+        </RadioGroup>
+        <InputGroup size={'sm'}>
+          <Input
+            size={'sm'}
+            placeholder={'Enter SKU'}
+            textAlign={'center'}
+            borderRadius={6}
+            onChange={e => {
+              setSku(e.target.value);
             }}
-            value={'1'}
-          >
-            UnMapped
-          </Radio>
-          <Radio
-            onChange={() => {
-              setIsUnMapped(true);
-            }}
-            value={'2'}
-          >
-            Mapped
-          </Radio>
-        </HStack>
-      </RadioGroup>
+          />
+          <InputRightAddon as={Button} onClick={onSearch} borderRadius={6}>
+            Search
+          </InputRightAddon>
+        </InputGroup>
+      </HStack>
 
       {/* <Box textAlign={'center'} width={80}>
         <FormLabel
@@ -230,7 +273,7 @@ const UnMapped = () => {
                           size={'sm'}
                           variant={'outline'}
                           onClick={() => {
-                            updateUnMappedHandler(item._id, mastersku);
+                            updateUnMappedHandler(item.SKU, mastersku);
                           }}
                         >
                           submit
@@ -249,48 +292,40 @@ const UnMapped = () => {
           />
         </Box>
       ) : (
-        {
-          /* Mapped SKU Table */
-        }(
-          <Box pt={6}>
-            <Heading size={'sm'} pb={2}>
-              Mapped SKU Table
-            </Heading>
-            <TableContainer
-              rounded={'lg'}
-              boxShadow={'lg'}
-              overflowY={'auto'}
-              overflowX={'auto'}
-              h={260}
-              width={600}
-              // bg={useColorModeValue('gray.100', 'gray.700')}
-            >
-              <Table variant="simple" size={'sm'}>
-                <Thead
-                  position={'sticky'}
-                  top={0}
-                  backgroundColor={'lightblue'}
-                >
-                  <Tr>
-                    <Th textAlign={'center'}>Mapped SKUs</Th>
-                    <Th textAlign={'center'}>Master SKUs</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  <Tr>
-                    <Td textAlign={'center'}>test</Td>
-                    <Td textAlign={'center'}>test</Td>
-                  </Tr>
-                </Tbody>
-              </Table>
-            </TableContainer>
-            <Pagination
-              totalPages={skuPages}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-            />
-          </Box>
-        )
+        <Box pt={6}>
+          <Heading size={'sm'} pb={2}>
+            Mapped SKU Table
+          </Heading>
+          <TableContainer
+            rounded={'lg'}
+            boxShadow={'lg'}
+            overflowY={'auto'}
+            overflowX={'auto'}
+            h={260}
+            width={600}
+            // bg={useColorModeValue('gray.100', 'gray.700')}
+          >
+            <Table variant="simple" size={'sm'}>
+              <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
+                <Tr>
+                  <Th textAlign={'center'}>Mapped SKUs</Th>
+                  <Th textAlign={'center'}>Master SKUs</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                <Tr>
+                  <Td textAlign={'center'}>test</Td>
+                  <Td textAlign={'center'}>test</Td>
+                </Tr>
+              </Tbody>
+            </Table>
+          </TableContainer>
+          <Pagination
+            totalPages={skuPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        </Box>
       )}
     </VStack>
   );

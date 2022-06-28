@@ -11,6 +11,10 @@ import {
   Heading,
   useColorModeValue,
   HStack,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
@@ -43,7 +47,7 @@ const LiveStock = () => {
   };
   const sendMergedArray = async () => {
     livestockArray.map(item =>
-      fetch('https://cryptic-bayou-61420.herokuapp.com/api/livestock/create', {
+      fetch('http://localhost:3001/api/livestock/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -56,6 +60,7 @@ const LiveStock = () => {
           sales: item.sales.length === 0 ? 0 : item.sales[0].QTY,
           salesReturn:
             item.salesreturn.length === 0 ? 0 : item.salesReturn[0].QTY,
+          skus: item.skus,
         }),
       })
     );
@@ -68,6 +73,7 @@ const LiveStock = () => {
       );
       const result = await response.json();
       setMergedArray(result);
+      console.log(result);
     };
     finalLiveStock();
   }, []);
@@ -104,7 +110,6 @@ const LiveStock = () => {
           <Thead position={'sticky'} top={0} backgroundColor={'lightblue'}>
             <Tr>
               <Th textAlign="center">Master SKU</Th>
-              <Th textAlign="center">SKU</Th>
               <Th textAlign="center">Opening Stock</Th>
               <Th textAlign="center">Purchase</Th>
               <Th textAlign="center">Sales</Th>
@@ -116,8 +121,20 @@ const LiveStock = () => {
           <Tbody>
             {mergedArray.map(item => (
               <Tr key={item._id}>
-                <Td textAlign="center">{item.mastersku}</Td>
-                <Td textAlign="center"> SKU</Td>
+                <Td textAlign="center">
+                  <Menu>
+                    <MenuButton>{item.mastersku}</MenuButton>
+                    <MenuList>
+                      {item.skus !== undefined ? (
+                        item.skus.map(item => (
+                          <MenuItem key={item}> {item}</MenuItem>
+                        ))
+                      ) : (
+                        <MenuItem>None</MenuItem>
+                      )}
+                    </MenuList>
+                  </Menu>
+                </Td>
                 <Td textAlign="center"> {0}</Td>
                 <Td textAlign="center"> {item.purchase}</Td>
                 <Td textAlign="center"> {item.sales}</Td>

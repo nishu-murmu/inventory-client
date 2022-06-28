@@ -1,64 +1,68 @@
 import { useState, useEffect } from 'react';
 import {
-  Box,
+  Input,
   Table,
   TableContainer,
   Thead,
   Tbody,
   Tr,
   Th,
-  Input,
-  Text,
-  FormLabel,
   Td,
   Heading,
+  FormLabel,
   Button,
   Spinner,
+  HStack,
   VStack,
-  Flex,
-  FormControl,
+  Box,
+  InputGroup,
   Select,
   useDisclosure,
+  InputRightAddon,
+  FormControl,
 } from '@chakra-ui/react';
 import { Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalBody, ModalContent } from '@chakra-ui/react';
-import { saveAs } from 'file-saver';
 
 import { DownloadIcon } from '@chakra-ui/icons';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
+import { saveAs } from 'file-saver';
 // files
 import Pagination from './pagination';
-const SalesReturn = () => {
+
+const Sales = () => {
+  // states
   const [file, setFile] = useState();
   const fileReader = new FileReader();
   const [isLoading, setIsLoading] = useState(false);
+  // pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(10);
   const LastProductIndex = currentPage * productsPerPage;
   const FirstProductIndex = LastProductIndex - productsPerPage;
-
-  const [status, setStatus] = useState('');
+  // scanning states
+  const [status, setStatus] = useState('received');
   const [enteredAWB, setEnteredAWB] = useState('');
-
+  // date filter states
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-
+  // filter states
   const [receivedCount, setReceivedCount] = useState(0);
   const [wrongCount, setWrongCount] = useState(0);
   const [partialCount, setPartialCount] = useState(0);
 
-  const [receivedArray, setIsReceivedArray] = useState([]);
-  const [wrongArray, setIsWrongArray] = useState([]);
-  const [partialArray, setIsPartialArray] = useState([]);
+  const [receivedArray, setReceivedArray] = useState([]);
+  const [wrongArray, setWrongArray] = useState([]);
+  const [partialArray, setPartialArray] = useState([]);
   const [filterArray, setFilterArray] = useState([]);
 
   const [isScan, setIsScan] = useState(false);
   const [isReceived, setIsReceived] = useState(true);
   const [isPartial, setIsPartial] = useState(true);
   const [isWrong, setIsWrong] = useState(true);
-
+  // Event Handlers
   const onChangeHandler = e => {
     setFile(e.target.files[0]);
   };
@@ -86,31 +90,34 @@ const SalesReturn = () => {
     if (isPartial === false) setIsPartial(true);
     if (isWrong === true) setIsWrong(false);
   };
-
-  const handleSelect = ranges => {
-    setEndDate(ranges.selection.endDate);
-    setStartDate(ranges.selection.startDate);
-  };
-  // convert csv to array
-  const csvFileToArray = string => {
+  // csv to array conversion
+  const csvFileToArray = async string => {
     const csvHeader = string.slice(0, string.indexOf('\n')).split(',');
     const csvRows = string.slice(string.indexOf('\n') + 1).split('\n');
-
     const array = csvRows.map(i => {
-      const values = i.split(',');
+      const values = i.split(',') || i.split(' ');
       const obj = csvHeader.reduce((object, header, index) => {
         object[header] = values[index];
         return object;
       }, {});
       return obj;
     });
-    fetch('https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/create', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(array),
-    });
+    await fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/create',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(array),
+      }
+    );
+    // await fetch('http://localhost:3001/api/salesReturn/bulkupdate', {
+    //   method: 'PUT',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(array),
+    // });
+    // console.log(array);
   };
-  // submit csv file
+  // submit csv file to function
   const onSubmitHandler = e => {
     setIsLoading(true);
     if (file) {
@@ -121,10 +128,10 @@ const SalesReturn = () => {
       fileReader.readAsText(file);
     }
   };
-  // update the status
+  // update product using AWB to received
   useEffect(() => {
     const updateHandler = async () => {
-      await fetch(
+      const response = await fetch(
         'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/update',
         {
           method: 'PUT',
@@ -136,42 +143,14 @@ const SalesReturn = () => {
           }),
         }
       );
+      const result = response.json();
+      setFilterArray(result);
     };
     updateHandler();
   }, [status, enteredAWB]);
-  // filter the product according to AWB
+  // universal filters
   useEffect(() => {
-    const filterHandler = async () => {
-      const receivedList = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/awbfilter',
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            awb: enteredAWB,
-            date: new Date().toLocaleDateString().replace(/\//g, '-'),
-          }),
-        }
-      );
-      const result = await receivedList.json();
-      setFilterArray(result);
-    };
-    filterHandler();
-  }, [enteredAWB]);
-  // received data filter
-  useEffect(() => {
-    const receivedData = async () => {
-      const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/received'
-      );
-      const result = await response.json();
-      setIsReceivedArray(result);
-    };
-    receivedData();
-  }, []);
-  // Filter Count
-  useEffect(() => {
-    const filter = async filter => {
+    const receivedfilter = async filter => {
       const response = await fetch(
         'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filter',
         {
@@ -185,30 +164,11 @@ const SalesReturn = () => {
         }
       );
       const result = await response.json();
-      if (filter === 'received')
-        setIsReceivedArray(prev => [...prev, ...result]);
+      setReceivedCount(result.length);
+      setReceivedArray(result.filterList);
     };
-    const filterCount = async status => {
-      const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filterCount',
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            status: status,
-            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
-            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
-          }),
-        }
-      );
-      const count = await response.json();
-      if (status === 'received') setReceivedCount(count);
-    };
-    filterCount('received');
-    filter('received');
-  }, [isReceived, startDate, endDate]);
-  useEffect(() => {
-    const filter = async filter => {
+    receivedfilter('received');
+    const partialfilter = async filter => {
       const response = await fetch(
         'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filter',
         {
@@ -222,29 +182,11 @@ const SalesReturn = () => {
         }
       );
       const result = await response.json();
-      if (filter === 'wrong') setIsWrongArray(result);
+      setPartialArray(result.filterList);
+      setPartialCount(result.length);
     };
-    const filterCount = async status => {
-      const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filterCount',
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            status: status,
-            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
-            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
-          }),
-        }
-      );
-      const count = await response.json();
-      if (status === 'wrong') setWrongCount(count);
-    };
-    filterCount('wrong');
-    filter('wrong');
-  }, [isWrong, endDate, startDate]);
-  useEffect(() => {
-    const filter = async filter => {
+    partialfilter('partial');
+    const wrongfilter = async filter => {
       const response = await fetch(
         'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filter',
         {
@@ -258,40 +200,60 @@ const SalesReturn = () => {
         }
       );
       const result = await response.json();
-      if (filter === 'partial') setIsPartialArray(result);
+      setWrongCount(result.length);
+      setWrongArray(result.filterList);
     };
-    const filterCount = async status => {
-      const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filterCount',
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            status: status,
-            sd: startDate.toLocaleDateString().replace(/\//g, '-'),
-            ed: endDate.toLocaleDateString().replace(/\//g, '-'),
-          }),
-        }
-      );
-      const count = await response.json();
-      if (status === 'partial') setPartialCount(count);
-    };
-    filterCount('partial');
-    filter('partial');
-  }, [isPartial, endDate, startDate]);
-
-  const currentRecords = receivedArray.slice(
+    wrongfilter('wrong');
+  }, [startDate, endDate]);
+  // Date filter
+  const SelectionRange = {
+    startDate: startDate,
+    endDate: endDate,
+    key: 'selection',
+  };
+  const handleSelect = ranges => {
+    setEndDate(ranges.selection.endDate);
+    setStartDate(ranges.selection.startDate);
+  };
+  // Searching filter
+  const onSearch = async status => {
+    const response = await fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filter',
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          enteredAWB,
+          status,
+        }),
+      }
+    );
+    const result = await response.json();
+    if (status === 'received') setReceivedArray(result.searchfilterList);
+    if (status === 'partial') setPartialArray(result.searchfilterList);
+    if (status === 'wrong') setWrongArray(result.searchfilterList);
+  };
+  // removing duplicates
+  const removeDups = async () => {
+    const response = await fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/grouped'
+    );
+    await response.json();
+  };
+  // pagination
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const receivedRecords = receivedArray.slice(
     FirstProductIndex,
     LastProductIndex
   );
-  const pages = Math.ceil(receivedArray.length / productsPerPage);
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const SelectionRange = {
-    startDate,
-    endDate,
-    key: 'selection',
-  };
+  const receivedpages = Math.ceil(receivedArray.length / productsPerPage);
+  const partialRecords = partialArray.slice(
+    FirstProductIndex,
+    LastProductIndex
+  );
+  const partialpages = Math.ceil(partialArray.length / productsPerPage);
+  const wrongRecords = wrongArray.slice(FirstProductIndex, LastProductIndex);
+  const wrongpages = Math.ceil(Array.length / productsPerPage);
   const downloadFile = (array, status) => {
     const csv = array
       .map(item => {
@@ -306,94 +268,241 @@ const SalesReturn = () => {
     if (status === 'partial') saveAs(blob, 'partial.csv');
     if (status === 'wrong') saveAs(blob, 'wrong.csv');
   };
-
   return (
-    <VStack p={4} pb={20}>
-      <Heading size={'md'} pb={10}>
+    <VStack>
+      <Heading as={'h2'} size={'md'} mt={4}>
         Sales Return Section
       </Heading>
-      <Box textAlign={'center'}>
-        <FormControl>
-          <FormLabel
-            w={'100%'}
-            htmlFor={'csvInput'}
-            padding={'7px 0px'}
-            border={'1px solid grey'}
-            _hover={{ cursor: 'pointer' }}
-            borderRadius={'5px'}
-          >
-            <Text textAlign={'center'}>
-              Select csv <DownloadIcon />
-            </Text>
-          </FormLabel>
-          <Input
-            size={'sm'}
-            borderRadius={6}
-            display={'none'}
-            type={'file'}
-            id={'csvInput'}
-            accept={'.csv'}
-            onChange={onChangeHandler}
-          />
-          <Button
-            size={'sm'}
-            type={'button'}
-            w={'100%'}
-            onClick={onSubmitHandler}
-            variant={'outline'}
-          >
-            Import
-          </Button>
-        </FormControl>
-        <Button size={'sm'} mt={4} width={'100%'} onClick={onOpen}>
-          Date Filter
-        </Button>
-        <Modal size={'sm'} isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalBody>
-              <DateRange ranges={[SelectionRange]} onChange={handleSelect} />
-            </ModalBody>
-          </ModalContent>
-        </Modal>
-        <Flex py={2}>
-          <Button size={'sm'} onClick={switchScanHandler}>
-            Scan Products
-          </Button>
-          <Menu>
-            <MenuButton size={'sm'} as={Button}>
-              List Products
-            </MenuButton>
-            <MenuList>
-              <MenuItem onClick={switchReceivedHandler}>Received List</MenuItem>
-              <MenuItem onClick={switchPartialHandler}>Partial List</MenuItem>
-              <MenuItem onClick={switchWrongHandler}>Wrong List</MenuItem>
-            </MenuList>
-          </Menu>
-        </Flex>
-        <Input
-          size={'sm'}
-          type={'text'}
-          mt={5}
-          textAlign={'center'}
-          onChange={e => {
-            setEnteredAWB(e.target.value);
-            setStatus('received');
-            e.target.select();
-          }}
-          value={enteredAWB}
-          placeholder="Enter AWB"
-          autoFocus
-          autoCapitalize="true"
-        />
-      </Box>
-
+      {!isScan && (
+        <HStack spacing={80}>
+          {/* VStack 2 */}
+          <VStack>
+            <HStack spacing={2}>
+              <Button size={'sm'} onClick={switchScanHandler}>
+                Scan Products
+              </Button>
+              <Menu size={'sm'}>
+                <MenuButton size={'sm'} as={Button}>
+                  List Products
+                </MenuButton>
+                <MenuList>
+                  <MenuItem onClick={switchReceivedHandler}>
+                    Received List
+                  </MenuItem>
+                  <MenuItem onClick={switchPartialHandler}>
+                    Partial List
+                  </MenuItem>
+                  <MenuItem onClick={switchWrongHandler}>Wrong List</MenuItem>
+                </MenuList>
+              </Menu>
+            </HStack>
+            <Input
+              size={'sm'}
+              borderRadius={6}
+              type={'text'}
+              mt={5}
+              textAlign={'center'}
+              onChange={e => {
+                setEnteredAWB(e.target.value);
+                setStatus('received');
+                e.target.select();
+              }}
+              value={enteredAWB}
+              placeholder="Enter AWB"
+              autoFocus
+              autoCapitalize="true"
+            />
+          </VStack>
+          {/* VStack 1 */}
+          <VStack>
+            <InputGroup size={'sm'}>
+              <FormLabel
+                width={'100%'}
+                htmlFor={'csvInput'}
+                _hover={{ cursor: 'pointer' }}
+                textAlign={'center'}
+              >
+                Upload File
+              </FormLabel>
+              <Input
+                display={'none'}
+                type={'file'}
+                id={'csvInput'}
+                accept={'.csv'}
+                onChange={onChangeHandler}
+              />
+              <InputRightAddon
+                type={'button'}
+                variant={'outline'}
+                children={'Select csv'}
+                _hover={{ cursor: 'pointer' }}
+                onClick={onSubmitHandler}
+              >
+                Import
+                <DownloadIcon ml={1} mt={1} />
+              </InputRightAddon>
+            </InputGroup>
+            <InputGroup size={'sm'}>
+              <FormControl>
+                <FormLabel
+                  htmlFor="bulk"
+                  width={'100%'}
+                  _hover={{ cursor: 'pointer' }}
+                  textAlign="center"
+                  borderRadius={'5px'}
+                >
+                  Upload for Bulk Scan
+                </FormLabel>
+                <Input
+                  borderRadius={6}
+                  id={'bulk'}
+                  accept={'. csv'}
+                  display="none"
+                  type={'file'}
+                  onChange={onChangeHandler}
+                />
+              </FormControl>
+              <InputRightAddon
+                type={'button'}
+                _hover={{ cursor: 'pointer' }}
+                variant={'outline'}
+                children={'Select csv'}
+                onClick={onSubmitHandler}
+              >
+                Import <DownloadIcon ml={1} mt={1} />
+              </InputRightAddon>
+            </InputGroup>
+          </VStack>
+        </HStack>
+      )}
+      {isScan && (
+        <HStack spacing={40}>
+          {/* VStack 2 */}
+          <VStack>
+            <HStack spacing={2}>
+              <Button size={'sm'} onClick={switchScanHandler}>
+                Scan Products
+              </Button>
+              <Menu size={'sm'}>
+                <MenuButton size={'sm'} as={Button}>
+                  List Products
+                </MenuButton>
+                <MenuList>
+                  <MenuItem onClick={switchReceivedHandler}>
+                    Received List
+                  </MenuItem>
+                  <MenuItem onClick={switchPartialHandler}>
+                    Partial List
+                  </MenuItem>
+                  <MenuItem onClick={switchWrongHandler}>Wrong List</MenuItem>
+                </MenuList>
+              </Menu>
+            </HStack>
+            {isScan && (
+              <Button
+                width={'100%'}
+                size={'sm'}
+                onClick={() => {
+                  if (!isReceived) downloadFile(receivedArray, 'received');
+                  if (!isPartial) downloadFile(partialArray, 'partial');
+                  if (!isWrong) downloadFile(wrongArray, 'wrong');
+                }}
+              >
+                Download file
+              </Button>
+            )}
+          </VStack>
+          {/* VStack 3 */}
+          <VStack>
+            <Button width={'100%'} size={'sm'} onClick={onOpen}>
+              Date Filter
+            </Button>
+            <Button width={'100%'} size={'sm'} onClick={removeDups}>
+              Remove
+            </Button>
+            <Modal size={'sm'} isOpen={isOpen} onClose={onClose}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalBody>
+                  <DateRange
+                    ranges={[SelectionRange]}
+                    onChange={handleSelect}
+                    moveRangeOnFirstSelection
+                    retainEndDateOnFirstSelection
+                    maxDate={new Date()}
+                  />
+                </ModalBody>
+              </ModalContent>
+            </Modal>
+          </VStack>
+          {/* VStack 4 */}
+          <VStack>
+            <InputGroup size={'sm'}>
+              <Input
+                borderRadius={6}
+                size={'sm'}
+                type={'text'}
+                textAlign={'center'}
+                placeholder={'Enter SKU'}
+                value={enteredAWB}
+                autoFocus
+                onChange={e => {
+                  setEnteredAWB(e.target.value);
+                }}
+              />
+              {!isReceived ? (
+                <InputRightAddon
+                  onClick={() => {
+                    onSearch('received');
+                  }}
+                  borderRadius={6}
+                  as={Button}
+                >
+                  Search
+                </InputRightAddon>
+              ) : !isPartial ? (
+                <InputRightAddon
+                  onClick={() => {
+                    onSearch('partial');
+                  }}
+                  borderRadius={6}
+                  as={Button}
+                >
+                  Search
+                </InputRightAddon>
+              ) : !isWrong ? (
+                <InputRightAddon
+                  onClick={() => {
+                    onSearch('wrong');
+                  }}
+                  borderRadius={6}
+                  as={Button}
+                >
+                  Search
+                </InputRightAddon>
+              ) : (
+                alert('something wrong')
+              )}
+            </InputGroup>
+            <Button size={'sm'} width={'100%'} px={20} variant={'outline'}>
+              {!isReceived
+                ? `${receivedCount}`
+                : !isPartial
+                ? `${partialCount}`
+                : !isWrong
+                ? `${wrongCount}`
+                : '0'}
+            </Button>
+          </VStack>
+        </HStack>
+      )}
       {/* Scan Section */}
       {!isScan && (
-        <Box>
-          {enteredAWB.trim().length !== 0 && (
+        <Box width={'auto'}>
+          {filterArray === null ? (
+            <Box mt={20}>Enter AWB for scan</Box>
+          ) : (
             <TableContainer
-              pt={10}
               rounded={'lg'}
               boxShadow={'lg'}
               h={260}
@@ -404,92 +513,70 @@ const SalesReturn = () => {
               <Table variant={'simple'} size={'sm'}>
                 <Thead>
                   <Tr key={'header'}>
-                    <Th textAlign={'center'}>Suborder ID</Th>
-                    <Th textAlign={'center'}>Order ID</Th>
                     <Th textAlign={'center'}>AWB</Th>
+                    <Th textAlign={'center'}>order id</Th>
                     <Th textAlign={'center'}>SKU</Th>
+                    <Th textAlign={'center'}>Master SKU</Th>
                     <Th textAlign={'center'}>QTY</Th>
                     <Th textAlign={'center'}>Status</Th>
-                    <Th textAlign={'center'}>Return Received Date</Th>
-                    <Th textAlign={'center'}>WRONG RETURN</Th>
-                    <Th textAlign={'center'}>Return Request Date</Th>
-                    <Th textAlign={'center'}>
-                      Return Delivered Date As Per Website
-                    </Th>
+                    <Th textAlign={'center'}>courier</Th>
+                    <Th textAlign={'center'}>date</Th>
+                    <Th textAlign={'center'}>firm</Th>
                     <Th textAlign={'center'}>Portal</Th>
-                    <Th textAlign={'center'}>Return Type Web</Th>
-                    <Th textAlign={'center'}>Company</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {filterArray.map(item => (
-                    <Tr key={item._id}>
-                      <Td textAlign={'center'}>{item['Suborder ID']}</Td>
-                      <Td textAlign={'center'}>{item['Order ID']}</Td>
-                      <Td textAlign={'center'}>{item['AWB NO']}</Td>
-                      <Td textAlign={'center'}>{item.SKU}</Td>
-                      <Td textAlign={'center'}>{item.QTY}</Td>
-                      <Td mr={10}>
+                  {
+                    <Tr key={filterArray.AWB}>
+                      <Td>{filterArray.AWB}</Td>
+                      <Td>{filterArray['ORDER ID']}</Td>
+                      <Td>{filterArray.SKU}</Td>
+                      <Td>{filterArray.mastersku}</Td>
+                      <Td>{filterArray.QTY}</Td>
+                      <Td>
                         <Select
-                          mx={8}
+                          size={'sm'}
+                          borderRadius={6}
+                          width="auto"
                           onChange={e => {
                             setStatus(e.target.value);
                           }}
                           value={status}
+                          mx={8}
                         >
                           <option value={'received'}>received</option>
                           <option value={'partial'}>partial</option>
                           <option value={'wrong'}>wrong</option>
                         </Select>
                       </Td>
-                      <Td textAlign={'center'}>
-                        {item['Return Received Date']}
-                      </Td>
-                      <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
-                      <Td textAlign={'center'}>
-                        {item['Return Request Date']}
-                      </Td>
-                      <Td textAlign={'center'}>
-                        {item['Return Delivered Date As Per Website']}
-                      </Td>
-                      <Td textAlign={'center'}>{item.Portal}</Td>
-                      <Td textAlign={'center'}>{item['RETURN TYPE WEB']}</Td>
-                      <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
+                      <Td>{filterArray.courier}</Td>
+                      <Td>{filterArray.date}</Td>
+                      <Td>{filterArray.firm}</Td>
+                      <Td>{filterArray['PORTAL\r']}</Td>
                     </Tr>
-                  ))}
+                  }
                 </Tbody>
               </Table>
             </TableContainer>
           )}
         </Box>
       )}
-
       {/* Filters Section */}
       {isScan && (
         <Box>
-          <Flex py={8} justifyContent={'space-between'}>
-            <Heading mt={2} size={'sm'}>
-              {!isReceived
-                ? 'Received Table'
-                : !isPartial
-                ? 'Partial Table'
-                : !isWrong
-                ? 'Wrong Table'
-                : ''}
-            </Heading>
-            <Button size={'sm'}>
-              {!isReceived
-                ? `${receivedCount}`
-                : !isPartial
-                ? `${partialCount}`
-                : !isWrong
-                ? `${wrongCount}`
-                : 'null'}
-            </Button>
-          </Flex>
+          <Heading size={'sm'} py={2}>
+            {!isReceived
+              ? 'received Table'
+              : !isPartial
+              ? 'partial Table'
+              : !isWrong
+              ? 'wrong Table'
+              : ''}
+          </Heading>
+
           {isLoading && <Spinner size={'xl'} />}
           {!isLoading && (
-            <VStack>
+            <VStack mb={2}>
               <TableContainer
                 rounded={'lg'}
                 boxShadow={'lg'}
@@ -497,7 +584,6 @@ const SalesReturn = () => {
                 overflowX={'auto'}
                 h={260}
                 w={1200}
-                mb={20}
               >
                 <Table variant="simple" size={'sm'}>
                   <Thead
@@ -506,99 +592,63 @@ const SalesReturn = () => {
                     backgroundColor={'lightblue'}
                   >
                     <Tr key={'header'}>
-                      <Th textAlign={'center'}>Suborder ID</Th>
-                      <Th textAlign={'center'}>Order ID</Th>
                       <Th textAlign={'center'}>AWB</Th>
+                      <Th textAlign={'center'}>order id</Th>
                       <Th textAlign={'center'}>SKU</Th>
+                      <Th textAlign={'center'}>Master SKU</Th>
                       <Th textAlign={'center'}>QTY</Th>
-                      <Th textAlign={'center'}>Return Received Date</Th>
-                      <Th textAlign={'center'}>WRONG RETURN</Th>
-                      <Th textAlign={'center'}>Return Request Date</Th>
-                      <Th textAlign={'center'}>
-                        Return Delivered Date As Per Website
-                      </Th>
+                      <Th textAlign={'center'}>STATUS</Th>
+                      <Th textAlign={'center'}>courier</Th>
+                      <Th textAlign={'center'}>date</Th>
+                      <Th textAlign={'center'}>firm</Th>
                       <Th textAlign={'center'}>Portal</Th>
-                      <Th textAlign={'center'}>Return Type Web</Th>
-                      <Th textAlign={'center'}>Company</Th>
                     </Tr>
                   </Thead>
 
                   <Tbody>
                     {!isReceived ? (
-                      currentRecords.map(item => (
+                      receivedRecords.map(item => (
                         <Tr key={item._id}>
-                          <Td textAlign={'center'}>{item['Suborder ID']}</Td>
-                          <Td textAlign={'center'}>{item['Order ID']}</Td>
-                          <Td textAlign={'center'}>{item['AWB NO']}</Td>
-                          <Td textAlign={'center'}>{item.SKU}</Td>
-                          <Td textAlign={'center'}>{item.QTY}</Td>
-                          <Td textAlign={'center'}>
-                            {item['Return Received Date']}
-                          </Td>
-                          <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
-                          <Td textAlign={'center'}>
-                            {item['Return Request Date']}
-                          </Td>
-                          <Td textAlign={'center'}>
-                            {item['Return Delivered Date As Per Website']}
-                          </Td>
-                          <Td textAlign={'center'}>{item.Portal}</Td>
-                          <Td textAlign={'center'}>
-                            {item['RETURN TYPE WEB']}
-                          </Td>
-                          <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
+                          <Td>{item.AWB}</Td>
+                          <Td>{item['ORDER ID']}</Td>
+                          <Td>{item.SKU}</Td>
+                          <Td>{item.mastersku}</Td>
+                          <Td>{item.QTY}</Td>
+                          <Td>{item.status}</Td>
+                          <Td>{item.courier}</Td>
+                          <Td>{item.date}</Td>
+                          <Td>{item.firm}</Td>
+                          <Td>{item['PORTAL\r']}</Td>
                         </Tr>
                       ))
                     ) : !isPartial ? (
-                      partialArray.map(item => (
+                      partialRecords.map(item => (
                         <Tr key={item._id}>
-                          <Td textAlign={'center'}>{item['Suborder ID']}</Td>
-                          <Td textAlign={'center'}>{item['Order ID']}</Td>
-                          <Td textAlign={'center'}>{item['AWB NO']}</Td>
-                          <Td textAlign={'center'}>{item.SKU}</Td>
-                          <Td textAlign={'center'}>{item.QTY}</Td>
-                          <Td textAlign={'center'}>{item.status}</Td>
-                          <Td textAlign={'center'}>
-                            {item['Return Received Date']}
-                          </Td>
-                          <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
-                          <Td textAlign={'center'}>
-                            {item['Return Request Date']}
-                          </Td>
-                          <Td textAlign={'center'}>
-                            {item['Return Delivered Date As Per Website']}
-                          </Td>
-                          <Td textAlign={'center'}>{item.Portal}</Td>
-                          <Td textAlign={'center'}>
-                            {item['RETURN TYPE WEB']}
-                          </Td>
-                          <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
+                          <Td>{item.AWB}</Td>
+                          <Td>{item['ORDER ID']}</Td>
+                          <Td>{item.SKU}</Td>
+                          <Td>{item.mastersku}</Td>
+                          <Td>{item.QTY}</Td>
+                          <Td>{item.status}</Td>
+                          <Td>{item.courier}</Td>
+                          <Td>{item.date}</Td>
+                          <Td>{item.firm}</Td>
+                          <Td>{item['PORTAL\r']}</Td>
                         </Tr>
                       ))
                     ) : !isWrong ? (
-                      wrongArray.map(item => (
+                      wrongRecords.map(item => (
                         <Tr key={item._id}>
-                          <Td textAlign={'center'}>{item['Suborder ID']}</Td>
-                          <Td textAlign={'center'}>{item['Order ID']}</Td>
-                          <Td textAlign={'center'}>{item['AWB NO']}</Td>
-                          <Td textAlign={'center'}>{item.SKU}</Td>
-                          <Td textAlign={'center'}>{item.QTY}</Td>
-                          <Td textAlign={'center'}>{item.status}</Td>
-                          <Td textAlign={'center'}>
-                            {item['Return Received Date']}
-                          </Td>
-                          <Td textAlign={'center'}>{item['WRONG RETURN']}</Td>
-                          <Td textAlign={'center'}>
-                            {item['Return Request Date']}
-                          </Td>
-                          <Td textAlign={'center'}>
-                            {item['Return Delivered Date As Per Website']}
-                          </Td>
-                          <Td textAlign={'center'}>{item.Portal}</Td>
-                          <Td textAlign={'center'}>
-                            {item['RETURN TYPE WEB']}
-                          </Td>
-                          <Td textAlign={'center'}>{item['COMPANY\r']}</Td>
+                          <Td>{item.AWB}</Td>
+                          <Td>{item['ORDER ID']}</Td>
+                          <Td>{item.SKU}</Td>
+                          <Td>{item.mastersku}</Td>
+                          <Td>{item.QTY}</Td>
+                          <Td>{item.status}</Td>
+                          <Td>{item.courier}</Td>
+                          <Td>{item.date}</Td>
+                          <Td>{item.firm}</Td>
+                          <Td>{item['PORTAL\r']}</Td>
                         </Tr>
                       ))
                     ) : (
@@ -609,27 +659,32 @@ const SalesReturn = () => {
                   </Tbody>
                 </Table>
               </TableContainer>
-              <Button
-                size={'sm'}
-                onClick={() => {
-                  if (!isReceived) downloadFile(receivedArray, 'received');
-                  if (!isPartial) downloadFile(partialArray, 'partial');
-                  if (!isWrong) downloadFile(wrongArray, 'wrong');
-                }}
-              >
-                Download file
-              </Button>
             </VStack>
           )}
-          <Pagination
-            totalPages={pages}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
+          {!isReceived ? (
+            <Pagination
+              totalPages={receivedpages}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          ) : !isPartial ? (
+            <Pagination
+              totalPages={partialpages}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          ) : !isWrong ? (
+            <Pagination
+              totalPages={wrongpages}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          ) : (
+            <Box>Error</Box>
+          )}
         </Box>
       )}
     </VStack>
   );
 };
-
-export default SalesReturn;
+export default Sales;
