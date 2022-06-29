@@ -164,7 +164,7 @@ const Sales = () => {
         }
       );
       const result = await response.json();
-      setReceivedCount(result.length);
+      setReceivedCount(result.filterList.length);
       setReceivedArray(result.filterList);
     };
     receivedfilter('received');
@@ -183,7 +183,7 @@ const Sales = () => {
       );
       const result = await response.json();
       setPartialArray(result.filterList);
-      setPartialCount(result.length);
+      setPartialCount(result.filterList.length);
     };
     partialfilter('partial');
     const wrongfilter = async filter => {
@@ -200,7 +200,7 @@ const Sales = () => {
         }
       );
       const result = await response.json();
-      setWrongCount(result.length);
+      setWrongCount(result.filterList.length);
       setWrongArray(result.filterList);
     };
     wrongfilter('wrong');

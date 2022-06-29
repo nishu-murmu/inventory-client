@@ -162,7 +162,7 @@ const Sales = () => {
         }
       );
       const result = await response.json();
-      setDispatchCount(result.length);
+      setDispatchCount(result.filterList.length);
       setDispatchArray(result.filterList);
     };
     dispatchfilter('dispatch');
@@ -180,7 +180,7 @@ const Sales = () => {
         }
       );
       const result = await response.json();
-      setPendingCount(result.length);
+      setPendingCount(result.filterList.length);
       setPendingArray(result.filterList);
     };
     pendingfilter('pending');
@@ -198,7 +198,7 @@ const Sales = () => {
         }
       );
       const result = await response.json();
-      setCancelCount(result.length);
+      setCancelCount(result.filterList.length);
       setCancelArray(result.filterList);
     };
     cancelfilter('cancel');
