@@ -73,21 +73,27 @@ const UnMapped = () => {
   // get unmapped skus from sales and sales return
   useEffect(() => {
     const getUnMapped = async () => {
-      const response = await fetch('http://localhost:3001/api/sales/dispatch', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-      });
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/api/sales/dispatch',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
       const result = await response.json();
       setUnMappedArray(result.groupedData);
     };
     getUnMapped();
   }, []);
   const onSearch = async () => {
-    const response = await fetch('http://localhost:3001/api/sales/dispatch', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sku }),
-    });
+    const response = await fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/api/sales/dispatch',
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sku }),
+      }
+    );
     const result = await response.json();
     setUnMappedArray(result.searchfilterList);
   };
@@ -103,23 +109,29 @@ const UnMapped = () => {
     //     }),
     //   }
     // );
-    await fetch('http://localhost:3001/api/sales/dispatch', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mastersku, selectedSku }),
-    })
+    await fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/api/sales/dispatch',
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mastersku, selectedSku }),
+      }
+    )
       .then(res => {
         return res.json();
       })
       .then(data => console.log(data));
-    await fetch('http://localhost:3001/api/master/groupedsku', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        mastersku,
-        selectedSku,
-      }),
-    });
+    await fetch(
+      'https://cryptic-bayou-61420.herokuapp.com/api/master/groupedsku',
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mastersku,
+          selectedSku,
+        }),
+      }
+    );
   };
   // get master skus
   useEffect(() => {
@@ -243,9 +255,9 @@ const UnMapped = () => {
                   backgroundColor={'lightblue'}
                 >
                   <Tr>
-                    <Th textAlign='center'>UnMapped SKUs</Th>
-                    <Th textAlign='center'>Master SKU</Th>
-                    <Th textAlign='center'>Submit</Th>
+                    <Th textAlign="center">UnMapped SKUs</Th>
+                    <Th textAlign="center">Master SKU</Th>
+                    <Th textAlign="center">Submit</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
