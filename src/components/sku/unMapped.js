@@ -78,10 +78,10 @@ const UnMapped = () => {
         headers: { 'Content-Type': 'application/json' },
       });
       const result = await response.json();
-      setUnMappedArray(result.getList);
+      setUnMappedArray(result.groupedData);
     };
     getUnMapped();
-  }, [sku]);
+  }, []);
   const onSearch = async () => {
     const response = await fetch('http://localhost:3001/api/sales/dispatch', {
       method: 'PUT',
@@ -92,7 +92,7 @@ const UnMapped = () => {
     setUnMappedArray(result.searchfilterList);
   };
   // get mapped skus with master sku
-  const updateUnMappedHandler = async (sku, mastersku) => {
+  const updateUnMappedHandler = async (selectedSku, mastersku) => {
     // await fetch(
     //   'https://cryptic-bayou-61420.herokuapp.com/api/sales/updatemapped',
     //   {
@@ -103,22 +103,21 @@ const UnMapped = () => {
     //     }),
     //   }
     // );
-    console.log(mastersku);
     await fetch('http://localhost:3001/api/sales/dispatch', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mastersku, sku }),
+      body: JSON.stringify({ mastersku, selectedSku }),
     })
       .then(res => {
         return res.json();
       })
       .then(data => console.log(data));
-    await fetch('http://localhost:3001/api/master/groupedmaster', {
+    await fetch('http://localhost:3001/api/master/groupedsku', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         mastersku,
-        sku,
+        selectedSku,
       }),
     });
   };
@@ -244,15 +243,15 @@ const UnMapped = () => {
                   backgroundColor={'lightblue'}
                 >
                   <Tr>
-                    <Th>UnMapped SKUs</Th>
-                    <Th>Master SKU</Th>
-                    <Th>Submit</Th>
+                    <Th textAlign='center'>UnMapped SKUs</Th>
+                    <Th textAlign='center'>Master SKU</Th>
+                    <Th textAlign='center'>Submit</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
                   {skuRecords.map(item => (
                     <Tr key={item._id}>
-                      <Td textAlign={'center'}>{item.SKU}</Td>
+                      <Td textAlign={'center'}>{item._id}</Td>
                       <Td>
                         <Input
                           htmlSize={18}
@@ -273,7 +272,7 @@ const UnMapped = () => {
                           size={'sm'}
                           variant={'outline'}
                           onClick={() => {
-                            updateUnMappedHandler(item.SKU, mastersku);
+                            updateUnMappedHandler(item._id, mastersku);
                           }}
                         >
                           submit
