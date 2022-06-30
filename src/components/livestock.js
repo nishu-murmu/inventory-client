@@ -78,6 +78,16 @@ const LiveStock = () => {
     };
     finalLiveStock();
   }, []);
+  useEffect(() => {
+    const salesmaster = async () => {
+      const response = await fetch(
+        'https://cryptic-bayou-61420.herokuapp.com/api/master/mastersku'
+      );
+      const result = await response.json();
+      console.log(result);
+    };
+    salesmaster();
+  }, []);
   const downloadFile = () => {
     const csv = mergedArray
       .map(item => {

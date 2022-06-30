@@ -203,6 +203,7 @@ const Sales = () => {
     };
     cancelfilter('cancel');
   }, [startDate, endDate]);
+
   // Date filter
   const SelectionRange = {
     startDate: startDate,
@@ -238,6 +239,7 @@ const Sales = () => {
     );
     await response.json();
   };
+
   // pagination
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatchRecords = dispatchArray.slice(

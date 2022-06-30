@@ -49,7 +49,7 @@ const MainHeader = () => {
       <Spacer />
       <Flex spacing={5} gridColumnGap={4}>
         <a href={'https://github.com/nishu-murmu/inventory-client'}>
-          <Icon as={FaGithub} />
+          <Icon fontSize={18} as={FaGithub} />
         </a>
         <ColorModeSwitcher justifySelf="flex-end" />
         <Menu>

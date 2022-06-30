@@ -145,18 +145,14 @@ const UnMapped = () => {
         });
     };
     masterskuHandler();
-    // const getSalesList = async () => {
-    //   await fetch('https://cryptic-bayou-61420.herokuapp.com/api/sales/getall')
-    //     .then(res => {
-    //       return res.json();
-    //     })
-    //     .then(data => console.log(data));
-    // };
-    // getSalesList();
   }, []);
+  // testing
+
   // pagination
   const skuRecords = unmappedArray.slice(FirstSKUIndex, LastSKUIndex);
   const skuPages = Math.ceil(unmappedArray.length / skuPerPage);
+  // testing
+
   return (
     <VStack>
       <Heading size={'md'} pt={2}>
