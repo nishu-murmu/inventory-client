@@ -84,7 +84,7 @@ const PurchaseReturn = () => {
     e.preventDefault();
     // e.preventDefault();
     await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/purchaseReturn/create',
+      'https://shrouded-brushlands-07875.herokuapp.com/api/purchaseReturn/create',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -101,7 +101,7 @@ const PurchaseReturn = () => {
   useEffect(() => {
     const getListHandler = async () => {
       const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/purchaseReturn/getAll'
+        'https://shrouded-brushlands-07875.herokuapp.com/api/purchaseReturn/getAll'
       );
       const result = await response.json();
       setPurchaseReturnData(result);
@@ -112,7 +112,7 @@ const PurchaseReturn = () => {
   // update product
   const updateHandler = () => {
     fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/purchaseReturn/update',
+      'https://shrouded-brushlands-07875.herokuapp.com/api/purchaseReturn/update',
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -129,7 +129,7 @@ const PurchaseReturn = () => {
   useEffect(() => {
     const deleteHandler = async () => {
       await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/purchaseReturn/delete',
+        'https://shrouded-brushlands-07875.herokuapp.com/api/purchaseReturn/delete',
         {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
@@ -145,7 +145,7 @@ const PurchaseReturn = () => {
   // master sku
   useEffect(() => {
     const masterskuHandler = () => {
-      fetch('https://cryptic-bayou-61420.herokuapp.com/api/master/getAll')
+      fetch('https://shrouded-brushlands-07875.herokuapp.com/api/master/getAll')
         .then(res => {
           return res.json();
         })

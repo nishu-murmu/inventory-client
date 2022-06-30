@@ -26,7 +26,7 @@ const SignUp = () => {
 
   const submitHandler = e => {
     e.preventDefault();
-    fetch('https://cryptic-bayou-61420.herokuapp.com/api/auth/register', {
+    fetch('https://shrouded-brushlands-07875.herokuapp.com/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

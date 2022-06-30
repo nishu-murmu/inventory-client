@@ -48,7 +48,7 @@ const Mapped = () => {
   };
   const submitArrayHandler = e => {
     e.preventDefault();
-    fetch('https://cryptic-bayou-61420.herokuapp.com/api/master/create', {
+    fetch('https://shrouded-brushlands-07875.herokuapp.com/api/master/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -69,7 +69,7 @@ const Mapped = () => {
   const getListHandler = async () => {
     setIsLoading(true);
     const response = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/master/getAll'
+      'https://shrouded-brushlands-07875.herokuapp.com/api/master/getAll'
     );
     const result = await response.json();
     console.log(result);

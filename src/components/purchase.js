@@ -82,7 +82,7 @@ const Purchase = () => {
   const submitHandler = async e => {
     e.preventDefault();
     await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/purchase/create',
+      'https://shrouded-brushlands-07875.herokuapp.com/api/purchase/create',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -98,7 +98,7 @@ const Purchase = () => {
   useEffect(() => {
     const getListHandler = async () => {
       const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/purchase/getAll'
+        'https://shrouded-brushlands-07875.herokuapp.com/api/purchase/getAll'
       );
       const result = await response.json();
       setPurchaseData(result);
@@ -109,7 +109,7 @@ const Purchase = () => {
   const updateHandler = async e => {
     e.preventDefault();
     await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/purchase/update',
+      'https://shrouded-brushlands-07875.herokuapp.com/api/purchase/update',
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -126,7 +126,7 @@ const Purchase = () => {
   useEffect(() => {
     const deleteHandler = async () => {
       await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/purchase/delete',
+        'https://shrouded-brushlands-07875.herokuapp.com/api/purchase/delete',
         {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
@@ -142,7 +142,7 @@ const Purchase = () => {
   // master sku hander
   useEffect(() => {
     const masterskuHandler = () => {
-      fetch('https://cryptic-bayou-61420.herokuapp.com/api/master/getAll')
+      fetch('https://shrouded-brushlands-07875.herokuapp.com/api/master/getAll')
         .then(res => {
           return res.json();
         })

@@ -103,7 +103,7 @@ const Sales = () => {
       return obj;
     });
     await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/create',
+      'https://shrouded-brushlands-07875.herokuapp.com/api/salesReturn/create',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -132,7 +132,7 @@ const Sales = () => {
   useEffect(() => {
     const updateHandler = async () => {
       const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/update',
+        'https://shrouded-brushlands-07875.herokuapp.com/api/salesReturn/update',
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -152,7 +152,7 @@ const Sales = () => {
   useEffect(() => {
     const receivedfilter = async filter => {
       const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filter',
+        'https://shrouded-brushlands-07875.herokuapp.com/api/salesReturn/filter',
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -170,7 +170,7 @@ const Sales = () => {
     receivedfilter('received');
     const partialfilter = async filter => {
       const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filter',
+        'https://shrouded-brushlands-07875.herokuapp.com/api/salesReturn/filter',
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -188,7 +188,7 @@ const Sales = () => {
     partialfilter('partial');
     const wrongfilter = async filter => {
       const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filter',
+        'https://shrouded-brushlands-07875.herokuapp.com/api/salesReturn/filter',
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -218,7 +218,7 @@ const Sales = () => {
   // Searching filter
   const onSearch = async status => {
     const response = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/filter',
+      'https://shrouded-brushlands-07875.herokuapp.com/api/salesReturn/filter',
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -236,7 +236,7 @@ const Sales = () => {
   // removing duplicates
   const removeDups = async () => {
     const response = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/salesReturn/grouped'
+      'https://shrouded-brushlands-07875.herokuapp.com/api/salesReturn/grouped'
     );
     await response.json();
   };

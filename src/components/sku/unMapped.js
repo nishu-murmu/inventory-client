@@ -55,7 +55,7 @@ const UnMapped = () => {
   //     return obj;
   //   });
 
-  //   fetch('https://cryptic-bayou-61420.herokuapp.com/api/unmapped/create', {
+  //   fetch('https://shrouded-brushlands-07875.herokuapp.com/api/unmapped/create', {
   //     method: 'POST',
   //     headers: { 'Content-Type': 'application/json' },
   //     body: JSON.stringify(array),
@@ -74,7 +74,7 @@ const UnMapped = () => {
   useEffect(() => {
     const getUnMapped = async () => {
       const response = await fetch(
-        'https://cryptic-bayou-61420.herokuapp.com/api/sales/dispatch',
+        'https://shrouded-brushlands-07875.herokuapp.com/api/sales/dispatch',
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -87,7 +87,7 @@ const UnMapped = () => {
   }, []);
   const onSearch = async () => {
     const response = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/sales/dispatch',
+      'https://shrouded-brushlands-07875.herokuapp.com/api/sales/dispatch',
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -100,7 +100,7 @@ const UnMapped = () => {
   // get mapped skus with master sku
   const updateUnMappedHandler = async (selectedSku, mastersku) => {
     // await fetch(
-    //   'https://cryptic-bayou-61420.herokuapp.com/api/sales/updatemapped',
+    //   'https://shrouded-brushlands-07875.herokuapp.com/api/sales/updatemapped',
     //   {
     //     method: 'PUT',
     //     headers: { 'Content-Type': 'application/json' },
@@ -110,7 +110,7 @@ const UnMapped = () => {
     //   }
     // );
     await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/sales/dispatch',
+      'https://shrouded-brushlands-07875.herokuapp.com/api/sales/dispatch',
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -122,7 +122,7 @@ const UnMapped = () => {
       })
       .then(data => console.log(data));
     await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/master/groupedsku',
+      'https://shrouded-brushlands-07875.herokuapp.com/api/master/groupedsku',
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -136,7 +136,9 @@ const UnMapped = () => {
   // get master skus
   useEffect(() => {
     const masterskuHandler = async () => {
-      await fetch('https://cryptic-bayou-61420.herokuapp.com/api/master/getAll')
+      await fetch(
+        'https://shrouded-brushlands-07875.herokuapp.com/api/master/getAll'
+      )
         .then(res => {
           return res.json();
         })
