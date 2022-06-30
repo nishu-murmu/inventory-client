@@ -42,12 +42,13 @@ const LiveStock = () => {
       'https://cryptic-bayou-61420.herokuapp.com/api/livestock/delete',
       {
         method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
       }
     );
   };
   const sendMergedArray = async () => {
     livestockArray.map(item =>
-      fetch('http://localhost:3001/api/livestock/create', {
+      fetch('https://cryptic-bayou-61420.herokuapp.com/api/livestock/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
