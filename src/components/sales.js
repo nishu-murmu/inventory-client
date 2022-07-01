@@ -152,6 +152,7 @@ const Sales = () => {
   // universal filters
   useEffect(() => {
     const dispatchfilter = async filter => {
+      setIsLoading(true);
       const response = await fetch(
         'https://shrouded-brushlands-07875.herokuapp.com/api/sales/filter',
         {
@@ -165,11 +166,13 @@ const Sales = () => {
         }
       );
       const result = await response.json();
+      setIsLoading(false);
       setDispatchCount(result.filterList.length);
       setDispatchArray(result.filterList);
     };
     dispatchfilter('dispatch');
     const pendingfilter = async filter => {
+      setIsLoading(true);
       const response = await fetch(
         'https://shrouded-brushlands-07875.herokuapp.com/api/sales/filter',
         {
@@ -183,11 +186,13 @@ const Sales = () => {
         }
       );
       const result = await response.json();
+      setIsLoading(false);
       setPendingCount(result.filterList.length);
       setPendingArray(result.filterList);
     };
     pendingfilter('pending');
     const cancelfilter = async filter => {
+      setIsLoading(true);
       const response = await fetch(
         'https://shrouded-brushlands-07875.herokuapp.com/api/sales/filter',
         {
@@ -201,6 +206,7 @@ const Sales = () => {
         }
       );
       const result = await response.json();
+      setIsLoading(false);
       setCancelCount(result.filterList.length);
       setCancelArray(result.filterList);
     };
@@ -577,113 +583,115 @@ const Sales = () => {
               : ''}
           </Heading>
 
-          {isLoading && <Spinner size={'xl'} />}
+          {isLoading && <Spinner mt={20} size={'md'} />}
           {!isLoading && (
-            <VStack mb={2}>
-              <TableContainer
-                rounded={'lg'}
-                boxShadow={'lg'}
-                overflowY={'auto'}
-                overflowX={'auto'}
-                h={260}
-                w={1200}
-              >
-                <Table variant="simple" size={'sm'}>
-                  <Thead
-                    position={'sticky'}
-                    top={0}
-                    backgroundColor={'lightblue'}
-                  >
-                    <Tr key={'header'}>
-                      <Th textAlign={'center'}>AWB</Th>
-                      <Th textAlign={'center'}>order id</Th>
-                      <Th textAlign={'center'}>SKU</Th>
-                      <Th textAlign={'center'}>Master SKU</Th>
-                      <Th textAlign={'center'}>QTY</Th>
-                      <Th textAlign={'center'}>STATUS</Th>
-                      <Th textAlign={'center'}>courier</Th>
-                      <Th textAlign={'center'}>date</Th>
-                      <Th textAlign={'center'}>firm</Th>
-                      <Th textAlign={'center'}>Portal</Th>
-                    </Tr>
-                  </Thead>
-
-                  <Tbody>
-                    {!isDispatch ? (
-                      dispatchRecords.map(item => (
-                        <Tr key={item._id}>
-                          <Td>{item.AWB}</Td>
-                          <Td>{item['ORDER ID']}</Td>
-                          <Td>{item.SKU}</Td>
-                          <Td>{item.mastersku}</Td>
-                          <Td>{item.QTY}</Td>
-                          <Td>{item.status}</Td>
-                          <Td>{item.courier}</Td>
-                          <Td>{item.date}</Td>
-                          <Td>{item.firm}</Td>
-                          <Td>{item['PORTAL\r']}</Td>
-                        </Tr>
-                      ))
-                    ) : !isPending ? (
-                      pendingRecords.map(item => (
-                        <Tr key={item._id}>
-                          <Td>{item.AWB}</Td>
-                          <Td>{item['ORDER ID']}</Td>
-                          <Td>{item.SKU}</Td>
-                          <Td>{item.mastersku}</Td>
-                          <Td>{item.QTY}</Td>
-                          <Td>{item.status}</Td>
-                          <Td>{item.courier}</Td>
-                          <Td>{item.date}</Td>
-                          <Td>{item.firm}</Td>
-                          <Td>{item['PORTAL\r']}</Td>
-                        </Tr>
-                      ))
-                    ) : !isCancel ? (
-                      cancelRecords.map(item => (
-                        <Tr key={item._id}>
-                          <Td>{item.AWB}</Td>
-                          <Td>{item['ORDER ID']}</Td>
-                          <Td>{item.SKU}</Td>
-                          <Td>{item.mastersku}</Td>
-                          <Td>{item.QTY}</Td>
-                          <Td>{item.status}</Td>
-                          <Td>{item.courier}</Td>
-                          <Td>{item.date}</Td>
-                          <Td>{item.firm}</Td>
-                          <Td>{item['PORTAL\r']}</Td>
-                        </Tr>
-                      ))
-                    ) : (
-                      <Tr>
-                        <Td>Error</Td>
+            <Box>
+              <VStack mb={2}>
+                <TableContainer
+                  rounded={'lg'}
+                  boxShadow={'lg'}
+                  overflowY={'auto'}
+                  overflowX={'auto'}
+                  h={260}
+                  w={1200}
+                >
+                  <Table variant="simple" size={'sm'}>
+                    <Thead
+                      position={'sticky'}
+                      top={0}
+                      backgroundColor={'lightblue'}
+                    >
+                      <Tr key={'header'}>
+                        <Th textAlign={'center'}>AWB</Th>
+                        <Th textAlign={'center'}>order id</Th>
+                        <Th textAlign={'center'}>SKU</Th>
+                        <Th textAlign={'center'}>Master SKU</Th>
+                        <Th textAlign={'center'}>QTY</Th>
+                        <Th textAlign={'center'}>STATUS</Th>
+                        <Th textAlign={'center'}>courier</Th>
+                        <Th textAlign={'center'}>date</Th>
+                        <Th textAlign={'center'}>firm</Th>
+                        <Th textAlign={'center'}>Portal</Th>
                       </Tr>
-                    )}
-                  </Tbody>
-                </Table>
-              </TableContainer>
-            </VStack>
-          )}
-          {!isDispatch ? (
-            <Pagination
-              totalPages={dispatchpages}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-            />
-          ) : !isPending ? (
-            <Pagination
-              totalPages={pendingpages}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-            />
-          ) : !isCancel ? (
-            <Pagination
-              totalPages={cancelpages}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-            />
-          ) : (
-            <Box>Error</Box>
+                    </Thead>
+
+                    <Tbody>
+                      {!isDispatch ? (
+                        dispatchRecords.map(item => (
+                          <Tr key={item._id}>
+                            <Td>{item.AWB}</Td>
+                            <Td>{item['ORDER ID']}</Td>
+                            <Td>{item.SKU}</Td>
+                            <Td>{item.mastersku}</Td>
+                            <Td>{item.QTY}</Td>
+                            <Td>{item.status}</Td>
+                            <Td>{item.courier}</Td>
+                            <Td>{item.date}</Td>
+                            <Td>{item.firm}</Td>
+                            <Td>{item['PORTAL\r']}</Td>
+                          </Tr>
+                        ))
+                      ) : !isPending ? (
+                        pendingRecords.map(item => (
+                          <Tr key={item._id}>
+                            <Td>{item.AWB}</Td>
+                            <Td>{item['ORDER ID']}</Td>
+                            <Td>{item.SKU}</Td>
+                            <Td>{item.mastersku}</Td>
+                            <Td>{item.QTY}</Td>
+                            <Td>{item.status}</Td>
+                            <Td>{item.courier}</Td>
+                            <Td>{item.date}</Td>
+                            <Td>{item.firm}</Td>
+                            <Td>{item['PORTAL\r']}</Td>
+                          </Tr>
+                        ))
+                      ) : !isCancel ? (
+                        cancelRecords.map(item => (
+                          <Tr key={item._id}>
+                            <Td>{item.AWB}</Td>
+                            <Td>{item['ORDER ID']}</Td>
+                            <Td>{item.SKU}</Td>
+                            <Td>{item.mastersku}</Td>
+                            <Td>{item.QTY}</Td>
+                            <Td>{item.status}</Td>
+                            <Td>{item.courier}</Td>
+                            <Td>{item.date}</Td>
+                            <Td>{item.firm}</Td>
+                            <Td>{item['PORTAL\r']}</Td>
+                          </Tr>
+                        ))
+                      ) : (
+                        <Tr>
+                          <Td>Error</Td>
+                        </Tr>
+                      )}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              </VStack>
+              {!isDispatch ? (
+                <Pagination
+                  totalPages={dispatchpages}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                />
+              ) : !isPending ? (
+                <Pagination
+                  totalPages={pendingpages}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                />
+              ) : !isCancel ? (
+                <Pagination
+                  totalPages={cancelpages}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                />
+              ) : (
+                <Box>Error</Box>
+              )}
+            </Box>
           )}
         </Box>
       )}

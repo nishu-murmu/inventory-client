@@ -78,14 +78,13 @@ const LiveStock = () => {
       );
       const result = await response.json();
       setMergedArray(result);
-      console.log(result);
     };
     finalLiveStock();
   }, []);
   useEffect(() => {
     const salesmaster = async () => {
       const response = await fetch(
-        'https://shrouded-brushlands-07875.herokuapp.com/api/master/mastersku'
+        'http://localhost:3001/api/master/mastersku'
       );
       const result = await response.json();
       console.log(result);
