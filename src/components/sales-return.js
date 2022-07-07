@@ -110,7 +110,7 @@ const Sales = () => {
         body: JSON.stringify(array),
       }
     );
-    // await fetch('http://localhost:3001/api/salesReturn/bulkupdate', {
+    // await fetch('https://shrouded-brushlands-07875.herokuapp.com/api/salesReturn/bulkupdate', {
     //   method: 'PUT',
     //   headers: { 'Content-Type': 'application/json' },
     //   body: JSON.stringify(array),
@@ -143,7 +143,8 @@ const Sales = () => {
           }),
         }
       );
-      const result = response.json();
+      const result = await response.json();
+      console.log(result);
       setFilterArray(result);
     };
     updateHandler();
@@ -151,6 +152,7 @@ const Sales = () => {
   // universal filters
   useEffect(() => {
     const receivedfilter = async filter => {
+      setIsLoading(true);
       const response = await fetch(
         'https://shrouded-brushlands-07875.herokuapp.com/api/salesReturn/filter',
         {
@@ -164,11 +166,13 @@ const Sales = () => {
         }
       );
       const result = await response.json();
+      setIsLoading(false);
       setReceivedCount(result.filterList.length);
       setReceivedArray(result.filterList);
     };
     receivedfilter('received');
     const partialfilter = async filter => {
+      setIsLoading(true);
       const response = await fetch(
         'https://shrouded-brushlands-07875.herokuapp.com/api/salesReturn/filter',
         {
@@ -182,11 +186,13 @@ const Sales = () => {
         }
       );
       const result = await response.json();
+      setIsLoading(false);
       setPartialArray(result.filterList);
       setPartialCount(result.filterList.length);
     };
     partialfilter('partial');
     const wrongfilter = async filter => {
+      setIsLoading(true);
       const response = await fetch(
         'https://shrouded-brushlands-07875.herokuapp.com/api/salesReturn/filter',
         {
@@ -200,6 +206,7 @@ const Sales = () => {
         }
       );
       const result = await response.json();
+      setIsLoading(false);
       setWrongCount(result.filterList.length);
       setWrongArray(result.filterList);
     };
@@ -514,45 +521,57 @@ const Sales = () => {
                 <Thead>
                   <Tr key={'header'}>
                     <Th textAlign={'center'}>AWB</Th>
+                    <Th textAlign={'center'}>SubOrder Id</Th>
                     <Th textAlign={'center'}>order id</Th>
                     <Th textAlign={'center'}>SKU</Th>
                     <Th textAlign={'center'}>Master SKU</Th>
                     <Th textAlign={'center'}>QTY</Th>
-                    <Th textAlign={'center'}>Status</Th>
-                    <Th textAlign={'center'}>courier</Th>
-                    <Th textAlign={'center'}>date</Th>
-                    <Th textAlign={'center'}>firm</Th>
+                    <Th textAlign={'center'}>STATUS</Th>
+                    <Th textAlign={'center'}>Return Received Date</Th>
+                    <Th textAlign={'center'}>Return Request Date</Th>
+                    <Th textAlign={'center'}>
+                      Return Delivered Date As Per Website
+                    </Th>
                     <Th textAlign={'center'}>Portal</Th>
+                    <Th textAlign={'center'}>Wrong Return</Th>
+                    <Th textAlign={'center'}>Return Type Web</Th>
+                    <Th textAlign={'center'}>Company</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
                   {
                     <Tr key={filterArray.AWB}>
-                      <Td>{filterArray.AWB}</Td>
-                      <Td>{filterArray['ORDER ID']}</Td>
+                      <Td>{filterArray['AWB NO']}</Td>
+                      <Td>{filterArray['Suborder ID']}</Td>
+                      <Td>{filterArray['Order ID']}</Td>
                       <Td>{filterArray.SKU}</Td>
                       <Td>{filterArray.mastersku}</Td>
                       <Td>{filterArray.QTY}</Td>
                       <Td>
                         <Select
+                          textAlign={'center'}
                           size={'sm'}
                           borderRadius={6}
-                          width="auto"
                           onChange={e => {
                             setStatus(e.target.value);
                           }}
                           value={status}
-                          mx={8}
+                          mx={'40px'}
                         >
                           <option value={'received'}>received</option>
                           <option value={'partial'}>partial</option>
                           <option value={'wrong'}>wrong</option>
                         </Select>
                       </Td>
-                      <Td>{filterArray.courier}</Td>
-                      <Td>{filterArray.date}</Td>
-                      <Td>{filterArray.firm}</Td>
-                      <Td>{filterArray['PORTAL\r']}</Td>
+                      <Td>{filterArray['Return Received Date']}</Td>
+                      <Td>{filterArray['Return Request Date']}</Td>
+                      <Td>
+                        {filterArray['Return Delivered Date As Per Website']}
+                      </Td>
+                      <Td>{filterArray.Portal}</Td>
+                      <Td>{filterArray['WRONG RETURN']}</Td>
+                      <Td>{filterArray['RETURN TYPE WEB']}</Td>
+                      <Td>{filterArray['COMPANY\r']}</Td>
                     </Tr>
                   }
                 </Tbody>
@@ -574,7 +593,7 @@ const Sales = () => {
               : ''}
           </Heading>
 
-          {isLoading && <Spinner size={'xl'} />}
+          {isLoading && <Spinner mt={20} size={'md'} />}
           {!isLoading && (
             <VStack mb={2}>
               <TableContainer
@@ -585,7 +604,7 @@ const Sales = () => {
                 h={260}
                 w={1200}
               >
-                <Table variant="simple" size={'sm'}>
+                <Table variant="striped" size={'sm'}>
                   <Thead
                     position={'sticky'}
                     top={0}
@@ -593,15 +612,21 @@ const Sales = () => {
                   >
                     <Tr key={'header'}>
                       <Th textAlign={'center'}>AWB</Th>
+                      <Th textAlign={'center'}>SubOrder Id</Th>
                       <Th textAlign={'center'}>order id</Th>
                       <Th textAlign={'center'}>SKU</Th>
                       <Th textAlign={'center'}>Master SKU</Th>
                       <Th textAlign={'center'}>QTY</Th>
                       <Th textAlign={'center'}>STATUS</Th>
-                      <Th textAlign={'center'}>courier</Th>
-                      <Th textAlign={'center'}>date</Th>
-                      <Th textAlign={'center'}>firm</Th>
+                      <Th textAlign={'center'}>Return Received Date</Th>
+                      <Th textAlign={'center'}>Return Request Date</Th>
+                      <Th textAlign={'center'}>
+                        Return Delivered Date As Per Website
+                      </Th>
                       <Th textAlign={'center'}>Portal</Th>
+                      <Th textAlign={'center'}>Wrong Return</Th>
+                      <Th textAlign={'center'}>Return Type Web</Th>
+                      <Th textAlign={'center'}>Company</Th>
                     </Tr>
                   </Thead>
 
@@ -609,46 +634,64 @@ const Sales = () => {
                     {!isReceived ? (
                       receivedRecords.map(item => (
                         <Tr key={item._id}>
-                          <Td>{item.AWB}</Td>
-                          <Td>{item['ORDER ID']}</Td>
+                          <Td>{item['AWB NO']}</Td>
+                          <Td>{item['Suborder ID']}</Td>
+                          <Td>{item['Order ID']}</Td>
                           <Td>{item.SKU}</Td>
                           <Td>{item.mastersku}</Td>
                           <Td>{item.QTY}</Td>
                           <Td>{item.status}</Td>
-                          <Td>{item.courier}</Td>
-                          <Td>{item.date}</Td>
-                          <Td>{item.firm}</Td>
-                          <Td>{item['PORTAL\r']}</Td>
+                          <Td>{item['Return Received Date']}</Td>
+                          <Td>{item['Return Request Date']}</Td>
+                          <Td>
+                            {item['Return Delivered Date As Per Website']}
+                          </Td>
+                          <Td>{item.Portal}</Td>
+                          <Td>{item['WRONG RETURN']}</Td>
+                          <Td>{item['RETURN TYPE WEB']}</Td>
+                          <Td>{item['COMPANY\r']}</Td>
                         </Tr>
                       ))
                     ) : !isPartial ? (
                       partialRecords.map(item => (
                         <Tr key={item._id}>
-                          <Td>{item.AWB}</Td>
-                          <Td>{item['ORDER ID']}</Td>
+                          <Td>{item['AWB NO']}</Td>
+                          <Td>{item['Suborder ID']}</Td>
+                          <Td>{item['Order ID']}</Td>
                           <Td>{item.SKU}</Td>
                           <Td>{item.mastersku}</Td>
                           <Td>{item.QTY}</Td>
                           <Td>{item.status}</Td>
-                          <Td>{item.courier}</Td>
-                          <Td>{item.date}</Td>
-                          <Td>{item.firm}</Td>
-                          <Td>{item['PORTAL\r']}</Td>
+                          <Td>{item['Return Received Date']}</Td>
+                          <Td>{item['Return Request Date']}</Td>
+                          <Td>
+                            {item['Return Delivered Date As Per Website']}
+                          </Td>
+                          <Td>{item.Portal}</Td>
+                          <Td>{item['WRONG RETURN']}</Td>
+                          <Td>{item['RETURN TYPE WEB']}</Td>
+                          <Td>{item['COMPANY\r']}</Td>
                         </Tr>
                       ))
                     ) : !isWrong ? (
                       wrongRecords.map(item => (
                         <Tr key={item._id}>
-                          <Td>{item.AWB}</Td>
-                          <Td>{item['ORDER ID']}</Td>
+                          <Td>{item['AWB NO']}</Td>
+                          <Td>{item['Suborder ID']}</Td>
+                          <Td>{item['Order ID']}</Td>
                           <Td>{item.SKU}</Td>
                           <Td>{item.mastersku}</Td>
                           <Td>{item.QTY}</Td>
                           <Td>{item.status}</Td>
-                          <Td>{item.courier}</Td>
-                          <Td>{item.date}</Td>
-                          <Td>{item.firm}</Td>
-                          <Td>{item['PORTAL\r']}</Td>
+                          <Td>{item['Return Received Date']}</Td>
+                          <Td>{item['Return Request Date']}</Td>
+                          <Td>
+                            {item['Return Delivered Date As Per Website']}
+                          </Td>
+                          <Td>{item.Portal}</Td>
+                          <Td>{item['WRONG RETURN']}</Td>
+                          <Td>{item['RETURN TYPE WEB']}</Td>
+                          <Td>{item['COMPANY\r']}</Td>
                         </Tr>
                       ))
                     ) : (

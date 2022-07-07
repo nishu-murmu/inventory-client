@@ -73,20 +73,29 @@ const UnMapped = () => {
   // get unmapped skus from sales and sales return
   useEffect(() => {
     const getUnMapped = async () => {
-      const response = await fetch(
+      const salesResponse = await fetch(
         'https://shrouded-brushlands-07875.herokuapp.com/api/sales/dispatch',
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
         }
       );
-      const result = await response.json();
-      setUnMappedArray(result.groupedData);
+      const salesResult = await salesResponse.json();
+      setUnMappedArray(salesResult.groupedData);
+      const salesReturnResponse = await fetch(
+        'https://shrouded-brushlands-07875.herokuapp.com/api/salesReturn/received',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+      const salesReturnResult = await salesReturnResponse.json();
+      setUnMappedArray([...salesReturnResult.groupedData]);
     };
     getUnMapped();
   }, []);
   const onSearch = async () => {
-    const response = await fetch(
+    const salesResponse = await fetch(
       'https://shrouded-brushlands-07875.herokuapp.com/api/sales/dispatch',
       {
         method: 'PUT',
@@ -94,21 +103,23 @@ const UnMapped = () => {
         body: JSON.stringify({ sku }),
       }
     );
-    const result = await response.json();
-    setUnMappedArray(result.searchfilterList);
+    const salesresult = await salesResponse.json();
+    const salesReturnResponse = await fetch(
+      'https://shrouded-brushlands-07875.herokuapp.com/api/salesReturn/received',
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sku }),
+      }
+    );
+    const salesReturnResult = await salesReturnResponse.json();
+    if (salesresult.searchfilterList !== null)
+      setUnMappedArray(salesresult.searchfilterList);
+    if (salesReturnResult.searchfilterList !== null)
+      setUnMappedArray(salesReturnResult.searchfilterList);
   };
   // get mapped skus with master sku
   const updateUnMappedHandler = async (selectedSku, mastersku) => {
-    // await fetch(
-    //   'https://shrouded-brushlands-07875.herokuapp.com/api/sales/updatemapped',
-    //   {
-    //     method: 'PUT',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({
-    //       mastersku: mastersku,
-    //     }),
-    //   }
-    // );
     await fetch(
       'https://shrouded-brushlands-07875.herokuapp.com/api/sales/dispatch',
       {
@@ -121,6 +132,19 @@ const UnMapped = () => {
         return res.json();
       })
       .then(data => console.log(data));
+    await fetch(
+      'https://shrouded-brushlands-07875.herokuapp.com/api/salesReturn/received',
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mastersku, selectedSku }),
+      }
+    )
+      .then(res => {
+        return res.json();
+      })
+      .then(data => console.log(data));
+    // group skus into mastersku
     await fetch(
       'https://shrouded-brushlands-07875.herokuapp.com/api/master/groupedsku',
       {

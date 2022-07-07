@@ -551,7 +551,6 @@ const Sales = () => {
                             setStatus(e.target.value);
                           }}
                           value={status}
-                          mx={8}
                         >
                           <option value={'dispatch'}>dispatch</option>
                           <option value={'pending'}>pending</option>
@@ -595,7 +594,7 @@ const Sales = () => {
                   h={260}
                   w={1200}
                 >
-                  <Table variant="simple" size={'sm'}>
+                  <Table variant="striped" size={'sm'}>
                     <Thead
                       position={'sticky'}
                       top={0}
