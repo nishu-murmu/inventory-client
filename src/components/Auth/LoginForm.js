@@ -25,7 +25,7 @@ const Login = () => {
   const submitHandler = async e => {
     e.preventDefault();
     const response = await fetch(
-      'https://cryptic-bayou-61420.herokuapp.com/api/auth/login',
+      'https://shrouded-brushlands-07875.herokuapp.com/api/auth/login',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
