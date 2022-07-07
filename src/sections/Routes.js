@@ -13,6 +13,7 @@ import MasterSKUPage from '../pages/Sku/masterSKUPage.js';
 import UnMappedPage from '../pages/Sku/unMapped.js';
 import LiveStockPage from '../pages/livestockPage.js';
 import AuthCredPage from '../components/Auth/authCred.js';
+import Protected from './protectedRoutes.js';
 
 const AllRoutes = () => {
   const location = useLocation();
@@ -22,15 +23,87 @@ const AllRoutes = () => {
       <Routes location={location} key={location.pathname}>
         <Route index path="/" element={<SignUpPage />} />
         <Route exact path="/login" element={<LoginPage />} />
-        <Route exact path="/account" element={<AccountPage />} />
-        <Route exact path="/authCred" element={<AuthCredPage />} />
-        <Route exact path="/master" element={<MasterSKUPage />} />
-        <Route exact path="/unmapped" element={<UnMappedPage />} />
-        <Route exact path="/purchase" element={<PurchasePage />} />
-        <Route exact path="/purchaseReturn" element={<PurchaseReturnPage />} />
-        <Route exact path="/sales" element={<SalesPage />} />
-        <Route exact path="/salesReturn" element={<SalesReturnPage />} />
-        <Route exact path="/livestock" element={<LiveStockPage />} />
+        <Route
+          exact
+          path="/account"
+          element={
+            <Protected>
+              <AccountPage />
+            </Protected>
+          }
+        />
+        <Route
+          exact
+          path="/authCred"
+          element={
+            <Protected>
+              <AuthCredPage />
+            </Protected>
+          }
+        />
+        <Route
+          exact
+          path="/master"
+          element={
+            <Protected>
+              <MasterSKUPage />
+            </Protected>
+          }
+        />
+        <Route
+          exact
+          path="/unmapped"
+          element={
+            <Protected>
+              <UnMappedPage />
+            </Protected>
+          }
+        />
+        <Route
+          exact
+          path="/purchase"
+          element={
+            <Protected>
+              <PurchasePage />
+            </Protected>
+          }
+        />
+        <Route
+          exact
+          path="/purchaseReturn"
+          element={
+            <Protected>
+              <PurchaseReturnPage />
+            </Protected>
+          }
+        />
+        <Route
+          exact
+          path="/sales"
+          element={
+            <Protected>
+              <SalesPage />
+            </Protected>
+          }
+        />
+        <Route
+          exact
+          path="/salesReturn"
+          element={
+            <Protected>
+              <SalesReturnPage />
+            </Protected>
+          }
+        />
+        <Route
+          exact
+          path="/livestock"
+          element={
+            <Protected>
+              <LiveStockPage />
+            </Protected>
+          }
+        />
       </Routes>
     </AnimatePresence>
   );

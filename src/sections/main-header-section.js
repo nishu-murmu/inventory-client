@@ -66,6 +66,7 @@ const MainHeader = () => {
               <MenuItem>Account Settings</MenuItem>
             </Link>
             <Link to="/login">
+              {localStorage.removeItem('token')}
               <MenuItem>Log out</MenuItem>
             </Link>
           </MenuList>

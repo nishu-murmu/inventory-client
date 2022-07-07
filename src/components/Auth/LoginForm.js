@@ -15,7 +15,6 @@ import {
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
-
 const Login = () => {
   const [show, setShow] = useState(false);
   const [enteredEmail, setEnteredEmail] = useState('');
@@ -37,6 +36,7 @@ const Login = () => {
     );
     const result = await response.json();
     if (result.message === undefined) {
+      localStorage.setItem('token', result);
       nav('/livestock');
     }
     if (result.message === 'Wrong username or password') {
