@@ -15,16 +15,26 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Input,
+  InputGroup,
+  InputRightAddon,
+  FormLabel,
 } from '@chakra-ui/react';
+import { DownloadIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
 import { saveAs } from 'file-saver';
 // files
 
 const LiveStock = () => {
   // const nav = useNavigate();
+  const [file, setFile] = useState();
+  const fileReader = new FileReader();
   const [mergedArray, setMergedArray] = useState([]);
   const [livestockArray, setLiveStockArray] = useState([]);
+  // event handlers
+  const onChangeHandler = e => {
+    setFile(e.target.files[0]);
+  };
   // get the merged List
   useEffect(() => {
     const mergedData = async () => {
@@ -91,6 +101,47 @@ const LiveStock = () => {
     };
     salesmaster();
   }, []);
+  // csv to array conversion
+  const csvFileToArray = async string => {
+    console.log(string);
+    const csvHeader = string.slice(0, string.indexOf('\r')).split(',');
+    const csvRows = string
+      .slice(string.indexOf('\r') + 1)
+      .split(/(\r\n|\n|\r)/gm);
+    const array = csvRows.map(i => {
+      const values = i.split(',') || i.split(' ');
+      const obj = csvHeader.reduce((object, header, index) => {
+        if (values.length > 1) {
+          index === 1
+            ? (object[header] = parseInt(values[index]))
+            : (object[header] = values[index]);
+          return object;
+        }
+        return null;
+      }, {});
+      return obj;
+    });
+    const finalArray = array.filter(item => item !== null);
+    console.log(finalArray);
+    await fetch(
+      'https://shrouded-brushlands-07875.herokuapp.com/api/livestock/upload',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(finalArray),
+      }
+    );
+  };
+  // submit csv file to function
+  const onSubmitHandler = e => {
+    if (file) {
+      fileReader.onload = function (e) {
+        const csvOutput = e.target.result;
+        csvFileToArray(csvOutput);
+      };
+      fileReader.readAsText(file);
+    }
+  };
   const downloadFile = () => {
     const csv = mergedArray
       .map(item => {
@@ -105,10 +156,38 @@ const LiveStock = () => {
   };
   return (
     <Box p={4}>
-      <Heading size={'lg'} pb={10}>
+      <Heading size={'lg'} pb={5}>
         Live Stock Section
       </Heading>
-      <Heading size={'md'} pb={4}>
+      {/* upload stock */}
+      <InputGroup size={'sm'} w={'200px'}>
+        <FormLabel
+          width={'100%'}
+          htmlFor={'csvInput'}
+          _hover={{ cursor: 'pointer' }}
+          textAlign={'center'}
+        >
+          Upload File
+        </FormLabel>
+        <Input
+          display={'none'}
+          type={'file'}
+          id={'csvInput'}
+          accept={'.csv'}
+          onChange={onChangeHandler}
+        />
+        <InputRightAddon
+          type={'button'}
+          variant={'outline'}
+          children={'Select csv'}
+          _hover={{ cursor: 'pointer' }}
+          onClick={onSubmitHandler}
+        >
+          Import
+          <DownloadIcon ml={1} mt={1} />
+        </InputRightAddon>
+      </InputGroup>
+      <Heading size={'md'} py={4}>
         Live Stock Table
       </Heading>
       <TableContainer
@@ -149,7 +228,9 @@ const LiveStock = () => {
                     </MenuList>
                   </Menu>
                 </Td>
-                <Td textAlign="center"> {0}</Td>
+                <Td textAlign="center">
+                  {item.opening_stock === undefined ? 0 : item.opening_stock}
+                </Td>
                 <Td textAlign="center"> {item.purchase}</Td>
                 <Td textAlign="center"> {item.sales}</Td>
                 <Td textAlign="center">{item.salesReturn}</Td>

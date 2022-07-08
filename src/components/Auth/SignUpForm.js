@@ -75,7 +75,6 @@ const SignUp = () => {
                   id="first-name"
                   onChange={firstNameChange}
                   type="text"
-                  required
                 />
               </FormControl>
               <FormControl isRequired>
@@ -86,7 +85,6 @@ const SignUp = () => {
                   id="last-name"
                   onChange={lastNameChange}
                   type="text"
-                  required
                 />
               </FormControl>
             </HStack>
@@ -98,7 +96,6 @@ const SignUp = () => {
                 id="email"
                 type="email"
                 onChange={emailChange}
-                required
               />
             </FormControl>
             <FormControl isRequired>
@@ -110,7 +107,6 @@ const SignUp = () => {
                   id="password"
                   type={show ? 'text' : 'password'}
                   onChange={passwordChange}
-                  required
                 />
                 <InputRightElement pb={1.5} onClick={handleClick}>
                   {show ? <ViewOffIcon /> : <ViewIcon />}
