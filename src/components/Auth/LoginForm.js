@@ -21,6 +21,7 @@ const Login = () => {
   const [enteredEmail, setEnteredEmail] = useState('');
   const [enteredPassword, setEnteredPassword] = useState('');
   const [isCorrect, setIsCorrect] = useState('');
+  const [touch, setTouch] = useState(false);
   const nav = useNavigate();
   const toast = useToast();
 
@@ -39,15 +40,14 @@ const Login = () => {
     );
     const result = await response.json();
     if (result.message === undefined) {
+      setIsCorrect('');
       localStorage.setItem('token', result);
       nav('/livestock');
     }
     if (result.message === 'Wrong username or password') {
-      // nav('/authCred', { state: { name: 'Incorrect Email or Password' } });
       setIsCorrect('Incorrect email or password!');
     }
     if (result.message === 'User not found!') {
-      // nav('/authCred', { state: { name: 'User not found!' } });
       setIsCorrect('User not found!');
     }
   };
@@ -66,12 +66,12 @@ const Login = () => {
       toast({
         title: 'Error!',
         description: isCorrect,
-        status: 'success',
+        status: 'error',
         duration: 9000,
         isClosable: true,
       });
     }
-  }, [isCorrect, toast]);
+  }, [isCorrect, toast, touch]);
   return (
     <Stack spacing={8} mx={'auto'} pt={20}>
       <Heading>User Login</Heading>
@@ -130,6 +130,7 @@ const Login = () => {
                 bg={'blue.400'}
                 color={'white'}
                 _hover={{ color: 'blue.500' }}
+                onClick={() => setTouch(!touch)}
               >
                 Sign in
               </Button>

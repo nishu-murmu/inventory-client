@@ -12,7 +12,6 @@ import AccountPage from '../pages/Auth/AccountPage.js';
 import MasterSKUPage from '../pages/Sku/masterSKUPage.js';
 import UnMappedPage from '../pages/Sku/unMapped.js';
 import LiveStockPage from '../pages/livestockPage.js';
-import AuthCredPage from '../components/Auth/authCred.js';
 import Protected from './protectedRoutes.js';
 
 const AllRoutes = () => {
@@ -29,15 +28,6 @@ const AllRoutes = () => {
           element={
             <Protected>
               <AccountPage />
-            </Protected>
-          }
-        />
-        <Route
-          exact
-          path="/authCred"
-          element={
-            <Protected>
-              <AuthCredPage />
             </Protected>
           }
         />

@@ -58,6 +58,9 @@ const MainHeader = () => {
             as={Button}
             cursor={'pointer'}
             variant={'ghost'}
+            onClick={() => {
+              console.log(localStorage.getItem('token'));
+            }}
           >
             <Icon as={FaUser} />
           </MenuButton>
