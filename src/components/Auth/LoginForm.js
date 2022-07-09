@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Stack,
   Box,
@@ -12,6 +12,7 @@ import {
   InputGroup,
   useColorModeValue,
   Checkbox,
+  useToast,
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +20,9 @@ const Login = () => {
   const [show, setShow] = useState(false);
   const [enteredEmail, setEnteredEmail] = useState('');
   const [enteredPassword, setEnteredPassword] = useState('');
+  const [isCorrect, setIsCorrect] = useState('');
   const nav = useNavigate();
+  const toast = useToast();
 
   const submitHandler = async e => {
     e.preventDefault();
@@ -40,10 +43,12 @@ const Login = () => {
       nav('/livestock');
     }
     if (result.message === 'Wrong username or password') {
-      nav('/authCred', { state: { name: 'Incorrect Email or Password' } });
+      // nav('/authCred', { state: { name: 'Incorrect Email or Password' } });
+      setIsCorrect('Incorrect email or password!');
     }
     if (result.message === 'User not found!') {
-      nav('/authCred', { state: { name: 'User not found!' } });
+      // nav('/authCred', { state: { name: 'User not found!' } });
+      setIsCorrect('User not found!');
     }
   };
 
@@ -56,6 +61,17 @@ const Login = () => {
   };
 
   const handleClick = () => setShow(!show);
+  useEffect(() => {
+    if (isCorrect !== '') {
+      toast({
+        title: 'Error!',
+        description: isCorrect,
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  }, [isCorrect, toast]);
   return (
     <Stack spacing={8} mx={'auto'} pt={20}>
       <Heading>User Login</Heading>
