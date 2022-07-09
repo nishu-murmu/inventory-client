@@ -54,6 +54,7 @@ const Purchase = () => {
   const [purchasedata, setPurchaseData] = useState([]);
   const [selectedsku, setSelectedsku] = useState('');
   const [mappedArray, setMappedArray] = useState([]);
+  const [check, setCheck] = useState('');
   const [toggleSubmit, setToggleSubmit] = useState(false);
   const [toggleUpdate, setToggleUpdate] = useState(false);
   const [toggleDelete, setToggleDelete] = useState(false);
@@ -114,6 +115,7 @@ const Purchase = () => {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          checkmastersku: check,
           mastersku: enteredsku,
           date: updateDate,
           quantity: newQuantity,
@@ -317,7 +319,14 @@ const Purchase = () => {
                     </Td>
                     <Td textAlign={'center'}>{val.quantity}</Td>
                     <Td>
-                      <Button colorScheme="teal" size={'sm'} onClick={onOpen}>
+                      <Button
+                        colorScheme="teal"
+                        size={'sm'}
+                        onClick={() => {
+                          onOpen();
+                          setCheck(val.mastersku);
+                        }}
+                      >
                         <FiEdit />
                       </Button>
                       <Modal isCentered isOpen={isOpen} onClose={onClose}>

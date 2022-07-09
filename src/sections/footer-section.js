@@ -14,7 +14,7 @@ const Footer = () => {
   return (
     <Box
       borderTopWidth={2}
-      bottom={0}
+      bottom={2}
       position={'fixed'}
       width={'96%'}
       borderStyle={'solid'}

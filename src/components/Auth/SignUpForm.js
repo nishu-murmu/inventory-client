@@ -113,18 +113,16 @@ const SignUp = () => {
                 </InputRightElement>
               </InputGroup>
             </FormControl>
-            <Stack>
+            <Stack fontSize={'md'}>
               <Stack
                 direction={{ base: 'column', sm: 'row' }}
                 align={'start'}
                 pt={5}
                 justify="space-between"
               >
-                <Text size={'sm'}>Already a user?</Text>
+                <Text>Already a user?</Text>
                 <Link to="/login">
-                  <Text size={'sm'} color={'blue.200'}>
-                    Login
-                  </Text>
+                  <Text color={'blue.200'}>Login</Text>
                 </Link>
               </Stack>
               <Button

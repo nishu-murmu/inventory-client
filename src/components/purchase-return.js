@@ -59,6 +59,7 @@ const PurchaseReturn = () => {
   const [endDate, setEndDate] = useState(new Date());
   const [mappedArray, setMappedArray] = useState([]);
   const [selectedsku, setSelectedsku] = useState('');
+  const [check, setCheck] = useState('');
   const [toggleSubmit, setToggleSubmit] = useState(false);
   const [toggleDelete, setToggleDelete] = useState(false);
   const [enteredsku, setEnteredSku] = useState('');
@@ -117,6 +118,7 @@ const PurchaseReturn = () => {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          checkmastersku: check,
           mastersku: enteredsku,
           Date: updateDate,
           quantity: newQuantity,
@@ -319,7 +321,14 @@ const PurchaseReturn = () => {
                       </Td>
                       <Td textAlign={'center'}>{val.quantity}</Td>
                       <Td>
-                        <Button size={'sm'} colorScheme="teal" onClick={onOpen}>
+                        <Button
+                          size={'sm'}
+                          colorScheme="teal"
+                          onClick={() => {
+                            onOpen();
+                            setCheck(val.mastersku);
+                          }}
+                        >
                           <FiEdit />
                         </Button>
                         <Modal isCentered isOpen={isOpen} onClose={onClose}>
