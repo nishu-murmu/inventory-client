@@ -90,7 +90,12 @@ const UnMapped = () => {
         }
       );
       const salesReturnResult = await salesReturnResponse.json();
-      setUnMappedArray([...salesReturnResult.groupedData]);
+      console.log(salesResult);
+      console.log(salesReturnResult);
+      setUnMappedArray(unmappedArray => [
+        unmappedArray,
+        ...salesReturnResult.groupedData,
+      ]);
     };
     getUnMapped();
   }, []);
@@ -113,10 +118,13 @@ const UnMapped = () => {
       }
     );
     const salesReturnResult = await salesReturnResponse.json();
+    console.log(salesresult.searchfilterList);
+    console.log(salesReturnResult.searchfilterList);
     if (salesresult.searchfilterList !== null)
       setUnMappedArray(salesresult.searchfilterList);
-    if (salesReturnResult.searchfilterList !== null)
+    else if (salesReturnResult.searchfilterList !== null)
       setUnMappedArray(salesReturnResult.searchfilterList);
+    else setUnMappedArray('');
   };
   // get mapped skus with master sku
   const updateUnMappedHandler = async (selectedSku, mastersku) => {
