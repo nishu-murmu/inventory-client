@@ -1,21 +1,12 @@
-<h2 align="center">F3 Inventory Automization and Management</h2><h5>Still in process</h5>
-<h4 align="center">Main Goal of this project is to automate and manage the inventory for F3 company.</h4>
-
-### Deadline #1 (9-05-22)
-
-- [x] Completing the basic UI with all the components running perfectly.
-- [x] Taking the input properly and storing it in database and displaying it in front-end.
-
-#### Things I learned
-
-- [x] MySQL
-  - [x] MySQL comnmand Line client
-  - [x] MySQL Workbench
-  - [x] How to import csv files into GUI client and workbench.
-- [x] MongoDB
-- [x] Node.js
-- [x] Express.js
-
-### Deadline #2 (15-05-22)
-
-- [x] Retrieving the data and performing the calculations and showing the results in Live Stock.
+### Accounting Software for automating and managing all the inventory for the company.
+Main purpose of this application is to automate the process of getting all the live stock at the end of the day after all the processes in sales, sales return, purchase and purchase return has been done. After this the live stock of the current day is going to be the opening stock of the next day for the particular mastersku.
+### What to expect from this application?
+1. Nice and smooth user interface for managing the accounting for any e-commerce company.
+2. No need to work in excel for managing the inventory for your company anymore.
+### TO-DO List
+- [ ] Fixing the display for livestock section.
+- [ ] Make user access only their data.
+- [ ] Making the custom domain for the website.
+- [ ] Implementing google sign in.
+### License
+[MIT](https://github.com/git/git-scm.com/blob/main/MIT-LICENSE.txt)
