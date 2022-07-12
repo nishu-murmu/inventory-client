@@ -237,9 +237,18 @@ const Sales = () => {
       }
     );
     const result = await response.json();
-    if (status === 'dispatch') setDispatchArray(result.searchfilterList);
-    if (status === 'pending') setPendingArray(result.searchfilterList);
-    if (status === 'cancel') setCancelArray(result.searchfilterList);
+    if (status === 'dispatch') {
+      setDispatchArray(result.searchfilterList);
+      setDispatchCount(result.searchfilterList.length);
+    }
+    if (status === 'pending') {
+      setPendingArray(result.searchfilterList);
+      setPendingCount(result.searchfilterList.length);
+    }
+    if (status === 'cancel') {
+      setCancelArray(result.searchfilterList);
+      setCancelCount(result.searchfilterList.length);
+    }
   };
   // removing duplicates
   const removeDups = async () => {
