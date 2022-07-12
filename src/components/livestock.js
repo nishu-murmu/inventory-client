@@ -15,22 +15,33 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Modal,
+  ModalBody,
+  ModalOverlay,
+  ModalContent,
   Input,
   InputGroup,
   InputRightAddon,
   FormLabel,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
 import { saveAs } from 'file-saver';
+import { DateRange } from 'react-date-range';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
 // files
 
 const LiveStock = () => {
-  // const nav = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [file, setFile] = useState();
   const fileReader = new FileReader();
   const [mergedArray, setMergedArray] = useState([]);
   const [livestockArray, setLiveStockArray] = useState([]);
+  // date filter states
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   // event handlers
   const onChangeHandler = e => {
     setFile(e.target.files[0]);
@@ -42,6 +53,7 @@ const LiveStock = () => {
         'https://shrouded-brushlands-07875.herokuapp.com/api/master/merged'
       );
       const result = await response.json(response);
+      console.log(result);
       setLiveStockArray(result);
     };
     mergedData();
@@ -71,9 +83,9 @@ const LiveStock = () => {
               item.purchaseReturn.length === 0
                 ? 0
                 : item.purchaseReturn[0].quantity,
-            sales: item.sales.length === 0 ? 0 : item.sales[0].QTY,
+            sales: item.sales.length === 0 ? 0 : item.sales[0].quantity,
             salesReturn:
-              item.salesreturn.length === 0 ? 0 : item.salesReturn[0].QTY,
+              item.salesreturn.length === 0 ? 0 : item.salesReturn[0].quantity,
             skus: item.skus,
           }),
         }
@@ -91,19 +103,8 @@ const LiveStock = () => {
     };
     finalLiveStock();
   }, []);
-  useEffect(() => {
-    const salesmaster = async () => {
-      const response = await fetch(
-        'http://localhost:3001/api/master/mastersku'
-      );
-      const result = await response.json();
-      console.log(result);
-    };
-    salesmaster();
-  }, []);
   // csv to array conversion
   const csvFileToArray = async string => {
-    console.log(string);
     const csvHeader = string.slice(0, string.indexOf('\r')).split(',');
     const csvRows = string
       .slice(string.indexOf('\r') + 1)
@@ -122,7 +123,6 @@ const LiveStock = () => {
       return obj;
     });
     const finalArray = array.filter(item => item !== null);
-    console.log(finalArray);
     await fetch(
       'https://shrouded-brushlands-07875.herokuapp.com/api/livestock/upload',
       {
@@ -142,6 +142,7 @@ const LiveStock = () => {
       fileReader.readAsText(file);
     }
   };
+  // download file
   const downloadFile = () => {
     const csv = mergedArray
       .map(item => {
@@ -154,39 +155,71 @@ const LiveStock = () => {
     });
     saveAs(blob, 'livestock.csv');
   };
+  // Date filter
+  const SelectionRange = {
+    startDate: startDate,
+    endDate: endDate,
+    key: 'selection',
+  };
+  const handleSelect = ranges => {
+    setEndDate(ranges.selection.endDate);
+    setStartDate(ranges.selection.startDate);
+  };
   return (
     <Box p={4}>
       <Heading size={'lg'} pb={5}>
         Live Stock Section
       </Heading>
+
       {/* upload stock */}
-      <InputGroup size={'sm'} w={'200px'}>
-        <FormLabel
-          width={'100%'}
-          htmlFor={'csvInput'}
-          _hover={{ cursor: 'pointer' }}
-          textAlign={'center'}
-        >
-          Upload File
-        </FormLabel>
-        <Input
-          display={'none'}
-          type={'file'}
-          id={'csvInput'}
-          accept={'.csv'}
-          onChange={onChangeHandler}
-        />
-        <InputRightAddon
-          type={'button'}
-          variant={'outline'}
-          children={'Select csv'}
-          _hover={{ cursor: 'pointer' }}
-          onClick={onSubmitHandler}
-        >
-          Import
-          <DownloadIcon ml={1} mt={1} />
-        </InputRightAddon>
-      </InputGroup>
+      <HStack justifyContent={'space-between'}>
+        <InputGroup size={'sm'} w={'200px'}>
+          <FormLabel
+            width={'100%'}
+            htmlFor={'csvInput'}
+            _hover={{ cursor: 'pointer' }}
+            textAlign={'center'}
+            pt={1}
+            size="sm"
+          >
+            Upload File
+          </FormLabel>
+          <Input
+            display={'none'}
+            type={'file'}
+            id={'csvInput'}
+            accept={'.csv'}
+            onChange={onChangeHandler}
+          />
+          <InputRightAddon
+            type={'button'}
+            variant={'outline'}
+            children={'Select csv'}
+            _hover={{ cursor: 'pointer' }}
+            onClick={onSubmitHandler}
+          >
+            Import
+            <DownloadIcon ml={1} mt={1} />
+          </InputRightAddon>
+        </InputGroup>
+        <Button size={'sm'} onClick={onOpen}>
+          Date Filter
+        </Button>
+        <Modal size={'sm'} isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalBody>
+              <DateRange
+                ranges={[SelectionRange]}
+                onChange={handleSelect}
+                moveRangeOnFirstSelection
+                retainEndDateOnFirstSelection
+                maxDate={new Date()}
+              />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      </HStack>
       <Heading size={'md'} py={4}>
         Live Stock Table
       </Heading>
