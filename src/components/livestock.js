@@ -96,7 +96,7 @@ const LiveStock = () => {
   useEffect(() => {
     const finalLiveStock = async () => {
       const response = await fetch(
-        'https://shrouded-brushlands-07875.herokuapp.com/api/livestock/getAll'
+        'https://shrouded-brushlands-07875.herokuapp.com/api/livestock/getall'
       );
       const result = await response.json();
       setMergedArray(result);
